@@ -1,0 +1,51 @@
+.login-page {
+  background: #eff1f2;
+  height    : 100vh;
+
+  .login-page {
+    &__container {
+      max-width: 500px;
+      margin   : auto;
+      padding  : 40px 0;
+    }
+
+    &__logo {
+      text-align   : center;
+      margin-bottom: 100px;
+
+      img {
+        max-width: 50%;
+      }
+    }
+
+    &__form {
+      background: #fff;
+      padding   : 30px;
+      box-shadow: 0 0 3px #555;
+    }
+
+
+
+    &__title {
+      text-align: center;
+      font-size : 18px;
+      padding   : 15px 0;
+    }
+
+    &__button {
+      width        : 100%;
+      border-radius: 3px;
+      background   : var(--green);
+      border       : 1px solid var(--green);
+      margin-bottom: 10px;
+
+      &:hover {
+        background: var(--white);
+        color     : var(--green);
+      }
+    }
+  }
+
+}
+
+;
