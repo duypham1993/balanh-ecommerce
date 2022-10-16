@@ -11,7 +11,7 @@ const router = express.Router();
 // Login
 router.post("/login", async (req, res) => {
   try {
-    const user = await Admin.findOne({ username: req.body.username });
+    const user = await Admin.findOne({ email: req.body.email });
     !user && res.status(401).json("Tài khoản hoặc mật khẩu không đúng");
 
     const decryptPass = CryptoJS.AES.decrypt(user.password, process.env.PASS_KEY);

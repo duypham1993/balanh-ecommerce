@@ -42,6 +42,7 @@ const Login = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               label="Email"
+              name="email"
             />
           </FormControl>
           <FormControl sx={{ mb: 3, width: '100%' }} variant="outlined">
@@ -51,6 +52,7 @@ const Login = () => {
               type={showPw ? 'text' : 'password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              name="password"
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton

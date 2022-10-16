@@ -8,7 +8,8 @@ const router = express.Router();
 // CREAT
 router.post("/add-user", verifyTokenRoleAdmin, async (req, res) => {
   const newUser = new Admin({
-    username: req.body.username,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
     email: req.body.email,
     password: CryptoJS.AES.encrypt(req.body.password, process.env.PASS_KEY).toString(),
     role: req.body.role,
