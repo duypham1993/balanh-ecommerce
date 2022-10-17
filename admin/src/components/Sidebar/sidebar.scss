@@ -1,0 +1,39 @@
+.sidebar {
+  &__header {
+    box-shadow     : none !important;
+    background     : var(--white) !important;
+    color          : var(--text-gray-1) !important;
+    justify-content: space-between;
+    flex-direction : row !important;
+    align-items    : center;
+  }
+
+  &__logo {
+    display     : inline-block;
+    max-width   : 100%;
+    width       : 140px;
+    padding-left: 15px;
+  }
+
+  &__account {
+    margin-right: 15px;
+  }
+
+  &__link {
+    text-decoration: none;
+    color          : var(--text-gray-1);
+    display        : flex;
+    flex-basis     : 100%;
+    padding        : 12px 20px;
+    border-left    : 4px solid transparent;
+    transition     : all 0.3s;
+
+    &:hover {
+      border-left-color: var(--green);
+    }
+
+    &.acitve {
+      border-left: 4px solid var(--green);
+    }
+  }
+}

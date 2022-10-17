@@ -1,18 +1,16 @@
-import "./home.scss";
+import "./products.scss";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 
-
-const Home = () => {
+const Products = () => {
   return (
-    <Box className="home-page flex-bw-center">
+    <Box className="products-page flex-bw-center">
       <Sidebar />
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        Home page
+        Products page
       </Box>
     </Box>
   );
 };
 
-export default Home;
+export default Products;

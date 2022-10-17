@@ -1,23 +1,21 @@
-html {
-  font-size: 14px;
-}
-
-body {
-  margin: 0;
-  font-family: 'Roboto',
-    sans-serif;
-  -webkit-font-smoothing : antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color                  : (--text-gray-1);
-  font-size              : 1rem;
-}
-
 :root {
+  --body-bg    : #eaebec;
   --green      : #497D3B;
   --white      : #fff;
   --text-gray-1: #4a4a4a;
   --bg-gray-1  : #eee;
   --yellow-1   : #ffcc40;
+}
+
+html {
+  font-size: 14px;
+}
+
+body {
+  font-family: 'Roboto', sans-serif !important;
+  color      : var(--text-gray-1);
+  font-size  : 1rem;
+  background : var(--body-bg) !important;
 }
 
 .flex-bw-center {

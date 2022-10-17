@@ -2,7 +2,7 @@ import "./login.scss";
 import logo from "../../assets/imgs/logo.png";
 import { useState } from 'react';
 import { login } from '../../redux/apiCalls';
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link, Navigate } from "react-router-dom";
 import Button from '@mui/material/Button';
 import FormControlLabel from '@mui/material/FormControlLabel';
