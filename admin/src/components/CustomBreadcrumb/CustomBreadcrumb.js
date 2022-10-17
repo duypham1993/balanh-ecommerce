@@ -7,7 +7,6 @@ import Breadcrumbs from '@mui/material/Breadcrumbs';
 const CustomBreadcrumb = () => {
   const location = useLocation();
   const pathnames = location.pathname.split('/').filter((x) => x);
-  console.log(pathnames);
   const breadcrumbNameMap = {
     '/orders': 'Đơn hàng',
     '/products': 'Sản phẩm',
@@ -19,9 +18,7 @@ const CustomBreadcrumb = () => {
   return (
     <div className="custom-breadcurmb">
       <Breadcrumbs aria-label="breadcrumb">
-        <Link underline="hover" color="inherit" to="/">
-          Home
-        </Link>
+        <Link to="/" className="link-default">Trang chủ</Link>
         {pathnames.map((value, index) => {
           const last = index === pathnames.length - 1;
           const to = `/${pathnames.slice(0, index + 1).join('/')}`;

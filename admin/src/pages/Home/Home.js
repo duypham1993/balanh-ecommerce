@@ -1,7 +1,6 @@
 import "./home.scss";
 import Sidebar from "../../components/Sidebar/Sidebar";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 
 
 const Home = () => {
