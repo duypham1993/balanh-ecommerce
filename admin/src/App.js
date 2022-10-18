@@ -11,24 +11,35 @@ import ProductList from "./pages/Products/ProductList/ProductList";
 import Categories from "./pages/Categories/Categories";
 import Customer from "./pages/Customer/Customer";
 import Admins from "./pages/Admins/Admins";
+import NewProduct from './pages/Products/NewProduct/NewProduct';
+import Box from '@mui/material/Box';
+import Sidebar from './components/Sidebar/Sidebar';
 
 function App() {
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   console.log(currentUser);
   return (
-    <Routes>
-      <Route path='login' element={<Login />} />
+    <>
+      <Routes>
+        <Route path='login' element={<Login />} />
+      </Routes>
       {currentUser &&
-        <>
-          <Route path="/" element={<Home />} />
-          <Route path="orders" element={<Orders />} />
-          <Route path="products" element={<ProductList />} />
-          <Route path="categories" element={<Categories />} />
-          <Route path="customer" element={<Customer />} />
-          <Route path="admins" element={<Admins />} />
-        </>
+        <Box className="flex-bw-center">
+          <Sidebar />
+          <Box component="main" className="main-content">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="orders" element={<Orders />} />
+              <Route path="products" element={<ProductList />} />
+              <Route path="new-product" element={<NewProduct />} />
+              <Route path="categories" element={<Categories />} />
+              <Route path="customer" element={<Customer />} />
+              <Route path="admins" element={<Admins />} />
+            </Routes>
+          </Box>
+        </Box>
       }
-    </Routes>
+    </>
   );
 }
 

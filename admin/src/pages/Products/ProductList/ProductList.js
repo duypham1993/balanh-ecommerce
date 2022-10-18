@@ -1,10 +1,8 @@
 import "./product-list.scss";
-import Sidebar from "../../../components/Sidebar/Sidebar";
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteProduct, getProduct } from "../../../redux/apiCalls";
-import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
 import DeleteOutline from "@mui/icons-material/DeleteOutline";
 
@@ -83,29 +81,25 @@ const ProductList = () => {
   ];
 
   return (
-    <Box className="products-page flex-bw-center">
-      <Sidebar />
-      <Box component="main" className="main-content">
-        <div className="flex-r-c">
-          <Link to='/add-product' className='btn-default'>Sản phẩm mới</Link>
-        </div>
-        <div className="productList" style={{ height: '400px' }} >
-          <DataGrid
-            rows={products}
-            disableSelectionOnClick
-            columns={columns}
-            disableColumnMenu
-            getRowId={(row) => row._id}
-            checkboxSelection
-            pageSize={pageSize}
-            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-            rowsPerPageOptions={[20, 50, 100]}
-            pagination
-          />
-        </div>
-      </Box>
-    </Box>
-
+    <>
+      <div className="flex-r-c">
+        <Link to='/add-product' className='btn-default'>Sản phẩm mới</Link>
+      </div>
+      <div className="productList" style={{ height: '400px' }} >
+        <DataGrid
+          rows={products}
+          disableSelectionOnClick
+          columns={columns}
+          disableColumnMenu
+          getRowId={(row) => row._id}
+          checkboxSelection
+          pageSize={pageSize}
+          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+          rowsPerPageOptions={[20, 50, 100]}
+          pagination
+        />
+      </div>
+    </>
   )
 };
 
