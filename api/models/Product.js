@@ -8,6 +8,8 @@ const productSchema = new mongoose.Schema(
     costPrice: { type: Number, required: true },
     price: { type: Number, required: true },
     categories: { type: Array, required: true },
+    origin: { type: String, required: true },
+    supplier: { type: String, required: true },
     qty: { type: Number, default: 0 },
     weight: { type: String, required: true },
     imgs: { type: String },
