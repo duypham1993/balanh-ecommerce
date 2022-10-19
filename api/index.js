@@ -8,6 +8,7 @@ import customerRouter from "./routes/customer";
 import cartRouter from "./routes/cart";
 import orderRouter from "./routes/order";
 import productRouter from "./routes/product";
+import supplierRouter from "./routes/supplier";
 import cors from "cors";
 
 const app = express();
@@ -29,6 +30,7 @@ app.use("/api/customer", customerRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/order", orderRouter);
 app.use("/api/product", productRouter);
+app.use("/api/supplier", supplierRouter);
 app.listen(port, () => {
   console.log("Port is: ", port);
 });
