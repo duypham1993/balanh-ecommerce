@@ -11,7 +11,7 @@ const productSchema = new mongoose.Schema(
     origin: { type: String, required: true },
     supplier: { type: String, required: true },
     qty: { type: Number, default: 0 },
-    weight: { type: String, required: true },
+    packing: { type: String, required: true },
     imgs: { type: String },
     isActive: { type: Boolean, default: false }
   },
