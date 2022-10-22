@@ -11,12 +11,12 @@ import ProductList from "./pages/Products/ProductList/ProductList";
 import Categories from "./pages/Categories/Categories";
 import Customer from "./pages/Customer/Customer";
 import Admins from "./pages/Admins/Admins";
-import NewProduct from './pages/Products/NewProduct/NewProduct';
+import AddProduct from './pages/Products/AddProduct/AddProduct';
 import Box from '@mui/material/Box';
 import Sidebar from './components/Sidebar/Sidebar';
 
 function App() {
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
   console.log(currentUser);
   return (
     <>
@@ -31,7 +31,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="orders" element={<Orders />} />
               <Route path="products" element={<ProductList />} />
-              <Route path="new-product" element={<NewProduct />} />
+              <Route path="add-product" element={<AddProduct />} />
               <Route path="categories" element={<Categories />} />
               <Route path="customer" element={<Customer />} />
               <Route path="admins" element={<Admins />} />
