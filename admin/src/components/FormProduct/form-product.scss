@@ -1,5 +1,5 @@
 .form-product {
-  padding: 40px 80px;
+  padding: 40px 80px 65px;
 
   .form-product {
     &__tabpanel {
@@ -151,10 +151,16 @@
     }
 
     &__list {
+      border: 1px solid var(--border-gray-1);
+
       .form-product {
         &__sublist {
-          margin-left: 35px;
+          margin-left   : 35px;
+          display       : flex;
+          flex-direction: column;
         }
+
+        &__sub-item {}
       }
     }
 
