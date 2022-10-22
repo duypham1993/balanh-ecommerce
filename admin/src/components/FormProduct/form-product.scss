@@ -1,0 +1,182 @@
+.form-product {
+  padding: 40px 80px;
+
+  .form-product {
+    &__tabpanel {
+      padding-top: 15px;
+    }
+
+    &__item {
+      margin-bottom: 25px;
+      padding      : 0 15px;
+
+      &--title {
+        padding: 0;
+      }
+
+      &--origin {
+        .form-product {
+          &__input {
+            >div {
+              padding: 0;
+            }
+
+            >fieldset {
+              border: none;
+            }
+          }
+        }
+      }
+
+      &--desc {
+        textarea {
+          min-width : 100%;
+          min-height: 60px;
+        }
+      }
+    }
+
+    &__upload-desc {
+      display   : block;
+      text-align: center;
+      cursor    : pointer;
+      color     : var(--text-gray-1);
+      padding   : 30px 0;
+      border    : 1px solid var(--border-gray-1);
+
+      span {
+        display      : block;
+        margin-bottom: 5px;
+      }
+    }
+
+    &__upload-preview {
+      border: 1px solid var(--border-gray-1);
+      cursor: pointer;
+    }
+
+    &__upload-icon {
+      font-size: 60px;
+      color    : var(--border-gray-1);
+    }
+
+    &__wrapper-preview {
+      display: flex;
+    }
+
+    &__item-preview {
+      width          : 130px;
+      height         : 130px;
+      display        : flex;
+      align-items    : center;
+      justify-content: center;
+      margin         : 15px;
+      position       : relative;
+      border         : 1px solid var(--border-gray-1);
+    }
+
+    &__imgs-preview {
+      width : 100%;
+      height: 100%;
+    }
+
+    &__del-img {
+      position: absolute;
+      top     : -10px;
+      right   : -10px;
+      color   : var(--text-gray-1);
+      cursor  : pointer;
+    }
+
+    &__title {
+      margin   : 20px 0 10px;
+      font-size: 16px;
+      width    : 100%;
+    }
+
+    &__subitem {
+      &:first-of-type {
+        padding-right: 15px;
+      }
+
+      &:last-of-type {
+        padding-left: 15px;
+      }
+    }
+
+    &__subtitle {
+      margin: 0 0 5px;
+    }
+
+    &__input {
+      padding      : 7px;
+      border       : 1px solid var(--border-gray-1);
+      border-radius: 0;
+      width        : 50%;
+      transition   : all 0.3s;
+
+      &:focus,
+      &:active,
+      &:focus-visible,
+      &:hover {
+        border-color: var(--green);
+        outline     : 0;
+        box-shadow  : none;
+      }
+
+      &--title {
+        font-size: 24px;
+      }
+
+      &--sub {
+        width        : 100%;
+        padding-right: 32px;
+      }
+    }
+
+    &__subwrapper {
+      width   : 100%;
+      position: relative;
+    }
+
+    &__icon {
+      position   : absolute;
+      top        : 1px;
+      right      : 1px;
+      width      : 30px;
+      line-height: 29px;
+      text-align : center;
+      background : #fafbfc;
+      border-left: 1px solid var(--text-gray-1);
+    }
+
+    &__list {
+      .form-product {
+        &__sublist {
+          margin-left: 35px;
+        }
+      }
+    }
+
+    &__b-nav {
+      position    : fixed;
+      background  : var(--white);
+      width       : 100%;
+      bottom      : 0;
+      left        : 0;
+      z-index     : 0;
+      padding-left: 64px;
+      box-shadow  : 0 0 10px var(--text-gray-1);
+    }
+
+    &__b-wrapper {
+      padding: 15px 80px;
+    }
+
+    &__btn {
+      font-size: 14px;
+      padding  : 7px 14px;
+      margin   : 0;
+    }
+  }
+}

@@ -13,6 +13,7 @@ const CustomBreadcrumb = () => {
     '/categories': 'Danh mục sản phẩm',
     '/customer': 'Khách hàng',
     '/admins': 'Quản trị thành viên',
+    '/add-product': 'Sản phẩm mới',
   };
 
   return (
