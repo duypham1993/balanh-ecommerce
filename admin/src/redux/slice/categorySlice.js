@@ -8,19 +8,72 @@ const categorySlice = createSlice({
     error: false
   },
   reducers: {
-    categoryStart: (state) => {
+    addCategoryStart: (state) => {
       state.isFetching = true;
     },
-    categorySucces: (state, action) => {
+    addCategorySucces: (state, action) => {
       state.isFetching = false;
-      state.currentUser = action.payload;
+      state.categories.push(action.payload);
     },
-    categoryFailure: (state) => {
+    addCategoryFailure: (state) => {
+      state.isFetching = false;
+      state.error = true;
+    },
+
+    getCategoryStart: (state) => {
+      state.isFetching = true;
+    },
+    getCategorySucces: (state, action) => {
+      state.isFetching = false;
+      state.categories = action.payload;
+    },
+    getCategoryFailure: (state) => {
+      state.isFetching = false;
+      state.error = true;
+    },
+
+    updateCategoryStart: (state) => {
+      state.isFetching = true;
+    },
+    updateCategorySucces: (state, action) => {
+      state.isFetching = false;
+      state.categories.forEach(item => {
+        if (item._id === action.payload.__id) {
+          item = action.payload;
+        }
+      });
+    },
+    updateCategoryFailure: (state) => {
+      state.isFetching = false;
+      state.error = true;
+    },
+
+    deleteCategoryStart: (state) => {
+      state.isFetching = true;
+    },
+    deleteCategorySucces: (state, action) => {
+      state.isFetching = false;
+      state.categories.filter(item => item.__id !== action.payload);
+    },
+    deleteCategoryFailure: (state) => {
       state.isFetching = false;
       state.error = true;
     },
   }
 });
 
-export const { categoryStart, categorySucces, categoryFailure } = categorySlice.actions;
+export const {
+  addCategoryStart,
+  addCategorySucces,
+  addCategoryFailure,
+  getCategoryStart,
+  getCategorySucces,
+  getCategoryFailure,
+  updateCategoryStart,
+  updateCategorySucces,
+  updateCategoryFailure,
+  deleteCategoryStart,
+  deleteCategorySucces,
+  deleteCategoryFailure
+} = categorySlice.actions;
 export default categorySlice.reducer;

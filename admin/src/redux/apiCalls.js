@@ -1,6 +1,21 @@
 import { publicRequest, userRequest } from "../requestMethod";
 import { loginFailure, loginStart, loginSucces } from "./slice/loginSlice";
-import { addProductFailure, addProductStart, addProductSuccess, deleteProductFailure, deleteProductStart, deleteProductSuccess, getProductFailure, getProductStart, getProductSuccess, updateProductFailure, updateProductStart, updateProductSuccess } from "./slice/productSlice";
+import {
+  addProductFailure,
+  addProductStart,
+  addProductSuccess,
+  deleteProductFailure,
+  deleteProductStart,
+  deleteProductSuccess,
+  getProductFailure,
+  getProductStart,
+  getProductSuccess,
+  updateProductFailure,
+  updateProductStart,
+  updateProductSuccess
+} from "./slice/productSlice";
+
+import { addCategoryFailure, addCategoryStart, addCategorySucces, getCategoryFailure, getCategoryStart, updateCategoryFailure, updateCategoryStart, updateCategorySucces } from "./slice/categorySlice";
 
 export const login = async (dispatch, user) => {
   dispatch(loginStart());
@@ -47,6 +62,46 @@ export const deleteProduct = async (dispatch, id) => {
   dispatch(deleteProductStart());
   try {
     await userRequest.delete(`/product/delete/${id}`, id);
+    dispatch(deleteProductSuccess(id));
+  } catch {
+    dispatch(deleteProductFailure());
+  }
+}
+
+export const addCategory = async (dispatch, category) => {
+  dispatch(addCategoryStart());
+  try {
+    const res = await userRequest.post("/category/create", category);
+    dispatch(addCategorySucces(res.data));
+  } catch {
+    dispatch(addCategoryFailure());
+  }
+}
+
+export const getCategories = async (dispatch) => {
+  dispatch(getCategoryStart());
+  try {
+    const res = await userRequest.get("/category/");
+    dispatch(getCategoryStart(res.data));
+  } catch {
+    dispatch(getCategoryFailure());
+  }
+}
+
+export const updateCategory = async (dispatch, id) => {
+  dispatch(updateCategoryStart());
+  try {
+    const res = await userRequest.put(`/category/${id}`, id);
+    dispatch(updateCategorySucces(res.data));
+  } catch {
+    dispatch(updateCategoryFailure());
+  }
+}
+
+export const deleteCategory = async (dispatch, id) => {
+  dispatch(deleteProductStart());
+  try {
+    await userRequest.delete(`/category/${id}`, id);
     dispatch(deleteProductSuccess(id));
   } catch {
     dispatch(deleteProductFailure());
