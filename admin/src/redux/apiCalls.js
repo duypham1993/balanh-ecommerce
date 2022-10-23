@@ -15,7 +15,7 @@ import {
   updateProductSuccess
 } from "./slice/productSlice";
 
-import { addCategoryFailure, addCategoryStart, addCategorySucces, getCategoryFailure, getCategoryStart, updateCategoryFailure, updateCategoryStart, updateCategorySucces } from "./slice/categorySlice";
+import { addCategoryFailure, addCategoryStart, addCategorySucces, getCategoryFailure, getCategoryStart, getCategorySucces, updateCategoryFailure, updateCategoryStart, updateCategorySucces } from "./slice/categorySlice";
 
 export const login = async (dispatch, user) => {
   dispatch(loginStart());
@@ -82,7 +82,7 @@ export const getCategories = async (dispatch) => {
   dispatch(getCategoryStart());
   try {
     const res = await userRequest.get("/category/");
-    dispatch(getCategoryStart(res.data));
+    dispatch(getCategorySucces(res.data));
   } catch {
     dispatch(getCategoryFailure());
   }
