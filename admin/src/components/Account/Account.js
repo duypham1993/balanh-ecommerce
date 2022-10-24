@@ -8,8 +8,11 @@ import IconButton from '@mui/material/IconButton';
 import Logout from '@mui/icons-material/Logout';
 import MenuItem from '@mui/material/MenuItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
+import { useDispatch } from "react-redux";
+import { logout } from "../../redux/slice/loginSlice";
 
 const Account = () => {
+  const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
   const openAcc = Boolean(anchorEl);
 
@@ -19,6 +22,10 @@ const Account = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const handleLogOut = () => {
+    dispatch(logout());
+  }
   return (
     <>
       <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
@@ -73,7 +80,7 @@ const Account = () => {
         <MenuItem>
           <Avatar /> Profile
         </MenuItem>
-        <MenuItem>
+        <MenuItem onClick={() => handleLogOut()}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>
