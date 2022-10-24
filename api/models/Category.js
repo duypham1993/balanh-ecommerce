@@ -6,8 +6,7 @@ const categorySchema = new mongoose.Schema(
     slug: { type: String, required: true, unique: true },
     desc: { type: String },
     img: { type: String },
-    parent: { type: String, default: null },
-    ancestors: [
+    children: [
       {
         id: { type: String },
         name: { type: String },
@@ -15,6 +14,7 @@ const categorySchema = new mongoose.Schema(
       }
     ],
     isActive: { type: Boolean, default: false },
+    isRoot: { type: Boolean, default: false },
   },
   { timestamps: true }
 )
