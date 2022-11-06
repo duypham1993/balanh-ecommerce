@@ -1,7 +1,6 @@
 import "./login.scss";
 import logo from "../../assets/imgs/logo.png";
 import { useState } from 'react';
-import { login } from '../../redux/apiCalls';
 import { useDispatch } from "react-redux";
 import { Link, Navigate } from "react-router-dom";
 import Button from '@mui/material/Button';
@@ -15,6 +14,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { login } from "../../redux/slice/loginSlice";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -25,7 +25,7 @@ const Login = () => {
 
   const handleOnClick = (e) => {
     e.preventDefault();
-    login(dispatch, { email, password });
+    dispatch(login({ email, password }));
   };
   return (
     <>
