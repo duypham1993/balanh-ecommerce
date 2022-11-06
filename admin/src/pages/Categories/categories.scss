@@ -1,0 +1,13 @@
+.categories {
+  height: calc(100vh - 155px);
+
+  .categories {
+    &__header {
+      font-size: 1rem;
+    }
+
+    &__img {
+      max-width: 80%;
+    }
+  }
+}
