@@ -6,15 +6,8 @@ const categorySchema = new mongoose.Schema(
     slug: { type: String, required: true, unique: true },
     desc: { type: String },
     img: { type: String },
-    children: [
-      {
-        id: { type: String },
-        name: { type: String },
-        slug: { type: String },
-      }
-    ],
+    parentId: { type: String },
     isActive: { type: Boolean, default: false },
-    isRoot: { type: Boolean, default: false },
   },
   { timestamps: true }
 )
