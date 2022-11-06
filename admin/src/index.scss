@@ -7,6 +7,8 @@
   --bg-gray-1    : #eee;
   --yellow-1     : #ffcc40;
   --green-hover  : #5b9f49;
+  --bg-bot-form  : #fafbfc;
+  --error        : red;
 }
 
 html {
@@ -21,7 +23,7 @@ body {
 }
 
 .flex-bw-center {
-  display        : flex;
+  display        : flex !important;
   justify-content: space-between;
   align-items    : center;
 }
@@ -57,10 +59,80 @@ body {
   &:hover {
     background: var(--green-hover);
   }
+
+  &--del {
+    border-color: var(--text-gray-1);
+    background  : none;
+    color       : var(--text-gray-1);
+
+    &:hover {
+      background  : none;
+      color       : var(--green);
+      border-color: var(--green);
+    }
+  }
 }
 
 .flex-r-c {
   display        : flex;
   justify-content: flex-end;
   align-items    : center;
+}
+
+.text-small {
+  font-size: 0.8rem !important;
+}
+
+.text-default {
+  font-size: 1rem !important;
+}
+
+.input-default {
+  padding      : 7px;
+  border       : 1px solid var(--border-gray-1);
+  border-radius: 0;
+  width        : 50%;
+  transition   : all 0.3s;
+
+  &:focus,
+  &:active,
+  &:focus-visible,
+  &:hover {
+    border-color: var(--green);
+    outline     : 0;
+    box-shadow  : none;
+  }
+
+  &--error {
+    border-color: var(--error) !important;
+  }
+}
+
+.custom-list {
+  border : 1px solid var(--border-gray-1);
+  padding: 10px 15px !important;
+
+  .custom-list {
+    &__label {
+      margin-left: 0 !important;
+
+      >span {
+        padding-left: 0;
+      }
+    }
+
+    &__sublist {
+      margin-left   : 35px;
+      display       : flex;
+      flex-direction: column;
+    }
+  }
+}
+
+.icon-active {
+  color: var(--green);
+}
+
+.icon-inactive {
+  color: var(--error);
 }
