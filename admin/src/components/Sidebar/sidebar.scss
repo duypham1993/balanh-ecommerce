@@ -1,6 +1,6 @@
 .sidebar {
   &__header {
-    box-shadow     : none !important;
+    box-shadow     : 0 0 5px var(--border-gray-1) !important;
     background     : var(--white) !important;
     color          : var(--text-gray-1) !important;
     justify-content: space-between;
