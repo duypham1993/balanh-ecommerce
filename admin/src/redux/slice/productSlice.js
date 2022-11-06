@@ -89,4 +89,4 @@ export const {
   deleteProductFailure
 } = productSlice.actions;
 
-export default productSlice.reducer;
+export default productSlice;
