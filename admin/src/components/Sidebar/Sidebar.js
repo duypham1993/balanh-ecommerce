@@ -23,6 +23,7 @@ import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import { NavLink } from "react-router-dom";
 import CustomBreadcrumb from "../CustomBreadcrumb/CustomBreadcrumb";
 import Account from "../Account/Account";
+import ForestIcon from '@mui/icons-material/Forest';
 
 
 const drawerWidth = 240;
@@ -93,9 +94,9 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 export default function Sidebar() {
-  const itemArr1 = ['Đơn hàng', 'Sản phẩm', 'Danh mục sản phẩm', 'Khách hàng'];
-  const iconArr1 = [<ShoppingBasketIcon />, <InventoryIcon />, <CategoryIcon />, <SupportAgentIcon />];
-  const linkArr1 = ["/orders", "products", "categories", "customer"];
+  const itemArr1 = ['Đơn hàng', 'Sản phẩm', 'Danh mục sản phẩm', "Xuất xứ", 'Khách hàng'];
+  const iconArr1 = [<ShoppingBasketIcon />, <InventoryIcon />, <CategoryIcon />, <ForestIcon />, <SupportAgentIcon />];
+  const linkArr1 = ["/orders", "products", "categories", "origin", "customer"];
   const itemArr2 = ['Quản trị thành viên'];
   const iconArr2 = [<SupervisorAccountIcon />];
   const linkArr2 = ["/admins"];
