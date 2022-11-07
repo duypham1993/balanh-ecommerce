@@ -5,14 +5,9 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import DeleteOutline from "@mui/icons-material/DeleteOutline";
-import { deleteCategory } from '../../redux/slice/categorySlice';
-import { delImgFireBase } from '../../services/uploadFirebase';
 
-export default function CustomDialog({ item, selectedCategories }) {
-  const dispatch = useDispatch();
-
+const CustomDialog = ({ item, selectedItems, handleDelete }) => {
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -23,14 +18,13 @@ export default function CustomDialog({ item, selectedCategories }) {
     setOpen(false);
   };
 
-  const handleDelete = async (category) => {
-    dispatch(deleteCategory(category._id));
-    await delImgFireBase(category.img);
+  const deleteItem = (item) => {
+    handleDelete(item);
     open && handleClose();
-  };
+  }
 
-  const handleMultiDelete = (categories) => {
-    categories.map(item => handleDelete(item));
+  const handleMultiDelete = (items) => {
+    items.map(item => deleteItem(item));
   }
 
   return (
@@ -53,7 +47,7 @@ export default function CustomDialog({ item, selectedCategories }) {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Quay lại</Button>
-          <Button onClick={() => selectedCategories.length > 0 ? handleMultiDelete(selectedCategories) : handleDelete(item.row)} autoFocus>
+          <Button onClick={() => selectedItems.length > 0 ? handleMultiDelete(selectedItems) : deleteItem(item.row)} autoFocus>
             Xoá
           </Button>
         </DialogActions>
@@ -61,3 +55,5 @@ export default function CustomDialog({ item, selectedCategories }) {
     </div>
   );
 }
+
+export default CustomDialog;
