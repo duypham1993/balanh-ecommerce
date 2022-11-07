@@ -3,13 +3,13 @@ import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectCategoriesWithoutRoot } from "../../redux/selectors";
-import { getCategories } from "../../redux/slice/categorySlice";
-import { selectisFetching } from "../../redux/selectors";
+import { deleteCategory, getCategories } from "../../redux/slice/categorySlice";
 import CustomDialog from "../../components/CustomDialog/CustomDialog";
 import { DataGrid } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
+import { delImgFireBase } from "../../services/uploadFirebase";
 
 const Categories = () => {
   const dispatch = useDispatch();
@@ -21,6 +21,11 @@ const Categories = () => {
   }, []);
 
   const selectedCategories = [...categoriesWithoutRoot.filter(item => selectionModel.includes(item._id))];
+
+  const handleDelete = async (item) => {
+    dispatch(deleteCategory(item._id));
+    await delImgFireBase(item.img);
+  };
 
   const columns = [
     {
@@ -55,7 +60,7 @@ const Categories = () => {
     {
       field: "slug",
       headerName: "Đường dẫn",
-      headerClassName: "categories__slug",
+      headerClassName: "categories__header",
       minWidth: 150,
       flex: 1,
     },
@@ -94,7 +99,7 @@ const Categories = () => {
                 <EditIcon className="text-default" />
               </button>
             </Link>
-            <CustomDialog item={item} selectedCategories={selectedCategories} />
+            <CustomDialog item={item} selectedItems={selectedCategories} handleDelete={handleDelete} />
           </>
         );
       },
