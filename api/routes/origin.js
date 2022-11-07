@@ -4,19 +4,22 @@ import { verifyToken, verifyTokenRoleAdmin } from "./verifyToken";
 
 const router = express.Router();
 
-// GET
-router.get("/get:id", verifyToken, async (req, res) => {
-  const origin = await Origin.findById(req.params.id);
+// create
+router.post("/create", verifyTokenRoleAdmin, async (req, res) => {
+  const origin = new Origin({
+    name: req.body.name,
+  });
   try {
-    res.status(200).json(origin._doc);
+    const saveOrigin = await origin.save();
+    res.status(200).json(saveOrigin);
   } catch (err) {
     res.status(500).json(err);
   }
 });
 
-// GET ALL 
+// GET
 router.get("/", verifyToken, async (req, res) => {
-  const origin = await Origin.find({});
+  const origin = await Origin.find();
   try {
     res.status(200).json(origin);
   } catch (err) {
@@ -24,24 +27,25 @@ router.get("/", verifyToken, async (req, res) => {
   }
 });
 
+
 // UPDATE
 router.put("/:id", verifyTokenRoleAdmin, async (req, res) => {
   try {
-    const updateSupplier = await Origin.findByIdAndUpdate(
+    const updateOrigin = await Origin.findByIdAndUpdate(
       req.params.id,
       { $set: req.body },
       { new: true }
     );
-    res.status(200).json(updateSupplier);
+    res.status(200).json(updateOrigin);
   } catch (err) {
     res.status(500).json(err);
   }
 });
 
 // DELETE
-router.delete("/delete", verifyTokenRoleAdmin, async (req, res) => {
+router.delete("/delete/:id", verifyTokenRoleAdmin, async (req, res) => {
   try {
-    await Origin.findOneAndDelete(req.body.id);
+    await Origin.findOneAndDelete(req.params.id);
     res.status(200).json("Đã xoá thành công!");
   } catch (err) {
     res.status(500).json(err);
