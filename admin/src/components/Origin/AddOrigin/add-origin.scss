@@ -1,0 +1,35 @@
+.add-origin {
+  padding        : 30px 0 40px;
+  display        : flex;
+  align-items    : baseline;
+  justify-content: center;
+
+  .add-origin {
+    &__title {
+      text-align   : right;
+      padding-right: 5px;
+    }
+
+    &__input-group {
+      position: relative;
+
+      input {
+        width: 100%;
+      }
+
+      button {
+        position: absolute;
+        padding : 7px 12px;
+        margin  : 0;
+        top     : 0;
+        right   : 0;
+      }
+    }
+
+    &__error {
+      position: absolute;
+      margin  : 5px 0 0;
+      color   : var(--error)
+    }
+  }
+}
