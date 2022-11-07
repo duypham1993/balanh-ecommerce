@@ -20,8 +20,7 @@ const FormCategory = (props) => {
   }
 
   const handleChange = (e) => {
-    const value = e.target.value;
-    const name = e.target.name;
+    const { value, name } = e.target;
 
     props.handleOnChange(e);
 
