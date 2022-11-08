@@ -6,6 +6,7 @@ export const selectStatusSubmit = state => state.category.statusSubmit;
 export const selectisFetching = state => state.category.isFetching;
 export const selectProducts = state => state.product.products;
 export const selectOrigin = state => state.origin.origin;
+export const selectSuppliers = state => state.supplier.suppliers;
 
 export const selectCategoriesWithoutRoot = createSelector(selectCategories, (categories) => {
   return categories.filter(item => item.parentId);

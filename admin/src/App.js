@@ -17,6 +17,9 @@ import Sidebar from './components/Sidebar/Sidebar';
 import CreateCategory from './pages/Categories/CreateCategory/CreateCategory';
 import UpdateCategory from './pages/Categories/UpdateCategory/UpdateCategory';
 import Origin from './pages/Origin/Origin';
+import Suppliers from './pages/Suppliers/Suppliers';
+import CreateSupplier from './pages/Suppliers/CreateSupplier/CreateSupplier';
+import UpdateSupplier from './pages/Suppliers/UpdateSupplier/UpdateSupplier';
 
 function App() {
   const currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
@@ -40,6 +43,9 @@ function App() {
               <Route path="categories/:id"
                 element={<UpdateCategory />} />
               <Route path='origin' element={<Origin />} />
+              <Route path='suppliers' element={<Suppliers />} />
+              <Route path='suppliers/create' element={<CreateSupplier />} />
+              <Route path='suppliers/:id' element={<UpdateSupplier />} />
               <Route path="customer" element={<Customer />} />
               <Route path="admins" element={<Admins />} />
             </Routes>

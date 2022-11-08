@@ -245,6 +245,21 @@ body {
   }
 }
 
+
+.wrapper_data-grid {
+  height: calc(100vh - 155px);
+
+  .wrapper_data-grid {
+    &__header {
+      font-size: 1rem;
+    }
+
+    &__img {
+      max-width: 80%;
+    }
+  }
+}
+
 @media screen and (min-width: 600px) {
   .form-default {
     padding-top: 40px;
