@@ -4,15 +4,16 @@ import { verifyToken, verifyTokenRoleAdmin } from "./verifyToken";
 
 const router = express.Router();
 
-// GET
-router.get("/get:id", verifyToken, async (req, res) => {
-  const supplier = await Supplier.findById(req.params.id);
+// CREATE 
+router.post("/create", verifyTokenRoleAdmin, async (req, res) => {
+  const supplier = new Supplier(req.body);
   try {
-    res.status(200).json(supplier._doc);
+    const saveSupplier = await supplier.save();
+    res.status(200).json(saveSupplier);
   } catch (err) {
     res.status(500).json(err);
   }
-});
+})
 
 // GET ALL 
 router.get("/", verifyToken, async (req, res) => {
@@ -39,10 +40,10 @@ router.put("/:id", verifyTokenRoleAdmin, async (req, res) => {
 });
 
 // DELETE
-router.delete("/delete", verifyTokenRoleAdmin, async (req, res) => {
+router.delete("/delete/:id", verifyTokenRoleAdmin, async (req, res) => {
   try {
-    await Supplier.findOneAndDelete(req.body.id);
-    res.status(200).json("Đã xoá thành công!");
+    await Supplier.findOneAndDelete(req.params.id);
+    res.status(200).json(req.params.id);
   } catch (err) {
     res.status(500).json(err);
   }
