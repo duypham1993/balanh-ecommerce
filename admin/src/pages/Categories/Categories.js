@@ -1,4 +1,3 @@
-import "./categories.scss";
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -31,13 +30,13 @@ const Categories = () => {
     {
       field: "img",
       headerName: "Hình ảnh",
-      headerClassName: "categories__header",
+      headerClassName: "wrapper_data-grid__header",
       flex: 0.7,
       minWidth: 150,
       sortable: false,
       renderCell: (item) => {
         return (
-          <img src={item.row.img} alt="category-image" className="categories__img" />
+          <img src={item.row.img} alt="category-image" className="wrapper_data-grid__img" />
         );
       },
     },
@@ -45,7 +44,7 @@ const Categories = () => {
     {
       field: "name",
       headerName: "Danh mục",
-      headerClassName: "categories__header",
+      headerClassName: "wrapper_data-grid__header",
       flex: 1,
       minWidth: 150
     },
@@ -53,14 +52,14 @@ const Categories = () => {
     {
       field: "desc",
       headerName: "Mô tả",
-      headerClassName: "categories__header",
+      headerClassName: "wrapper_data-grid__header",
       minWidth: 150,
       flex: 2,
     },
     {
       field: "slug",
       headerName: "Đường dẫn",
-      headerClassName: "categories__header",
+      headerClassName: "wrapper_data-grid__header",
       minWidth: 150,
       flex: 1,
     },
@@ -69,7 +68,7 @@ const Categories = () => {
       field: "isActive",
       minWidth: 100,
       headerName: "Trạng thái",
-      headerClassName: "categories__header",
+      headerClassName: "wrapper_data-grid__header",
       flex: 0.5,
       renderCell: (item) => {
         return (
@@ -86,7 +85,7 @@ const Categories = () => {
     {
       field: "action",
       headerName: "Hành động",
-      headerClassName: "categories__header",
+      headerClassName: "wrapper_data-grid__header",
       minWidth: 210,
       flex: 0.6,
       sortable: false,
@@ -111,7 +110,7 @@ const Categories = () => {
       <div className="flex-r-c">
         <Link to='/categories/create' className='btn-default'>Tạo danh mục mới</Link>
       </div>
-      <div className="categories">
+      <div className="wrapper_data-grid categories">
         <DataGrid
           rows={categoriesWithoutRoot}
           disableSelectionOnClick

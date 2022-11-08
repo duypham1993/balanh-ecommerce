@@ -72,7 +72,7 @@ const Origin = () => {
     {
       field: "name",
       headerName: "Xuất xứ",
-      headerClassName: "categories__header",
+      headerClassName: "wrapper_data-grid__header",
       minWidth: 150,
       flex: 1,
       renderCell: (item) => {
@@ -91,7 +91,7 @@ const Origin = () => {
     {
       field: "action",
       headerName: "Hành động",
-      headerClassName: "categories__header",
+      headerClassName: "wrapper_data-grid__header",
       minWidth: 210,
       flex: 0.6,
       sortable: false,
@@ -124,7 +124,7 @@ const Origin = () => {
         setName={setName}
         formError={formError}
       />
-      <div className="categories">
+      <div className="wrapper_data-grid origin">
         <DataGrid
           rows={origin}
           disableSelectionOnClick

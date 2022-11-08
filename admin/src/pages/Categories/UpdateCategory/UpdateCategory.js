@@ -79,7 +79,8 @@ const UpdateCategory = () => {
       img: imgURL,
     };
 
-    dispatch(updateCategory({ id, updatedCategory }));
+    await dispatch(updateCategory({ id, updatedCategory }));
+    setOpen(true);
   };
 
   const handleCancel = () => {
@@ -102,7 +103,7 @@ const UpdateCategory = () => {
       />
       <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'right' }} open={open} autoHideDuration={3000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="success" variant="filled" sx={{ width: '100%' }}>
-          Cập nhật sản phẩm thành công!
+          Cập nhật danh mục thành công!
         </Alert>
       </Snackbar>
     </div>
