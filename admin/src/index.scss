@@ -91,7 +91,8 @@ body {
   padding      : 7px;
   border       : 1px solid var(--border-gray-1);
   border-radius: 0;
-  width        : 50%;
+  width        : 100%;
+  font-size    : 1rem;
   transition   : all 0.3s;
 
   &:focus,
@@ -135,4 +136,154 @@ body {
 
 .icon-inactive {
   color: var(--error);
+}
+
+.form-default {
+  padding-top: 20px;
+
+  .form-default {
+    &__group {
+      margin-bottom: 20px;
+      padding      : 0 15px;
+    }
+
+    &__control {
+      text-align : left;
+      padding-top: 10px !important;
+
+      label {
+        padding-top: 7px;
+        display    : inline-block;
+      }
+
+    }
+
+    &__input-group {
+      padding-top   : 7px !important;
+      padding-bottom: 20px;
+      position      : relative;
+      display       : flex;
+      flex-direction: column;
+
+      .form-default {
+        &__autocomplete {
+          width     : 100%;
+          max-height: 32px;
+
+          .MuiInputBase-root {
+            padding-top   : 0;
+            padding-bottom: 0;
+            border-radius : 0;
+
+            &:hover {
+              fieldset {
+                border-color: var(--green) !important;
+              }
+            }
+
+            input {
+              height     : auto;
+              padding    : 0;
+              max-height : 32px;
+              line-height: 32px;
+            }
+
+            fieldset {
+              border    : 1px solid var(--border-gray-1) !important;
+              transition: all 0.3s;
+
+            }
+          }
+        }
+
+        &__desc {
+          margin    : 5px 0 0 0;
+          font-size : calc(12rem/14);
+          font-style: italic;
+          color     : var(--text-gray-1);
+        }
+
+        &__error {
+          color     : var(--error);
+          font-size : 0.9rem;
+          margin    : 5px 0 0;
+          position  : absolute;
+          bottom    : -3px;
+          opacity   : 0;
+          transition: opacity 0.3s;
+
+          &.show {
+            opacity: 1;
+          }
+        }
+
+        &__icon {
+          margin-right: 5px;
+        }
+
+        &__img-preview {
+          img {
+            max-height   : 160px;
+            max-width    : 100%;
+            display      : block;
+            margin-bottom: 10px;
+          }
+        }
+      }
+    }
+
+    &__bot-nav {
+      border-top: 1px solid var(--border-gray-1);
+      background: var(--bg-bot-form);
+      padding   : 10px 20px;
+    }
+  }
+
+  .custom-list {
+    max-width: 100%;
+
+  }
+}
+
+@media screen and (min-width: 600px) {
+  .form-default {
+    padding-top: 40px;
+
+    .form-default {
+      &__group {
+        margin-bottom: 20px;
+      }
+
+      &__control {
+        text-align : right;
+        padding-top: 24px !important;
+      }
+
+      &__input-group {
+        padding-top: 24px !important;
+      }
+    }
+  }
+}
+
+@media screen and (min-width:1200px) {
+  .form-default {
+    .form-default {
+      &__input-group {
+        .form-default {
+          &__autocomplete {
+            width: 50%;
+          }
+        }
+      }
+    }
+
+    .custom-list {
+      width: 50%;
+    }
+  }
+
+  .input-default {
+    width: 50%;
+  }
 }
