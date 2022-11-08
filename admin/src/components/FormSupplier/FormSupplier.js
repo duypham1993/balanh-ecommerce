@@ -49,6 +49,7 @@ const FormSupplier = (props) => {
 
 
   const validate = (inputs) => {
+    console.log(inputs.inputs)
     const errors = {};
     const formatSKU = /^[0-9a-zA-Z]+$/;
     const formatEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -58,7 +59,7 @@ const FormSupplier = (props) => {
       errors.sku = "Mã không hợp lệ!";
     }
 
-    if (!inputs.inputs.sku || !inputs.inpusts.sku.trim()) {
+    if (!inputs.inputs.sku || !inputs.inputs.sku.trim()) {
       errors.sku = "Vui lòng điền vào mục này!";
     }
     suppliers.map(item => {
