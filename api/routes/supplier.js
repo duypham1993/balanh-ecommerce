@@ -42,7 +42,7 @@ router.put("/:id", verifyTokenRoleAdmin, async (req, res) => {
 // DELETE
 router.delete("/delete/:id", verifyTokenRoleAdmin, async (req, res) => {
   try {
-    await Supplier.findOneAndDelete(req.params.id);
+    await Supplier.findByIdAndDelete(req.params.id);
     res.status(200).json(req.params.id);
   } catch (err) {
     res.status(500).json(err);

@@ -45,7 +45,7 @@ router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
 // DELETE
 router.delete("/delete", verifyToken, async (req, res) => {
   try {
-    await Customer.findOneAndDelete(req.body.id);
+    await Customer.findByIdAndDelete(req.body.id);
     res.status(200).json("Đã xoá thành công!");
   } catch (err) {
     res.status(500).json(err);
