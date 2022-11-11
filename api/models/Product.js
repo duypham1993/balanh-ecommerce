@@ -2,9 +2,9 @@ import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema(
   {
-    title: { type: String, required: true },
+    name: { type: String, required: true },
     desc: { type: String, required: true },
-    SKU: { type: String, required: true, unique: true },
+    sku: { type: String, required: true, unique: true },
     costPrice: { type: Number, required: true },
     price: { type: Number, required: true },
     categories: { type: Array, required: true },
@@ -12,7 +12,7 @@ const productSchema = new mongoose.Schema(
     supplier: { type: String, required: true },
     qty: { type: Number, default: 0 },
     packing: { type: String, required: true },
-    imgs: { type: String },
+    imgs: { type: Array },
     isActive: { type: Boolean, default: false }
   },
   { timestamps: true }

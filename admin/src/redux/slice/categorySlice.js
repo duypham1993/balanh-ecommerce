@@ -11,7 +11,7 @@ export const addCategory = createAsyncThunk('category/add', async (category) => 
   return res.data;
 });
 
-export const updateCategory = createAsyncThunk('category/update', async (update, test) => {
+export const updateCategory = createAsyncThunk('category/update', async (update) => {
   const res = await userRequest.put(`category/${update.id}`, update.updatedCategory);
   return res.data;
 });

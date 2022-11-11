@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Grid, Switch, Autocomplete, TextField } from '@mui/material';
-import CustomTreeItem from "../CustomTreeItem/CustomTreeItem";
+import CustomTreeItem from "../FormCategory/CustomTreeItem/CustomTreeItem";
 import { cityData } from "../../data/city";
 
 const FormSupplier = (props) => {
@@ -49,7 +49,6 @@ const FormSupplier = (props) => {
 
 
   const validate = (inputs) => {
-    console.log(inputs.inputs)
     const errors = {};
     const formatSKU = /^[0-9a-zA-Z]+$/;
     const formatEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -100,13 +99,6 @@ const FormSupplier = (props) => {
 
     if (!inputs.address.street || !inputs.address.street.trim()) {
       errors.street = "Vui lòng chọn mục này!";
-    }
-
-    if (!inputs.inputs.email === "") {
-      errors.email = "Vui lòng điền vào mục này!";
-    }
-    if (!inputs.inputs.email || !inputs.inputs.email.trim()) {
-      errors.email = "Vui lòng điền vào mục này!";
     }
 
     if (!formatPhone.test(inputs.inputs.phone)) {

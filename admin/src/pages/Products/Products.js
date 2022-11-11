@@ -1,35 +1,34 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectCategoriesWithoutRoot } from "../../redux/selectors";
-import { deleteCategory, getCategories } from "../../redux/slice/categorySlice";
-import CustomDialog from "../../components/CustomDialog/CustomDialog";
 import { DataGrid } from '@mui/x-data-grid';
+import { deleteProduct, getProducts } from "../../redux/slice/productSlice";
+import { selectProducts } from "../../redux/selectors";
 import EditIcon from '@mui/icons-material/Edit';
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
-import { delImgFireBase } from "../../services/uploadFirebase";
+import CustomDialog from "../../components/CustomDialog/CustomDialog";
 
-const Categories = () => {
-  const dispatch = useDispatch();
+
+const ProductList = () => {
   const [pageSize, setPageSize] = useState(50);
+  const dispatch = useDispatch();
+  const products = useSelector(selectProducts);
   const [selectionModel, setSelectionModel] = useState([]);
-  const categoriesWithoutRoot = useSelector(selectCategoriesWithoutRoot);
 
   useEffect(() => {
-    dispatch(getCategories());
+    dispatch(getProducts());
   }, []);
 
-  const selectedCategories = [...categoriesWithoutRoot.filter(item => selectionModel.includes(item._id))];
+  const selectedProducts = [...products.filter(item => selectionModel.includes(item._id))];
 
-  const handleDelete = async (item) => {
-    dispatch(deleteCategory(item._id));
-    await delImgFireBase(item.img);
+  const handleDelete = (item) => {
+    dispatch(deleteProduct(item._id));
   };
 
   const columns = [
     {
-      field: "img",
+      field: "imgs",
       headerName: "Hình ảnh",
       headerClassName: "wrapper_data-grid__header",
       flex: 0.7,
@@ -37,32 +36,58 @@ const Categories = () => {
       sortable: false,
       renderCell: (item) => {
         return (
-          <img src={item.row.img} alt="category-image" className="wrapper_data-grid__img" />
+          <img src={item.row.imgs[0]} alt="category-image" className="wrapper_data-grid__img" />
         );
       },
     },
 
     {
       field: "name",
-      headerName: "Danh mục",
+      headerName: "Tên sản phẩm",
       headerClassName: "wrapper_data-grid__header",
       flex: 1,
       minWidth: 150
     },
 
     {
+      field: "sku",
+      headerName: "Mã tham chiếu",
+      headerClassName: "wrapper_data-grid__header",
+      minWidth: 150,
+      flex: 1,
+    },
+    {
       field: "desc",
       headerName: "Mô tả",
       headerClassName: "wrapper_data-grid__header",
       minWidth: 150,
-      flex: 2,
+      flex: 1,
     },
     {
-      field: "slug",
-      headerName: "Đường dẫn",
+      field: "categories",
+      headerName: "Danh mục",
       headerClassName: "wrapper_data-grid__header",
       minWidth: 150,
       flex: 1,
+    },
+    {
+      field: "costPrice",
+      headerName: "Giá nhập",
+      headerClassName: "wrapper_data-grid__header",
+      minWidth: 100,
+      flex: 0.5,
+    }, {
+      field: "price",
+      headerName: "Giá bán",
+      headerClassName: "wrapper_data-grid__header",
+      minWidth: 100,
+      flex: 0.5,
+    }, {
+      field: "qty",
+      headerName: "Số lượng",
+      headerClassName: "wrapper_data-grid__header",
+      minWidth: 100,
+      flex: 0.5,
     },
 
     {
@@ -93,32 +118,31 @@ const Categories = () => {
       renderCell: (item) => {
         return (
           <>
-            <Link to={"/categories/" + item.row._id} className="link-default">
+            <Link to={"/products/" + item.row._id} className="link-default">
               <button className="flex-bw-center btn-default btn-default--edit text-small">
                 <span>Update</span>
                 <EditIcon className="text-default" />
               </button>
             </Link>
-            <CustomDialog item={item} selectedItems={selectedCategories} handleDelete={handleDelete} />
+            <CustomDialog item={item} selectedItems={selectedProducts} handleDelete={handleDelete} />
           </>
         );
       },
     },
   ];
-
   return (
     <>
       <div className="flex-r-c">
-        <Link to='/categories/create' className='btn-default'>Tạo danh mục mới</Link>
+        <Link to='/add-product' className='btn-default'>Sản phẩm mới</Link>
       </div>
-      <div className="wrapper_data-grid categories">
+      <div className="wrapper_data-grid productList"  >
         <DataGrid
-          rows={categoriesWithoutRoot}
+          rows={products}
           disableSelectionOnClick
           columns={columns}
           disableColumnMenu
           getRowId={(row) => row._id}
-          checkboxSelection={true}
+          checkboxSelection
           pageSize={pageSize}
           onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
           rowsPerPageOptions={[20, 50, 100]}
@@ -129,9 +153,8 @@ const Categories = () => {
           selectionModel={selectionModel}
         />
       </div>
-
     </>
   )
 };
 
-export default Categories;
+export default ProductList;

@@ -39,13 +39,13 @@ const Origin = () => {
     return error;
   }
 
-  const handleOnSubmit = (e) => {
+  const handleOnSubmit = async (e) => {
     e.preventDefault();
     const newOrigin = {
       name: name
     }
     setFormError(validate());
-    !validate() && dispatch(addOrigin(newOrigin));
+    !validate() && await dispatch(addOrigin(newOrigin));
   }
 
   const handleDelete = (item) => {

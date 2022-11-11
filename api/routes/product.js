@@ -52,7 +52,7 @@ router.put("/:id", verifyTokenRoleAdmin, async (req, res) => {
 router.delete("/delete/:id", verifyTokenRoleAdmin, async (req, res) => {
   try {
     await Product.findByIdAndDelete(req.params.id);
-    res.status(201).json("Xoá sản phẩm thành công!");
+    res.status(201).json(req.params.id);
   } catch (err) {
     res.status(500).json(err);
   }

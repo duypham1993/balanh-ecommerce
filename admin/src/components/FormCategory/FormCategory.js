@@ -4,7 +4,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import TreeView from '@mui/lab/TreeView';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import CustomTreeItem from "../CustomTreeItem/CustomTreeItem";
+import CustomTreeItem from "./CustomTreeItem/CustomTreeItem";
 
 const FormCategory = (props) => {
   const [formErrors, setFormErrors] = useState({});

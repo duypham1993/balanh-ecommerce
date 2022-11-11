@@ -24,8 +24,8 @@ export const updateOrigin = createAsyncThunk(
 
 export const deleteOrigin = createAsyncThunk(
   "origin/delete", async (id) => {
-    await userRequest.delete(`origin/delete/${id}`);
-    return id;
+    const res = await userRequest.delete(`origin/delete/${id}`);
+    return res.data;
   }
 )
 

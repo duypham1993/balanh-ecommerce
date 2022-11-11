@@ -35,8 +35,8 @@ const CustomDialog = (props) => {
     setOpen(false);
   };
 
-  const deleteItem = (item) => {
-    handleDelete(item);
+  const deleteItem = async (item) => {
+    await handleDelete(item);
     open && handleClose();
   }
 

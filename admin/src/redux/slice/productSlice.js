@@ -1,92 +1,93 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { userRequest } from "../../shared/axios/requestMethod";
+
+export const getProducts = createAsyncThunk('product/fetchAll', async () => {
+  const res = await userRequest.get("/product/");
+  return res.data;
+});
+
+export const addProduct = createAsyncThunk('product/add', async (product) => {
+  const res = await userRequest.post("/product/create", product);
+  return res.data;
+});
+
+export const updateProduct = createAsyncThunk('product/update', async (update) => {
+  const res = await userRequest.put(`product/${update.id}`, update.updatedProduct);
+  return res.data;
+});
+
+export const deleteProduct = createAsyncThunk('product/delete', async (id) => {
+  const res = await userRequest.delete(`product/delete/${id}`);
+  return res.data;
+});
 
 const productSlice = createSlice({
   name: "product",
   initialState: {
-    isFetching: false,
-    error: false,
-    products: []
+    products: [],
+    isFetching: "",
+    statusSubmit: "",
   },
   reducers: {
-    // ADD
-    addProductStart: state => {
-      state.isFetching = true;
-    },
-
-    addProductSuccess: (state, action) => {
-      state.isFetching = false;
-      state.products.push(action.payload);
-    },
-
-    addProductFailure: state => {
-      state.isFetching = false;
-      state.error = true;
-    },
-
-    // GET ALL
-    getProductStart: state => {
-      state.isFetching = true;
-    },
-
-    getProductSuccess: (state, action) => {
-      state.isFetching = false;
+    resetStatusSubmit: (state) => {
+      state.statusSubmit = "";
+    }
+  },
+  extraReducers: (builders) => {
+    // fetch all products
+    builders.addCase(getProducts.pending, (state, action) => {
+      state.isFetching = "pending";
+    })
+    builders.addCase(getProducts.fulfilled, (state, action) => {
+      state.isFetching = "fulfilled";
       state.products = action.payload;
-    },
+    })
+    builders.addCase(getProducts.rejected, (state, action) => {
+      state.isFetching = "rejected";
+    })
 
-    getProductFailure: state => {
-      state.isFetching = false;
-      state.error = true;
-    },
+    // add product
+    builders.addCase(addProduct.pending, (state, action) => {
+      state.statusSubmit = "pending";
+    })
+    builders.addCase(addProduct.fulfilled, (state, action) => {
+      state.statusSubmit = "fulfilled";
+      state.products.push(action.payload);
+    })
+    builders.addCase(addProduct.rejected, (state, action) => {
+      state.statusSubmit = "rejected";
+    })
 
-    // UPDATE
-    updateProductStart: state => {
-      state.isFetching = true;
-    },
+    // update product
+    builders.addCase(updateProduct.pending, (state, action) => {
+      state.statusSubmit = "pending";
+    })
+    builders.addCase(updateProduct.fulfilled, (state, action) => {
+      state.statusSubmit = "fulfilled";
+      state.products[
+        state.products.findIndex((item) => item._id === action.payload._id)
+      ] = action.payload;
+    })
+    builders.addCase(updateProduct.rejected, (state, action) => {
+      state.statusSubmit = "rejected";
+    })
 
-    updateProductSuccess: (state, action) => {
-      state.isFetching = false;
-      state.products.forEach(item => {
-        if (item._id === action.payload._id) {
-          item = action.payload;
-        }
+    // delete product
+    builders.addCase(deleteProduct.pending, (state, action) => {
+      state.statusSubmit = "pending";
+    })
+    builders.addCase(deleteProduct.fulfilled, (state, action) => {
+      state.statusSubmit = "fulfilled";
+      state.products = state.products.filter(item => {
+        return item.parentId !== action.payload && item._id !== action.payload;
       });
-    },
+    })
 
-    updateProductFailure: state => {
-      state.isFetching = false;
-      state.error = true;
-    },
-
-    // DELETE
-    deleteProductStart: state => {
-      state.isFetching = true;
-    },
-
-    deleteProductSuccess: (state, action) => {
-      state.isFetching = false;
-      state.products.filter(item => item._id !== action.payload);
-    },
-
-    deleteProductFailure: state => {
-      state.isFetching = false;
-      state.error = true;
-    },
+    builders.addCase(deleteProduct.rejected, (state, action) => {
+      state.statusSubmit = "rejected";
+    })
   }
-})
 
-export const {
-  addProductStart,
-  addProductSuccess,
-  addProductFailure,
-  getProductStart,
-  getProductSuccess,
-  getProductFailure,
-  updateProductStart,
-  updateProductSuccess,
-  updateProductFailure,
-  deleteProductStart,
-  deleteProductSuccess,
-  deleteProductFailure
-} = productSlice.actions;
-
+});
+export const { resetStatusSubmit } = productSlice.actions;
 export default productSlice;

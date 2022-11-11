@@ -1,5 +1,4 @@
 import FormCategory from "../../../components/FormCategory/FormCategory";
-import "./update-category.scss";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";

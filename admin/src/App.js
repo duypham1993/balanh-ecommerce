@@ -7,11 +7,11 @@ import { Route, Routes } from 'react-router-dom';
 import Login from './pages/Login/Login';
 import Home from './pages/Home/Home';
 import Orders from "./pages/Orders/Orders";
-import ProductList from "./pages/Products/ProductList";
+import Products from "./pages/Products/Products";
 import Categories from "./pages/Categories/Categories";
 import Customer from "./pages/Customer/Customer";
 import Admins from "./pages/Admins/Admins";
-import AddProduct from './pages/Products/AddProduct/AddProduct';
+import AddProduct from './pages/Products/CreateProduct/CreateProduct';
 import Box from '@mui/material/Box';
 import Sidebar from './components/Sidebar/Sidebar';
 import CreateCategory from './pages/Categories/CreateCategory/CreateCategory';
@@ -20,6 +20,7 @@ import Origin from './pages/Origin/Origin';
 import Suppliers from './pages/Suppliers/Suppliers';
 import CreateSupplier from './pages/Suppliers/CreateSupplier/CreateSupplier';
 import UpdateSupplier from './pages/Suppliers/UpdateSupplier/UpdateSupplier';
+import UpdateProduct from './pages/Products/UpdateProduct/UpdateProduct';
 
 function App() {
   const currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
@@ -36,8 +37,9 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="orders" element={<Orders />} />
-              <Route path="products" element={<ProductList />} />
+              <Route path="products" element={<Products />} />
               <Route path="add-product" element={<AddProduct />} />
+              <Route path="products/:id" element={<UpdateProduct />} />
               <Route path="categories" element={<Categories />} />
               <Route path="categories/create" element={<CreateCategory />} />
               <Route path="categories/:id"
