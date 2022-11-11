@@ -2,12 +2,13 @@ import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DataGrid } from '@mui/x-data-grid';
-import { deleteProduct, getProducts } from "../../redux/slice/productSlice";
-import { selectProducts } from "../../redux/selectors";
+import { deleteProduct, getProducts, resetStatusSubmit } from "../../redux/slice/productSlice";
+import { selectProducts, selectStatusProductSubmit } from "../../redux/selectors";
 import EditIcon from '@mui/icons-material/Edit';
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
 import CustomDialog from "../../components/CustomDialog/CustomDialog";
+import SubmitAlert from '../../components/SubmitAlert/SubmitAlert';
 
 
 const ProductList = () => {
@@ -15,9 +16,15 @@ const ProductList = () => {
   const dispatch = useDispatch();
   const products = useSelector(selectProducts);
   const [selectionModel, setSelectionModel] = useState([]);
+  const statusSubmit = useSelector(selectStatusProductSubmit);
+  const mess = {
+    success: "Xoá sản phẩm thành công!",
+    error: "Xoá sản phẩm thất bại!"
+  }
 
   useEffect(() => {
     dispatch(getProducts());
+    dispatch(resetStatusSubmit());
   }, []);
 
   const selectedProducts = [...products.filter(item => selectionModel.includes(item._id))];
@@ -153,6 +160,10 @@ const ProductList = () => {
           selectionModel={selectionModel}
         />
       </div>
+      <SubmitAlert
+        statusSubmit={statusSubmit}
+        mess={mess}
+      />
     </>
   )
 };

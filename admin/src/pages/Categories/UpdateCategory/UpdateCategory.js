@@ -2,11 +2,12 @@ import FormCategory from "../../../components/FormCategory/FormCategory";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { selectCategories, selectObjectData, selectStatusSubmit } from "../../../redux/selectors";
+import { selectCategories, selectObjectData, selectStatusCategorySubmit } from "../../../redux/selectors";
 import { uploadImage, delImgFireBase } from "../../../services/uploadFirebase";
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import { getCategories, updateCategory, resetStatusSubmit } from "../../../redux/slice/categorySlice";
+import SubmitAlert from "../../../components/SubmitAlert/SubmitAlert";
 
 const UpdateCategory = () => {
   const { id } = useParams();
@@ -23,19 +24,15 @@ const UpdateCategory = () => {
   const categories = useSelector(selectCategories);
   const category = categories.filter(item => item._id === id)[0];
   const objectData = useSelector(selectObjectData);
-  const statusSubmit = useSelector(selectStatusSubmit);
-  const [open, setOpen] = useState(false);
-
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    setOpen(false);
-  };
+  const statusSubmit = useSelector(selectStatusCategorySubmit);
+  const mess = {
+    success: "Cập nhật danh mục thành công!",
+    error: "Cập nhật danh mục thất bại!"
+  }
 
   useEffect(() => {
     dispatch(getCategories());
+    dispatch(resetStatusSubmit());
   }, []);
 
   useEffect(() => {
@@ -50,11 +47,6 @@ const UpdateCategory = () => {
       setTempURL(category.img);
     }
   }, [category])
-
-  useEffect(() => {
-    statusSubmit === "fulfilled" && setOpen(true);
-    dispatch(resetStatusSubmit());
-  }, [statusSubmit])
 
   const handleOnChange = (e) => {
     if (e.target.type === "checkbox") {
@@ -79,7 +71,6 @@ const UpdateCategory = () => {
     };
 
     await dispatch(updateCategory({ id, updatedCategory }));
-    setOpen(true);
   };
 
   const handleCancel = () => {
@@ -100,11 +91,10 @@ const UpdateCategory = () => {
         handleOnSubmit={handleOnSubmit}
         handleCancel={handleCancel}
       />
-      <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'right' }} open={open} autoHideDuration={3000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="success" variant="filled" sx={{ width: '100%' }}>
-          Cập nhật danh mục thành công!
-        </Alert>
-      </Snackbar>
+      <SubmitAlert
+        statusSubmit={statusSubmit}
+        mess={mess}
+      />
     </div>
   );
 };

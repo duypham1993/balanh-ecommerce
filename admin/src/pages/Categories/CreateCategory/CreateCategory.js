@@ -2,19 +2,17 @@ import FormCategory from "../../../components/FormCategory/FormCategory";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { selectCategories, selectStatusSubmit, selectObjectData } from "../../../redux/selectors";
-import Alert from '@mui/material/Alert';
-import Snackbar from '@mui/material/Snackbar';
+import { selectCategories, selectStatusCategorySubmit, selectObjectData } from "../../../redux/selectors";
 import { uploadImage } from "../../../services/uploadFirebase";
 import { addCategory, getCategories, resetStatusSubmit } from "../../../redux/slice/categorySlice";
+import SubmitAlert from "../../../components/SubmitAlert/SubmitAlert";
 
 const CreateCategory = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const objectData = useSelector(selectObjectData);
   const categories = useSelector(selectCategories)
-  const statusSubmit = useSelector(selectStatusSubmit);
-
+  const statusSubmit = useSelector(selectStatusCategorySubmit);
   const [inputs, setInputs] = useState({
     name: "",
     desc: "",
@@ -24,18 +22,14 @@ const CreateCategory = () => {
   });
   const [file, setFile] = useState({});
   const [tempURL, setTempURL] = useState("");
-  const [open, setOpen] = useState(false);
-
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    setOpen(false);
-  };
+  const mess = {
+    success: "Tạo danh mục thành công!",
+    error: "Tạo danh mục thất bại!"
+  }
 
   useEffect(() => {
     dispatch(getCategories());
+    dispatch(resetStatusSubmit());
   }, [])
 
   useEffect(() => {
@@ -47,11 +41,6 @@ const CreateCategory = () => {
     }
   }, [objectData])
 
-  useEffect(() => {
-    statusSubmit === "fulfilled" && setOpen(true);
-    dispatch(resetStatusSubmit());
-  }, [statusSubmit])
-
   const handleOnChange = (e) => {
     if (e.target.type === "checkbox") {
       setInputs(prev => ({ ...prev, [e.target.name]: e.target.checked }));
@@ -59,8 +48,6 @@ const CreateCategory = () => {
       setInputs(prev => ({ ...prev, [e.target.name]: e.target.value }));
     }
   };
-
-
 
   const handleOnSubmit = async () => {
     const imgURl = await uploadImage(file);
@@ -74,7 +61,7 @@ const CreateCategory = () => {
   // back to categories
   const handleCancel = () => {
     return navigate("/categories");
-  }
+  };
 
   return (
     <div className="add-category">
@@ -90,12 +77,10 @@ const CreateCategory = () => {
         handleOnSubmit={handleOnSubmit}
         handleCancel={handleCancel}
       />
-
-      <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'right' }} open={open} autoHideDuration={3000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="success" variant="filled" sx={{ width: '100%' }}>
-          Tạo sản phẩm thành công!
-        </Alert>
-      </Snackbar>
+      <SubmitAlert
+        statusSubmit={statusSubmit}
+        mess={mess}
+      />
     </div>
   );
 };

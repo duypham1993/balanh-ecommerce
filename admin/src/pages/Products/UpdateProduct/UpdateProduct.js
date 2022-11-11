@@ -1,10 +1,11 @@
 import FormProduct from "../../../components/FormProduct/FormProduct";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getProducts, updateProduct } from "../../../redux/slice/productSlice";
+import { getProducts, resetStatusSubmit, updateProduct } from "../../../redux/slice/productSlice";
 import { delImgFireBase, uploadImage } from "../../../services/uploadFirebase";
-import { selectProducts } from "../../../redux/selectors";
+import { selectProducts, selectStatusProductSubmit } from "../../../redux/selectors";
 import { useParams } from "react-router-dom";
+import SubmitAlert from "../../../components/SubmitAlert/SubmitAlert";
 
 const UpdateProduct = () => {
   const dispatch = useDispatch();
@@ -29,9 +30,15 @@ const UpdateProduct = () => {
   const [arrDelImg, setArrDelImg] = useState([]);
   let imgURLsFirebase = inputs.imgs;
   let imgURLsLocal = file.map(item => URL.createObjectURL(item));
+  const statusSubmit = useSelector(selectStatusProductSubmit);
+  const mess = {
+    success: "Cập nhật sản phẩm thành công!",
+    error: "Cập nhật sản phẩm thất bại!"
+  }
 
   useEffect(() => {
     dispatch(getProducts());
+    dispatch(resetStatusSubmit());
   }, []);
 
   useEffect(() => {
@@ -83,6 +90,10 @@ const UpdateProduct = () => {
         handleOnSubmit={handleOnSubmit}
         products={products}
         currentProduct={currentProduct}
+      />
+      <SubmitAlert
+        statusSubmit={statusSubmit}
+        mess={mess}
       />
     </div>
   );

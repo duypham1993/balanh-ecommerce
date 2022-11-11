@@ -1,22 +1,29 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectSuppliers } from "../../redux/selectors";
+import { selectStatusSupplierSubmit, selectSuppliers } from "../../redux/selectors";
 import CustomDialog from "../../components/CustomDialog/CustomDialog";
 import { DataGrid } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
-import { deleteSupplier, getSuppliers } from "../../redux/slice/supplierSlice";
+import { deleteSupplier, getSuppliers, resetStatusSubmit } from "../../redux/slice/supplierSlice";
+import SubmitAlert from '../../components/SubmitAlert/SubmitAlert';
 
 const Suppliers = () => {
   const dispatch = useDispatch();
   const [pageSize, setPageSize] = useState(50);
   const [selectionModel, setSelectionModel] = useState([]);
   const suppliers = useSelector(selectSuppliers);
+  const statusSubmit = useSelector(selectStatusSupplierSubmit);
+  const mess = {
+    success: "Xoá thành công!",
+    error: "Xoá thất bại!"
+  }
 
   useEffect(() => {
     dispatch(getSuppliers());
+    dispatch(resetStatusSubmit());
   }, []);
 
   const selectedSuppliers = suppliers && [...suppliers.filter(item => selectionModel.includes(item._id))];
@@ -150,6 +157,15 @@ const Suppliers = () => {
     },
   ];
 
+  // alert popup control
+  const [open, setOpen] = useState(false);
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+  };
+
   return (
     <>
       <div className="flex-r-c">
@@ -173,7 +189,10 @@ const Suppliers = () => {
           selectionModel={selectionModel}
         />
       </div>
-
+      <SubmitAlert
+        statusSubmit={statusSubmit}
+        mess={mess}
+      />
     </>
   )
 }

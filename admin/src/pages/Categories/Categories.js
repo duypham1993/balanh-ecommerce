@@ -1,23 +1,30 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectCategoriesWithoutRoot } from "../../redux/selectors";
-import { deleteCategory, getCategories } from "../../redux/slice/categorySlice";
+import { selectCategoriesWithoutRoot, selectStatusCategorySubmit } from "../../redux/selectors";
+import { deleteCategory, getCategories, resetStatusSubmit } from "../../redux/slice/categorySlice";
 import CustomDialog from "../../components/CustomDialog/CustomDialog";
 import { DataGrid } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
 import { delImgFireBase } from "../../services/uploadFirebase";
+import SubmitAlert from '../../components/SubmitAlert/SubmitAlert';
 
 const Categories = () => {
   const dispatch = useDispatch();
   const [pageSize, setPageSize] = useState(50);
   const [selectionModel, setSelectionModel] = useState([]);
   const categoriesWithoutRoot = useSelector(selectCategoriesWithoutRoot);
+  const statusSubmit = useSelector(selectStatusCategorySubmit);
+  const mess = {
+    success: "Xoá danh mục thành công!",
+    error: "Xoá danh mục thất bại!"
+  }
 
   useEffect(() => {
     dispatch(getCategories());
+    dispatch(resetStatusSubmit());
   }, []);
 
   const selectedCategories = [...categoriesWithoutRoot.filter(item => selectionModel.includes(item._id))];
@@ -129,7 +136,10 @@ const Categories = () => {
           selectionModel={selectionModel}
         />
       </div>
-
+      <SubmitAlert
+        statusSubmit={statusSubmit}
+        mess={mess}
+      />
     </>
   )
 };

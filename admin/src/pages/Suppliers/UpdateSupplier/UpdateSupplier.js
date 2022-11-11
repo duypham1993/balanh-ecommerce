@@ -2,18 +2,18 @@ import FormSupplier from "../../../components/FormSupplier/FormSupplier";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { selectSuppliers, selectStatusSubmit } from "../../../redux/selectors";
-import Alert from '@mui/material/Alert';
-import Snackbar from '@mui/material/Snackbar';
-import { getSuppliers, resetStatusSubmit, updateSupplier } from "../../../redux/slice/supplierSlice";
+import { selectSuppliers, selectStatusSupplierSubmit } from "../../../redux/selectors";
+import { getSuppliers, updateSupplier, resetStatusSubmit } from "../../../redux/slice/supplierSlice";
+import SubmitAlert from "../../../components/SubmitAlert/SubmitAlert";
 
 const UpdateSupplier = () => {
+
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const suppliers = useSelector(selectSuppliers);
   const currentSupplier = suppliers.filter(item => item._id === id)[0];
-  const statusSubmit = useSelector(selectStatusSubmit);
+  const statusSubmit = useSelector(selectStatusSupplierSubmit);
   const [inputs, setInputs] = useState({
     sku: "",
     name: "",
@@ -26,18 +26,15 @@ const UpdateSupplier = () => {
     district: "",
     wards: "",
     street: "",
-  })
-  const [open, setOpen] = useState(false);
-
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpen(false);
+  });
+  const mess = {
+    success: "Cập nhật thành công!",
+    error: "Cập nhật thất bại!"
   };
 
   useEffect(() => {
     dispatch(getSuppliers());
+    dispatch(resetStatusSubmit());
   }, [])
 
   useEffect(() => {
@@ -56,12 +53,7 @@ const UpdateSupplier = () => {
         street: currentSupplier.address.street
       })
     }
-  }, [currentSupplier])
-
-  useEffect(() => {
-    statusSubmit === "fulfilled" && setOpen(true);
-    dispatch(resetStatusSubmit());
-  }, [statusSubmit])
+  }, [currentSupplier]);
 
   const handleOnChange = (e) => {
     if (e.target.type === "checkbox") {
@@ -76,7 +68,6 @@ const UpdateSupplier = () => {
       ...inputs, address
     }
     await dispatch(updateSupplier({ id, updatedSupplier }));
-    setOpen(true);
   };
 
   // back to suppliers
@@ -96,12 +87,10 @@ const UpdateSupplier = () => {
         handleOnSubmit={handleOnSubmit}
         handleCancel={handleCancel}
       />
-
-      <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'right' }} open={open} autoHideDuration={3000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="success" variant="filled" sx={{ width: '100%' }}>
-          Cập nhật thành công!
-        </Alert>
-      </Snackbar>
+      <SubmitAlert
+        statusSubmit={statusSubmit}
+        mess={mess}
+      />
     </div>
   );
 };

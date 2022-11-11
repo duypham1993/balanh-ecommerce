@@ -14,6 +14,12 @@ const CustomDialog = (props) => {
   const location = useLocation();
   const pathName = location.pathname.substring(1);
   const [open, setOpen] = useState(false);
+  const titObj = {
+    products: "Xoá Sản Phẩm?",
+    categories: "Xoá Danh Mục?",
+    origin: "Xoá Xuất Xứ?",
+    suppliers: "Xoá Nhà Cung Cấp?"
+  }
   const alertObj = {
     products: "Các sản phẩm này sẽ bị xoá. Vui lòng xác nhận!",
     categories: "Xoá danh mục này đồng thời sẽ xoá các danh mục con. Vui lòng xác nhận!",
@@ -21,9 +27,15 @@ const CustomDialog = (props) => {
     suppliers: "Các nhà cung cấp này sẽ bị xoá. Vui lòng xác nhận!"
   }
   let alertStr;
+  let alertTitle;
   for (const key in alertObj) {
     if (pathName === key) {
       alertStr = alertObj[key];
+    }
+  }
+  for (const key in titObj) {
+    if (pathName === key) {
+      alertTitle = titObj[key];
     }
   }
 
@@ -55,7 +67,7 @@ const CustomDialog = (props) => {
         onClose={handleClose}
       >
         <DialogTitle>
-          {"Xoá Danh Mục?"}
+          {alertTitle}
         </DialogTitle>
         <DialogContent>
           <DialogContentText>

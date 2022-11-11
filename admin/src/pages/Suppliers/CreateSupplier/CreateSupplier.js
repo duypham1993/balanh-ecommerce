@@ -2,16 +2,15 @@ import FormSupplier from "../../../components/FormSupplier/FormSupplier";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { selectSuppliers, selectStatusSubmit } from "../../../redux/selectors";
-import Alert from '@mui/material/Alert';
-import Snackbar from '@mui/material/Snackbar';
+import { selectSuppliers, selectStatusSupplierSubmit } from "../../../redux/selectors";
 import { addSupplier, getSuppliers, resetStatusSubmit } from "../../../redux/slice/supplierSlice";
+import SubmitAlert from "../../../components/SubmitAlert/SubmitAlert";
 
 const CreateSupplier = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const suppliers = useSelector(selectSuppliers)
-  const statusSubmit = useSelector(selectStatusSubmit);
+  const statusSubmit = useSelector(selectStatusSupplierSubmit);
   const [inputs, setInputs] = useState({
     sku: "",
     name: "",
@@ -24,23 +23,33 @@ const CreateSupplier = () => {
     district: "",
     wards: "",
     street: "",
-  })
-  const [open, setOpen] = useState(false);
-
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpen(false);
-  };
+  });
+  const mess = {
+    success: "Tạo nhà cung cấp thành công!",
+    error: "Tạo nhà cung cấp thất bại!"
+  }
 
   useEffect(() => {
     dispatch(getSuppliers());
+    dispatch(resetStatusSubmit());
   }, [])
 
   useEffect(() => {
-    statusSubmit === "fulfilled" && setOpen(true);
-    dispatch(resetStatusSubmit());
+    if (statusSubmit === "fulfilled") {
+      setInputs({
+        sku: "",
+        name: "",
+        email: "",
+        phone: "",
+        isActive: false,
+      });
+      setAddress({
+        city: "",
+        district: "",
+        wards: "",
+        street: "",
+      })
+    }
   }, [statusSubmit])
 
   const handleOnChange = (e) => {
@@ -75,11 +84,10 @@ const CreateSupplier = () => {
         handleCancel={handleCancel}
       />
 
-      <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'right' }} open={open} autoHideDuration={3000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="success" variant="filled" sx={{ width: '100%' }}>
-          Tạo nhà cung cấp thành công!
-        </Alert>
-      </Snackbar>
+      <SubmitAlert
+        statusSubmit={statusSubmit}
+        mess={mess}
+      />
     </div>
   );
 };
