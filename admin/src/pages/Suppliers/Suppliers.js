@@ -157,15 +157,6 @@ const Suppliers = () => {
     },
   ];
 
-  // alert popup control
-  const [open, setOpen] = useState(false);
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpen(false);
-  };
-
   return (
     <>
       <div className="flex-r-c">

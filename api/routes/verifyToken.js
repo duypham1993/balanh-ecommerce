@@ -14,7 +14,7 @@ const verifyToken = (req, res, next) => {
 
 const verifyTokenRoleAdmin = (req, res, next) => {
   verifyToken(req, res, () => {
-    if (req.user.role == "admin") {
+    if (req.user.role == "Admin") {
       next();
     } else {
       res.status(403).json("Bạn chưa được cấp quyền thực hiện thao tác này!");
@@ -24,7 +24,7 @@ const verifyTokenRoleAdmin = (req, res, next) => {
 
 const verifyTokenAndAuthorization = (req, res, next) => {
   verifyToken(req, res, () => {
-    if (req.user.id === req.params.id || req.user.role === "admin") {
+    if (req.user.id === req.params.id || req.user.role === "Admin") {
       next();
     } else {
       res.status(403).json("Bạn chưa được cấp quyền thực hiện thao tác này!");

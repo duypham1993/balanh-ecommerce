@@ -6,7 +6,7 @@ import { verifyToken, verifyTokenRoleAdmin } from "./verifyToken";
 const router = express.Router();
 
 // CREAT
-router.post("/add-user", verifyTokenRoleAdmin, async (req, res) => {
+router.post("/create", verifyTokenRoleAdmin, async (req, res) => {
   const newUser = new Admin({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
@@ -23,18 +23,8 @@ router.post("/add-user", verifyTokenRoleAdmin, async (req, res) => {
   }
 });
 
-// GET USER
-router.get("/detail", verifyToken, async (req, res) => {
-  try {
-    const user = await Admin.findById(req.body.id);
-    res.status(201).json(user._doc);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
-
-// GET ALL USER
-router.get("/listuser", verifyToken, async (req, res) => {
+// GET ALL 
+router.get("/", verifyToken, async (req, res) => {
   const user = await Admin.find({});
   try {
     res.status(200).json(user);
@@ -60,10 +50,10 @@ router.put("/:id", verifyTokenRoleAdmin, async (req, res) => {
   }
 });
 // DELETE
-router.delete("/delete", verifyTokenRoleAdmin, async (req, res) => {
+router.delete("/delete/:id", verifyTokenRoleAdmin, async (req, res) => {
   try {
-    await Admin.findByIdAndDelete(req.body.id);
-    res.status(200).json("Đã xoá thành công!");
+    await Admin.findByIdAndDelete(req.params.id);
+    res.status(200).json(req.params.id);
   } catch (err) {
     res.status(500).json(err);
   }

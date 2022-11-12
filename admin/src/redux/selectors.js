@@ -10,6 +10,8 @@ export const selectStatusProductSubmit = state => state.product.statusSubmit;
 export const selectStatusCategorySubmit = state => state.category.statusSubmit;
 export const selectStatusSupplierSubmit = state => state.supplier.statusSubmit;
 export const selectStatusOriginSubmit = state => state.origin.statusSubmit;
+export const selectAdmins = state => state.admin.admins;
+export const selectStatusAdminSubmit = state => state.admin.statusSubmit;
 
 export const selectCategoriesWithoutRoot = createSelector(selectCategories, (categories) => {
   return categories.filter(item => item.parentId);

@@ -18,13 +18,15 @@ const CustomDialog = (props) => {
     products: "Xoá Sản Phẩm?",
     categories: "Xoá Danh Mục?",
     origin: "Xoá Xuất Xứ?",
-    suppliers: "Xoá Nhà Cung Cấp?"
+    suppliers: "Xoá Nhà Cung Cấp?",
+    admins: "Xoá Quản Trị Viên?"
   }
   const alertObj = {
     products: "Các sản phẩm này sẽ bị xoá. Vui lòng xác nhận!",
     categories: "Xoá danh mục này đồng thời sẽ xoá các danh mục con. Vui lòng xác nhận!",
     origin: "Các mục xuất xứ này sẽ bị xoá. Vui lòng xác nhận!",
-    suppliers: "Các nhà cung cấp này sẽ bị xoá. Vui lòng xác nhận!"
+    suppliers: "Các nhà cung cấp này sẽ bị xoá. Vui lòng xác nhận!",
+    admins: "Các quản trị viên này sẽ bị xoá. Vui lòng xác nhận"
   }
   let alertStr;
   let alertTitle;

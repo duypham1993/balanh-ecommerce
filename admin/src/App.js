@@ -22,6 +22,8 @@ import CreateSupplier from './pages/Suppliers/CreateSupplier/CreateSupplier';
 import UpdateSupplier from './pages/Suppliers/UpdateSupplier/UpdateSupplier';
 import UpdateProduct from './pages/Products/UpdateProduct/UpdateProduct';
 import Layout from './pages/Layout/Layout';
+import CreateAdmin from './pages/Admins/CreateAdmin/CreateAdmin';
+import UpdateAdmin from './pages/Admins/UpdateAdmin/UpdateAdmin';
 
 function App() {
   const currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
@@ -45,6 +47,8 @@ function App() {
           <Route path='suppliers/:id' element={<UpdateSupplier />} />
           <Route path="customer" element={<Customer />} />
           <Route path="admins" element={<Admins />} />
+          <Route path='admins/create' element={<CreateAdmin />} />
+          <Route path='admins/:id' element={<UpdateAdmin />} />
           <Route index element={<Home />} />
         </Route>
       </Routes>
