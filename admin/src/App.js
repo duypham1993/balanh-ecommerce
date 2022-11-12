@@ -21,6 +21,7 @@ import Suppliers from './pages/Suppliers/Suppliers';
 import CreateSupplier from './pages/Suppliers/CreateSupplier/CreateSupplier';
 import UpdateSupplier from './pages/Suppliers/UpdateSupplier/UpdateSupplier';
 import UpdateProduct from './pages/Products/UpdateProduct/UpdateProduct';
+import Layout from './pages/Layout/Layout';
 
 function App() {
   const currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
@@ -29,31 +30,24 @@ function App() {
     <>
       <Routes>
         <Route path='login' element={<Login />} />
+        <Route element={<Layout />}>
+          <Route path="orders" element={<Orders />} />
+          <Route path="products" element={<Products />} />
+          <Route path="add-product" element={<AddProduct />} />
+          <Route path="products/:id" element={<UpdateProduct />} />
+          <Route path="categories" element={<Categories />} />
+          <Route path="categories/create" element={<CreateCategory />} />
+          <Route path="categories/:id"
+            element={<UpdateCategory />} />
+          <Route path='origin' element={<Origin />} />
+          <Route path='suppliers' element={<Suppliers />} />
+          <Route path='suppliers/create' element={<CreateSupplier />} />
+          <Route path='suppliers/:id' element={<UpdateSupplier />} />
+          <Route path="customer" element={<Customer />} />
+          <Route path="admins" element={<Admins />} />
+          <Route index element={<Home />} />
+        </Route>
       </Routes>
-      {currentUser &&
-        <Box className="flex-bw-center">
-          <Sidebar />
-          <Box component="main" className="main-content">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="orders" element={<Orders />} />
-              <Route path="products" element={<Products />} />
-              <Route path="add-product" element={<AddProduct />} />
-              <Route path="products/:id" element={<UpdateProduct />} />
-              <Route path="categories" element={<Categories />} />
-              <Route path="categories/create" element={<CreateCategory />} />
-              <Route path="categories/:id"
-                element={<UpdateCategory />} />
-              <Route path='origin' element={<Origin />} />
-              <Route path='suppliers' element={<Suppliers />} />
-              <Route path='suppliers/create' element={<CreateSupplier />} />
-              <Route path='suppliers/:id' element={<UpdateSupplier />} />
-              <Route path="customer" element={<Customer />} />
-              <Route path="admins" element={<Admins />} />
-            </Routes>
-          </Box>
-        </Box>
-      }
     </>
   );
 }
