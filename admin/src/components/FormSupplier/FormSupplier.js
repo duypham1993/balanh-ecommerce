@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Grid, Switch, Autocomplete, TextField } from '@mui/material';
-import CustomTreeItem from "../FormCategory/CustomTreeItem/CustomTreeItem";
 import { cityData } from "../../data/city";
 
 const FormSupplier = (props) => {
@@ -45,8 +44,6 @@ const FormSupplier = (props) => {
       })
     }
   }
-
-
 
   const validate = (inputs) => {
     const errors = {};
@@ -117,19 +114,6 @@ const FormSupplier = (props) => {
     setFormErrors(validate({ inputs, address }));
     Object.keys(validate({ inputs, address })).length === 0 && handleOnSubmit();
   }
-
-  const renderTree = (nodes) => (
-    <CustomTreeItem
-      key={nodes._id}
-      nodeId={nodes._id}
-      label={nodes.name}
-      ContentProps={{ value: nodes._id, parentId: nodes.parentId }}
-    >
-      {Array.isArray(nodes.children)
-        ? nodes.children.map((node) => renderTree(node))
-        : null}
-    </CustomTreeItem>
-  );
 
   return (
     <form className="form-default" onSubmit={(e) => submitFrom(e)}>
