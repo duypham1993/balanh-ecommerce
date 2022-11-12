@@ -28,7 +28,7 @@ const SubmitAlert = (props) => {
       }
       {statusSubmit === "rejected" &&
         <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'right' }} open={open} autoHideDuration={3000} onClose={handleClose}>
-          <Alert onClose={handleClose} severity="success" variant="filled" sx={{ width: '100%' }}>
+          <Alert onClose={handleClose} severity="error" variant="filled" sx={{ width: '100%' }}>
             {mess.error}
           </Alert>
         </Snackbar>
