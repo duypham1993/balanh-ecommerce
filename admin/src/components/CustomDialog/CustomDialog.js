@@ -19,25 +19,30 @@ const CustomDialog = (props) => {
     categories: "Xoá Danh Mục?",
     origin: "Xoá Xuất Xứ?",
     suppliers: "Xoá Nhà Cung Cấp?",
-    admins: "Xoá Quản Trị Viên?"
+    admins: "Xoá Quản Trị Viên?",
+    customers: "Xoá Tài Khoản Khách Hàng?"
   }
   const alertObj = {
     products: "Các sản phẩm này sẽ bị xoá. Vui lòng xác nhận!",
     categories: "Xoá danh mục này đồng thời sẽ xoá các danh mục con. Vui lòng xác nhận!",
     origin: "Các mục xuất xứ này sẽ bị xoá. Vui lòng xác nhận!",
     suppliers: "Các nhà cung cấp này sẽ bị xoá. Vui lòng xác nhận!",
-    admins: "Các quản trị viên này sẽ bị xoá. Vui lòng xác nhận"
+    admins: "Các quản trị viên này sẽ bị xoá. Vui lòng xác nhận!",
+    customers: "Các tài khoản khách hàng này sẽ bị xoá. Vui lòng xác nhận!"
   }
-  let alertStr;
-  let alertTitle;
+  let alert = {
+    title: "",
+    desc: ""
+  };
+
   for (const key in alertObj) {
     if (pathName === key) {
-      alertStr = alertObj[key];
+      alert.desc = alertObj[key];
     }
   }
   for (const key in titObj) {
     if (pathName === key) {
-      alertTitle = titObj[key];
+      alert.title = titObj[key];
     }
   }
 
@@ -69,11 +74,11 @@ const CustomDialog = (props) => {
         onClose={handleClose}
       >
         <DialogTitle>
-          {alertTitle}
+          {alert.title}
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            {alertStr}
+            {alert.desc}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

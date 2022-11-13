@@ -196,6 +196,28 @@ body {
           }
         }
 
+        &__date {
+          .MuiInputBase-root {
+            border-radius: 0;
+
+            &:hover {
+              fieldset {
+                border-color: var(--green);
+              }
+            }
+
+            input {
+              padding: 0 7px;
+              height : 32px;
+            }
+
+            fieldset {
+
+              transition: all 0.3s;
+            }
+          }
+        }
+
         &__desc {
           margin    : 5px 0 0 0;
           font-size : calc(12rem/14);
@@ -286,7 +308,9 @@ body {
     .form-default {
       &__input-group {
         .form-default {
-          &__autocomplete {
+
+          &__autocomplete,
+          &__date {
             width: 50%;
           }
         }

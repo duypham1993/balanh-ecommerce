@@ -9,11 +9,9 @@ import Home from './pages/Home/Home';
 import Orders from "./pages/Orders/Orders";
 import Products from "./pages/Products/Products";
 import Categories from "./pages/Categories/Categories";
-import Customer from "./pages/Customer/Customer";
+import Customer from "./pages/Customer/Customers";
 import Admins from "./pages/Admins/Admins";
 import AddProduct from './pages/Products/CreateProduct/CreateProduct';
-import Box from '@mui/material/Box';
-import Sidebar from './components/Sidebar/Sidebar';
 import CreateCategory from './pages/Categories/CreateCategory/CreateCategory';
 import UpdateCategory from './pages/Categories/UpdateCategory/UpdateCategory';
 import Origin from './pages/Origin/Origin';
@@ -24,6 +22,8 @@ import UpdateProduct from './pages/Products/UpdateProduct/UpdateProduct';
 import Layout from './pages/Layout/Layout';
 import CreateAdmin from './pages/Admins/CreateAdmin/CreateAdmin';
 import UpdateAdmin from './pages/Admins/UpdateAdmin/UpdateAdmin';
+import CreateCustomer from './pages/Customer/CreateCustomer/CreateCustomer';
+import UpdateCustomer from './pages/Customer/UpdateCustomer/UpdateCustomer';
 
 function App() {
   const currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
@@ -45,7 +45,9 @@ function App() {
           <Route path='suppliers' element={<Suppliers />} />
           <Route path='suppliers/create' element={<CreateSupplier />} />
           <Route path='suppliers/:id' element={<UpdateSupplier />} />
-          <Route path="customer" element={<Customer />} />
+          <Route path="customers" element={<Customer />} />
+          <Route path="customers/create" element={<CreateCustomer />} />
+          <Route path="customers/:id" element={<UpdateCustomer />} />
           <Route path="admins" element={<Admins />} />
           <Route path='admins/create' element={<CreateAdmin />} />
           <Route path='admins/:id' element={<UpdateAdmin />} />
