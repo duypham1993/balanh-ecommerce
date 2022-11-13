@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectCategoriesWithoutRoot, selectStatusCategorySubmit } from "../../redux/selectors";
+import { selectCategoriesWithoutRoot, selectStatusSubmit } from "../../redux/selectors";
 import { deleteCategory, getCategories, resetStatusSubmit } from "../../redux/slice/categorySlice";
 import CustomDialog from "../../components/CustomDialog/CustomDialog";
 import { DataGrid } from '@mui/x-data-grid';
@@ -16,7 +16,7 @@ const Categories = () => {
   const [pageSize, setPageSize] = useState(50);
   const [selectionModel, setSelectionModel] = useState([]);
   const categoriesWithoutRoot = useSelector(selectCategoriesWithoutRoot);
-  const statusSubmit = useSelector(selectStatusCategorySubmit);
+  const statusSubmit = useSelector(selectStatusSubmit("category"));
   const mess = {
     success: "Xoá danh mục thành công!",
     error: "Xoá danh mục thất bại!"

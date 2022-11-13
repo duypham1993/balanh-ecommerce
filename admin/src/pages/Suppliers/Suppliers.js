@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectStatusSupplierSubmit, selectSuppliers } from "../../redux/selectors";
+import { selectData, selectStatusSubmit } from "../../redux/selectors";
 import CustomDialog from "../../components/CustomDialog/CustomDialog";
 import { DataGrid } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
@@ -14,8 +14,8 @@ const Suppliers = () => {
   const dispatch = useDispatch();
   const [pageSize, setPageSize] = useState(50);
   const [selectionModel, setSelectionModel] = useState([]);
-  const suppliers = useSelector(selectSuppliers);
-  const statusSubmit = useSelector(selectStatusSupplierSubmit);
+  const suppliers = useSelector(selectData("supplier", "suppliers"));
+  const statusSubmit = useSelector(selectStatusSubmit("supplier"));
   const mess = {
     success: "Xoá thành công!",
     error: "Xoá thất bại!"

@@ -2,7 +2,7 @@ import FormCategory from "../../../components/FormCategory/FormCategory";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { selectCategories, selectStatusCategorySubmit, selectObjectData } from "../../../redux/selectors";
+import { selectObjectData, selectData, selectStatusSubmit } from "../../../redux/selectors";
 import { uploadImage } from "../../../services/uploadFirebase";
 import { addCategory, getCategories, resetStatusSubmit } from "../../../redux/slice/categorySlice";
 import SubmitAlert from "../../../components/SubmitAlert/SubmitAlert";
@@ -11,8 +11,8 @@ const CreateCategory = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const objectData = useSelector(selectObjectData);
-  const categories = useSelector(selectCategories)
-  const statusSubmit = useSelector(selectStatusCategorySubmit);
+  const categories = useSelector(selectData("category", "categories"));
+  const statusSubmit = useSelector(selectStatusSubmit("category"));
   const [inputs, setInputs] = useState({
     name: "",
     desc: "",

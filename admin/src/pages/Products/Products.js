@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DataGrid } from '@mui/x-data-grid';
 import { deleteProduct, getProducts, resetStatusSubmit } from "../../redux/slice/productSlice";
-import { selectProducts, selectStatusProductSubmit } from "../../redux/selectors";
+import { selectData, selectStatusSubmit } from "../../redux/selectors";
 import EditIcon from '@mui/icons-material/Edit';
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
@@ -14,9 +14,9 @@ import SubmitAlert from '../../components/SubmitAlert/SubmitAlert';
 const ProductList = () => {
   const [pageSize, setPageSize] = useState(50);
   const dispatch = useDispatch();
-  const products = useSelector(selectProducts);
+  const products = useSelector(selectData("product", 'products'));
   const [selectionModel, setSelectionModel] = useState([]);
-  const statusSubmit = useSelector(selectStatusProductSubmit);
+  const statusSubmit = useSelector(selectStatusSubmit("product"));
   const mess = {
     success: "Xoá sản phẩm thành công!",
     error: "Xoá sản phẩm thất bại!"

@@ -2,7 +2,7 @@ import FormSupplier from "../../../components/FormSupplier/FormSupplier";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { selectSuppliers, selectStatusSupplierSubmit } from "../../../redux/selectors";
+import { selectData, selectStatusSubmit } from "../../../redux/selectors";
 import { getSuppliers, updateSupplier, resetStatusSubmit } from "../../../redux/slice/supplierSlice";
 import SubmitAlert from "../../../components/SubmitAlert/SubmitAlert";
 
@@ -11,9 +11,9 @@ const UpdateSupplier = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const suppliers = useSelector(selectSuppliers);
+  const suppliers = useSelector(selectData("supplier", suppliers));
   const currentSupplier = suppliers.filter(item => item._id === id)[0];
-  const statusSubmit = useSelector(selectStatusSupplierSubmit);
+  const statusSubmit = useSelector(selectStatusSubmit("supplier"));
   const [inputs, setInputs] = useState({
     sku: "",
     name: "",

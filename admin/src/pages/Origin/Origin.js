@@ -2,7 +2,7 @@ import "./origin.scss";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addOrigin, deleteOrigin, getOrigin, updateOrigin } from "../../redux/slice/originSlice";
-import { selectOrigin } from "../../redux/selectors";
+import { selectData } from "../../redux/selectors";
 import CustomDialog from "../../components/CustomDialog/CustomDialog";
 import { DataGrid } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
@@ -15,7 +15,7 @@ const Origin = () => {
   const [name, setName] = useState("");
   const [formError, setFormError] = useState("");
   const [edit, setEdit] = useState({});
-  const origin = useSelector(selectOrigin);
+  const origin = useSelector(selectData("origin", "origin"));
   const isEditEmpty = Object.keys(edit).length === 0;
   const selectedOrgin = [...origin.filter(item => selectionModel.includes(item._id))];
 

@@ -2,10 +2,8 @@ import FormCategory from "../../../components/FormCategory/FormCategory";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { selectCategories, selectObjectData, selectStatusCategorySubmit } from "../../../redux/selectors";
+import { selectData, selectObjectData, selectStatusSubmit } from "../../../redux/selectors";
 import { uploadImage, delImgFireBase } from "../../../services/uploadFirebase";
-import Alert from '@mui/material/Alert';
-import Snackbar from '@mui/material/Snackbar';
 import { getCategories, updateCategory, resetStatusSubmit } from "../../../redux/slice/categorySlice";
 import SubmitAlert from "../../../components/SubmitAlert/SubmitAlert";
 
@@ -21,10 +19,10 @@ const UpdateCategory = () => {
   });
   const [file, setFile] = useState({});
   const [tempURL, setTempURL] = useState("");
-  const categories = useSelector(selectCategories);
+  const categories = useSelector(selectData("category", "categories"));
   const category = categories.filter(item => item._id === id)[0];
   const objectData = useSelector(selectObjectData);
-  const statusSubmit = useSelector(selectStatusCategorySubmit);
+  const statusSubmit = useSelector(selectStatusSubmit("category"));
   const mess = {
     success: "Cập nhật danh mục thành công!",
     error: "Cập nhật danh mục thất bại!"

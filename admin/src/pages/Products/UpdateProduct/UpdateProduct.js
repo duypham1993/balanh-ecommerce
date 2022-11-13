@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getProducts, resetStatusSubmit, updateProduct } from "../../../redux/slice/productSlice";
 import { delImgFireBase, uploadImage } from "../../../services/uploadFirebase";
-import { selectProducts, selectStatusProductSubmit } from "../../../redux/selectors";
+import { selectData, selectStatusSubmit } from "../../../redux/selectors";
 import { useParams } from "react-router-dom";
 import SubmitAlert from "../../../components/SubmitAlert/SubmitAlert";
 
@@ -25,12 +25,12 @@ const UpdateProduct = () => {
     isActive: false
   })
   const [file, setFile] = useState([]);
-  const products = useSelector(selectProducts);
+  const products = useSelector(selectData("product", "products"));
   const currentProduct = products.filter(item => item._id === id)[0];
   const [arrDelImg, setArrDelImg] = useState([]);
   let imgURLsFirebase = inputs.imgs;
   let imgURLsLocal = file.map(item => URL.createObjectURL(item));
-  const statusSubmit = useSelector(selectStatusProductSubmit);
+  const statusSubmit = useSelector(selectStatusSubmit("product"));
   const mess = {
     success: "Cập nhật sản phẩm thành công!",
     error: "Cập nhật sản phẩm thất bại!"

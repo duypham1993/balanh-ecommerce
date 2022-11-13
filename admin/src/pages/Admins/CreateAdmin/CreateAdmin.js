@@ -3,14 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import SubmitAlert from "../../../components/SubmitAlert/SubmitAlert";
 import { addAdmin, getAdmins, resetStatusSubmit } from "../../../redux/slice/adminSlice";
-import { selectAdmins, selectStatusAdminSubmit } from "../../../redux/selectors";
+import { selectData, selectStatusSubmit } from "../../../redux/selectors";
 import FormAdmin from "../../../components/FormAdmin/FormAdmin";
 
 const CreateAdmin = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const admins = useSelector(selectAdmins)
-  const statusSubmit = useSelector(selectStatusAdminSubmit);
+  const admins = useSelector(selectData("admin", "admins"))
+  const statusSubmit = useSelector(selectStatusSubmit("admin"));
   const [inputs, setInputs] = useState({
     lastName: "",
     firstName: "",

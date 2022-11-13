@@ -8,14 +8,14 @@ import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
 import SubmitAlert from '../../components/SubmitAlert/SubmitAlert';
 import { deleteAdmin, getAdmins, resetStatusSubmit } from '../../redux/slice/adminSlice';
-import { selectAdmins, selectStatusAdminSubmit } from '../../redux/selectors';
+import { selectData, selectStatusSubmit } from '../../redux/selectors';
 
 const Admins = () => {
   const dispatch = useDispatch();
   const [pageSize, setPageSize] = useState(50);
   const [selectionModel, setSelectionModel] = useState([]);
-  const admins = useSelector(selectAdmins);
-  const statusSubmit = useSelector(selectStatusAdminSubmit);
+  const admins = useSelector(selectData("admin", "admins"));
+  const statusSubmit = useSelector(selectStatusSubmit("admin"));
   const mess = {
     success: "Xoá quản trị viên thành công!",
     error: "Xoá quản trị viên thất bại!"

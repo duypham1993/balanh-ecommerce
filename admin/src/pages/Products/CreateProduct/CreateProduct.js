@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addProduct, getProducts, resetStatusSubmit } from "../../../redux/slice/productSlice";
 import { uploadImage } from "../../../services/uploadFirebase";
-import { selectProducts, selectStatusProductSubmit } from "../../../redux/selectors";
+import { selectData, selectStatusSubmit } from "../../../redux/selectors";
 import SubmitAlert from "../../../components/SubmitAlert/SubmitAlert";
 
 const AddProduct = () => {
@@ -24,8 +24,8 @@ const AddProduct = () => {
   });
   const [file, setFile] = useState([]);
   let imgURLsLocal = file.map(item => URL.createObjectURL(item));
-  const products = useSelector(selectProducts);
-  const statusSubmit = useSelector(selectStatusProductSubmit);
+  const products = useSelector(selectData("product", "products"));
+  const statusSubmit = useSelector(selectStatusSubmit("product"));
   const mess = {
     success: "Tạo sản phẩm thành công!",
     error: "Tạo sản phẩm thất bại!"
