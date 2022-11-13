@@ -184,7 +184,7 @@ const FormProduct = (props) => {
       </CustomTreeItem>
     )
   };
-  console.log(imgURLsLocal);
+
   return (
     <form className="form-product" onSubmit={(e) => submitForm(e)}>
       <div className="form-product__item form-product__item--title">
@@ -262,6 +262,9 @@ const FormProduct = (props) => {
                       value={inputs.origin}
                       onChange={(e, value) => handleAutoComplete("origin", value)}
                       options={arrOrigin}
+                      isOptionEqualToValue={(option, value) =>
+                        option.id === value.id
+                      }
                       sx={{ width: 300 }}
                       renderInput={(params) => <TextField {...params} />}
                     />
@@ -274,6 +277,9 @@ const FormProduct = (props) => {
                       value={inputs.supplier}
                       onChange={(e, value) => handleAutoComplete("supplier", value)}
                       options={arrSuplliers}
+                      isOptionEqualToValue={(option, value) =>
+                        option.id === value.id
+                      }
                       sx={{ width: 300 }}
                       renderInput={(params) => <TextField {...params} />}
                     />

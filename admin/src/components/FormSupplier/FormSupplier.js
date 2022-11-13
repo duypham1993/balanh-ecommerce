@@ -174,6 +174,9 @@ const FormSupplier = (props) => {
               id="city"
               options={city}
               value={address.city}
+              isOptionEqualToValue={(option, value) =>
+                option.id === value.id
+              }
               onChange={(e, value) => handleChangeAddress("city", value)}
               renderInput={(params) => <TextField {...params} name="city"
               />}
@@ -191,6 +194,9 @@ const FormSupplier = (props) => {
                 className="form-default__autocomplete"
                 options={arrDistrict}
                 value={address.district}
+                isOptionEqualToValue={(option, value) =>
+                  option.id === value.id
+                }
                 onChange={(e, value) => handleChangeAddress("district", value)}
                 renderInput={(params) => <TextField {...params}
                 />}
@@ -200,6 +206,9 @@ const FormSupplier = (props) => {
                 disabled
                 options={city}
                 value={address.district}
+                isOptionEqualToValue={(option, value) =>
+                  option.id === value.id
+                }
                 onChange={(e, value) => handleChangeAddress("district", value)}
                 renderInput={(params) => <TextField {...params}
                 />}
@@ -218,6 +227,9 @@ const FormSupplier = (props) => {
                 className="form-default__autocomplete"
                 options={arrWards}
                 value={address.wards}
+                isOptionEqualToValue={(option, value) =>
+                  option.id === value.id
+                }
                 onChange={(e, value) => handleChangeAddress("wards", value)}
                 renderInput={(params) => <TextField {...params}
                 />}
@@ -227,6 +239,9 @@ const FormSupplier = (props) => {
                 options={city}
                 disabled
                 value={address.wards}
+                isOptionEqualToValue={(option, value) =>
+                  option.id === value.id
+                }
                 onChange={(e, value) => handleChangeAddress("wards", value)}
                 renderInput={(params) => <TextField {...params}
                 />}
