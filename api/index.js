@@ -11,6 +11,7 @@ import productRouter from "./routes/product";
 import supplierRouter from "./routes/supplier";
 import originRouter from "./routes/origin";
 import categoryRouter from "./routes/category";
+import deliveryInfoRouter from "./routes/deliveryInfo";
 import cors from "cors";
 
 const app = express();
@@ -29,6 +30,7 @@ app.use("/api/admin", adminRouter);
 app.use("/api/authClient", authClientRouter);
 app.use("/api/authAdmin", authAdminRouter);
 app.use("/api/customer", customerRouter);
+app.use("/api/deliveryInfo", deliveryInfoRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/order", orderRouter);
 app.use("/api/product", productRouter);

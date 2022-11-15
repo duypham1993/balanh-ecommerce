@@ -24,6 +24,9 @@ import CreateAdmin from './pages/Admins/CreateAdmin/CreateAdmin';
 import UpdateAdmin from './pages/Admins/UpdateAdmin/UpdateAdmin';
 import CreateCustomer from './pages/Customer/CreateCustomer/CreateCustomer';
 import UpdateCustomer from './pages/Customer/UpdateCustomer/UpdateCustomer';
+import AddressList from './pages/DeliveryInfo/AddressList';
+import CreateAddress from './pages/DeliveryInfo/CreateAddress/CreateAddress';
+import UpdateAddress from './pages/DeliveryInfo/UpdateAddress/UpdateAddress';
 
 function App() {
   const currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
@@ -48,6 +51,9 @@ function App() {
           <Route path="customers" element={<Customer />} />
           <Route path="customers/create" element={<CreateCustomer />} />
           <Route path="customers/:id" element={<UpdateCustomer />} />
+          <Route path="deliveryinfo" element={<AddressList />} />
+          <Route path="deliveryinfo/create" element={<CreateAddress />} />
+          <Route path="deliveryinfo/:id" element={<UpdateAddress />} />
           <Route path="admins" element={<Admins />} />
           <Route path='admins/create' element={<CreateAdmin />} />
           <Route path='admins/:id' element={<UpdateAdmin />} />

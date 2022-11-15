@@ -6,6 +6,7 @@ import originSlice from "./slice/originSlice";
 import supplierSlice from "./slice/supplierSlice";
 import adminSlice from "./slice/adminSlice";
 import customerSlice from "./slice/customerSlice";
+import deliveryInfoSlice from "./slice/deliverySlice";
 
 const store = configureStore({
   reducer: {
@@ -15,7 +16,8 @@ const store = configureStore({
     origin: originSlice.reducer,
     supplier: supplierSlice.reducer,
     admin: adminSlice.reducer,
-    customer: customerSlice.reducer
+    customer: customerSlice.reducer,
+    deliveryInfo: deliveryInfoSlice.reducer
   }
 })
 
