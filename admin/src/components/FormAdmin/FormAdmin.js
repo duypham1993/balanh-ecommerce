@@ -1,9 +1,16 @@
 import { useState } from "react";
 import { Grid, Switch, Autocomplete, TextField } from '@mui/material';
+import { useNavigate } from "react-router-dom";
+import { selectData } from "../../redux/selectors";
+import { useDispatch, useSelector } from "react-redux";
+import { resetErrorEmail } from "../../redux/slice/adminSlice";
 
 const FormAdmin = (props) => {
-  const { inputs, setInputs, admins, currentAdmin, handleOnChange, handleOnSubmit, handleCancel } = props;
+  const { inputs, handleOnChange, handleOnSubmit, handleAutocomplete, id } = props;
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [formErrors, setFormErrors] = useState({});
+  const errorApi = useSelector(selectData("admin", "error"));
   const role = ["Admin", "Kế toán"];
 
   const handleChangeInputs = (e) => {
@@ -17,10 +24,9 @@ const FormAdmin = (props) => {
       })
     }
   };
-  const handleChangeRole = (name, value) => {
-    setInputs({
-      ...inputs, [name]: value
-    })
+
+  const handleChangeAutocomplete = (name, value) => {
+    handleAutocomplete(name, value);
     // remove error if target has value
     if (value) {
       setFormErrors({
@@ -50,20 +56,12 @@ const FormAdmin = (props) => {
       errors.email = "Vui lòng điền vào mục này!";
     }
 
-    if (!formatPassword.test(inputs.password)) {
+    if ((!formatPassword.test(inputs.password) && !id) || (id && inputs.password && !formatPassword.test(inputs.password))) {
       errors.password = "Mật khẩu không hợp lệ!";
     }
 
-    if (!inputs.password || !inputs.password.trim()) {
+    if ((!inputs.password || !inputs.password.trim()) && !id) {
       errors.password = "Vui lòng điền vào mục này!";
-    }
-
-    if (!inputs.confirmPassword || !inputs.confirmPassword.trim()) {
-      errors.confirmPassword = "Vui lòng điền vào mục này!";
-    }
-
-    if (inputs.password !== inputs.confirmPassword) {
-      errors.confirmPassword = "Mật khẩu không khớp!";
     }
 
     if (!inputs.role) {
@@ -74,8 +72,13 @@ const FormAdmin = (props) => {
 
   const submitFrom = (e) => {
     e.preventDefault();
+    dispatch(resetErrorEmail());
     setFormErrors(validate(inputs));
     Object.keys(validate(inputs)).length === 0 && handleOnSubmit();
+  }
+  // back to suppliers
+  const handleCancel = () => {
+    return navigate("/admins");
   }
 
   return (
@@ -109,6 +112,7 @@ const FormAdmin = (props) => {
               onChange={(e) => handleChangeInputs(e)}
             />
             <p className={formErrors.firstName ? "form-default__error show" : "form-default__error"}>{formErrors.firstName}</p>
+
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
@@ -124,7 +128,7 @@ const FormAdmin = (props) => {
               onChange={(e) => handleChangeInputs(e)}
               placeholder="example@abc.com"
             />
-            <p className={formErrors.email ? "form-default__error show" : "form-default__error"}>{formErrors.email}</p>
+            <p className={formErrors.email || errorApi.email ? "form-default__error show" : "form-default__error"}>{formErrors.email || errorApi.email}</p>
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
@@ -144,21 +148,6 @@ const FormAdmin = (props) => {
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
           <Grid item xs={12} sm={4} className="form-default__control">
-            <label>Xác nhận mật khẩu</label>
-          </Grid>
-          <Grid item xs={12} sm={6} className="form-default__input-group">
-            <input
-              type="password"
-              className="input-default form-default__input"
-              name="confirmPassword"
-              value={inputs.confirmPassword}
-              onChange={(e) => handleChangeInputs(e)}
-            />
-            <p className={formErrors.confirmPassword ? "form-default__error show" : "form-default__error"}>{formErrors.confirmPassword}</p>
-          </Grid>
-        </Grid>
-        <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={12} sm={4} className="form-default__control">
             <label>Chức vụ</label>
           </Grid>
           <Grid item xs={12} sm={6} className="form-default__input-group">
@@ -166,7 +155,7 @@ const FormAdmin = (props) => {
               className="form-default__autocomplete"
               options={role}
               value={inputs.role}
-              onChange={(e, value) => handleChangeRole("role", value)}
+              onChange={(e, value) => handleChangeAutocomplete("role", value)}
               isOptionEqualToValue={(option, value) =>
                 option.id === value.id
               }

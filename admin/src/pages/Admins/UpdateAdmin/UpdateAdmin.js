@@ -1,39 +1,39 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import SubmitAlert from "../../../components/SubmitAlert/SubmitAlert";
-import { getAdmins, resetStatusSubmit, updateAdmin } from "../../../redux/slice/adminSlice";
+import { getCurrentAdmin, resetStatusSubmit, updateAdmin } from "../../../redux/slice/adminSlice";
 import FormAdmin from "../../../components/FormAdmin/FormAdmin";
 import { selectData, selectStatusSubmit } from "../../../redux/selectors";
+import ErrorFetching from "../../../components/ErrorFetching/ErrorFetching"
 
 const UpdateAdmin = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const admins = useSelector(selectData("admin", "admins"));
-  const currentAdmin = admins.filter(item => item._id === id)[0];
+  const currentAdmin = useSelector(selectData("admin", "currentAdmin"));
   const statusSubmit = useSelector(selectStatusSubmit("admin"));
+  const statusFetching = useSelector(selectData("admin", "isFetching"));
   const [inputs, setInputs] = useState({
     lastName: "",
     firstName: "",
     email: "",
     password: "",
-    confirmPassword: "",
     role: "",
     isActive: false,
   });
-  const mess = {
+  const errorAPI = useSelector(selectData("admin", "error"));
+  let mess = {
     success: "Cập nhật quản trị viên thành công!",
-    error: "Cập nhật trị viên thất bại!"
-  }
+    error: errorAPI.other
+  };
 
   useEffect(() => {
-    dispatch(getAdmins());
+    dispatch(getCurrentAdmin(id));
     dispatch(resetStatusSubmit());
   }, []);
 
   useEffect(() => {
-    if (currentAdmin) {
+    if (currentAdmin && Object.keys(currentAdmin).length) {
       setInputs({
         ...inputs,
         lastName: currentAdmin.lastName,
@@ -53,6 +53,12 @@ const UpdateAdmin = () => {
     }
   };
 
+  const handleAutocomplete = (name, value) => {
+    setInputs({
+      ...inputs, [name]: value
+    })
+  }
+
   const handleOnSubmit = () => {
     const updatedAdmin = {
       lastName: inputs.lastName,
@@ -65,26 +71,25 @@ const UpdateAdmin = () => {
     dispatch(updateAdmin({ id, updatedAdmin }));
   };
 
-  // back to suppliers
-  const handleCancel = () => {
-    return navigate("/admins");
-  }
-
   return (
-    <div className="update-admin">
-      <FormAdmin
-        admins={admins}
-        inputs={inputs}
-        setInputs={setInputs}
-        handleOnChange={handleOnChange}
-        handleOnSubmit={handleOnSubmit}
-        handleCancel={handleCancel}
-      />
-      <SubmitAlert
-        statusSubmit={statusSubmit}
-        mess={mess}
-      />
-    </div>
+    <>
+      {statusFetching === "rejected" ?
+        <ErrorFetching /> :
+        <div className="update-admin">
+          <FormAdmin
+            inputs={inputs}
+            id={id}
+            handleAutocomplete={handleAutocomplete}
+            handleOnChange={handleOnChange}
+            handleOnSubmit={handleOnSubmit}
+          />
+          <SubmitAlert
+            statusSubmit={statusSubmit}
+            mess={mess}
+          />
+        </div>
+      }
+    </>
   );
 };
 

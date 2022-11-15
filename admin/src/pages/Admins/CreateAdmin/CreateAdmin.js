@@ -1,15 +1,12 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import SubmitAlert from "../../../components/SubmitAlert/SubmitAlert";
-import { addAdmin, getAdmins, resetStatusSubmit } from "../../../redux/slice/adminSlice";
+import { addAdmin, resetStatusSubmit } from "../../../redux/slice/adminSlice";
 import { selectData, selectStatusSubmit } from "../../../redux/selectors";
 import FormAdmin from "../../../components/FormAdmin/FormAdmin";
 
 const CreateAdmin = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const admins = useSelector(selectData("admin", "admins"))
   const statusSubmit = useSelector(selectStatusSubmit("admin"));
   const [inputs, setInputs] = useState({
     lastName: "",
@@ -20,13 +17,13 @@ const CreateAdmin = () => {
     role: "",
     isActive: false,
   });
+  const errorAPI = useSelector(selectData("admin", "error"));
   const mess = {
     success: "Tạo quản trị viên thành công!",
-    error: "Tạo quản trị viên thất bại!"
+    error: errorAPI.other
   }
 
   useEffect(() => {
-    dispatch(getAdmins());
     dispatch(resetStatusSubmit());
   }, [])
 
@@ -52,6 +49,12 @@ const CreateAdmin = () => {
     }
   };
 
+  const handleAutocomplete = (name, value) => {
+    setInputs({
+      ...inputs, [name]: value
+    })
+  }
+
   const handleOnSubmit = () => {
     const newUser = {
       lastName: inputs.lastName,
@@ -64,20 +67,13 @@ const CreateAdmin = () => {
     dispatch(addAdmin(newUser));
   };
 
-  // back to suppliers
-  const handleCancel = () => {
-    return navigate("/admins");
-  }
-
   return (
     <div className="add-admin">
       <FormAdmin
-        admins={admins}
         inputs={inputs}
-        setInputs={setInputs}
+        handleAutocomplete={handleAutocomplete}
         handleOnChange={handleOnChange}
         handleOnSubmit={handleOnSubmit}
-        handleCancel={handleCancel}
       />
       <SubmitAlert
         statusSubmit={statusSubmit}

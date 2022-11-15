@@ -9,6 +9,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import SubmitAlert from '../../components/SubmitAlert/SubmitAlert';
 import { deleteAdmin, getAdmins, resetStatusSubmit } from '../../redux/slice/adminSlice';
 import { selectData, selectStatusSubmit } from '../../redux/selectors';
+import ErrorFetching from '../../components/ErrorFetching/ErrorFetching';
 
 const Admins = () => {
   const dispatch = useDispatch();
@@ -16,10 +17,12 @@ const Admins = () => {
   const [selectionModel, setSelectionModel] = useState([]);
   const admins = useSelector(selectData("admin", "admins"));
   const statusSubmit = useSelector(selectStatusSubmit("admin"));
+  const statusFetching = useSelector(selectData("admin", "isFetching"));
+  const errorApi = useSelector(selectData("admin", "error"))
   const mess = {
     success: "Xoá quản trị viên thành công!",
-    error: "Xoá quản trị viên thất bại!"
-  }
+    error: errorApi.other
+  };
 
   useEffect(() => {
     dispatch(getAdmins());
@@ -106,32 +109,38 @@ const Admins = () => {
 
   return (
     <>
-      <div className="flex-r-c">
-        <Link to='/admins/create' className='btn-default'>Tạo quản trị viên mới</Link>
-      </div>
-      <div className="wrapper_data-grid admins">
-        <DataGrid
-          rows={admins}
-          disableSelectionOnClick
-          columns={columns}
-          disableColumnMenu
-          getRowId={(row) => row._id}
-          checkboxSelection={true}
-          pageSize={pageSize}
-          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-          rowsPerPageOptions={[20, 50, 100]}
-          pagination
-          onSelectionModelChange={(newSelectionModel) => {
-            setSelectionModel(newSelectionModel);
-          }}
-          selectionModel={selectionModel}
-        />
-      </div>
-      <SubmitAlert
-        statusSubmit={statusSubmit}
-        mess={mess}
-      />
+      {statusFetching === "rejected" ?
+        <ErrorFetching /> :
+        <>
+          <div className="flex-r-c">
+            <Link to='/admins/create' className='btn-default'>Tạo quản trị viên mới</Link>
+          </div>
+          <div className="wrapper_data-grid admins">
+            <DataGrid
+              rows={admins}
+              disableSelectionOnClick
+              columns={columns}
+              disableColumnMenu
+              getRowId={(row) => row._id}
+              checkboxSelection={true}
+              pageSize={pageSize}
+              onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+              rowsPerPageOptions={[20, 50, 100]}
+              pagination
+              onSelectionModelChange={(newSelectionModel) => {
+                setSelectionModel(newSelectionModel);
+              }}
+              selectionModel={selectionModel}
+            />
+          </div>
+          <SubmitAlert
+            statusSubmit={statusSubmit}
+            mess={mess}
+          />
+        </>
+      }
     </>
+
   )
 }
 
