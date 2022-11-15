@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import mongoose from "mongoose";
 
 const customerSchema = new mongoose.Schema(
@@ -10,16 +9,6 @@ const customerSchema = new mongoose.Schema(
     phone: { type: String, required: true },
     dateOfBirth: { type: String },
     isActive: { type: Boolean, default: false },
-    deliveryInfo: [
-      {
-        _id: { type: ObjectId, unique: true },
-        alias: { type: String },
-        name: { type: String },
-        address: { type: Object },
-        phone: { type: String },
-        other: { type: String }
-      }
-    ]
   },
   { timestamps: true }
 )
