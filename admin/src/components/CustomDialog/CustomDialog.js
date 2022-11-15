@@ -12,7 +12,7 @@ const CustomDialog = (props) => {
   const { item, selectedItems, handleDelete } = props;
 
   const location = useLocation();
-  const pathName = location.pathname.substring(1);
+  const pathName = location.pathname.substring(1).toLowerCase();
   const [open, setOpen] = useState(false);
   const titObj = {
     products: "Xoá Sản Phẩm?",
@@ -20,7 +20,8 @@ const CustomDialog = (props) => {
     origin: "Xoá Xuất Xứ?",
     suppliers: "Xoá Nhà Cung Cấp?",
     admins: "Xoá Quản Trị Viên?",
-    customers: "Xoá Tài Khoản Khách Hàng?"
+    customers: "Xoá Tài Khoản Khách Hàng?",
+    deliveryinfo: "Xoá Địa Chỉ Khách Hàng?",
   }
   const alertObj = {
     products: "Các sản phẩm này sẽ bị xoá. Vui lòng xác nhận!",
@@ -28,7 +29,8 @@ const CustomDialog = (props) => {
     origin: "Các mục xuất xứ này sẽ bị xoá. Vui lòng xác nhận!",
     suppliers: "Các nhà cung cấp này sẽ bị xoá. Vui lòng xác nhận!",
     admins: "Các quản trị viên này sẽ bị xoá. Vui lòng xác nhận!",
-    customers: "Các tài khoản khách hàng này sẽ bị xoá. Vui lòng xác nhận!"
+    customers: "Các tài khoản khách hàng này sẽ bị xoá. Vui lòng xác nhận!",
+    deliveryinfo: "Các địa chỉ này sẽ bị xoá. Vui lòng xác nhận!"
   }
   let alert = {
     title: "",
