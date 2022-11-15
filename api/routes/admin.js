@@ -26,6 +26,7 @@ router.post("/create", verifyTokenRoleAdmin, async (req, res) => {
 // GET ALL 
 router.get("/", verifyToken, async (req, res) => {
   const user = await Admin.find({});
+  console.log(user)
   try {
     res.status(200).json(user);
   } catch (err) {
@@ -35,15 +36,30 @@ router.get("/", verifyToken, async (req, res) => {
 
 // UPDATE
 router.put("/:id", verifyTokenRoleAdmin, async (req, res) => {
-  if (req.body.password) {
-    req.body.password = CryptoJS.AES.encrypt(req.body.password, process.env.PASS_KEY).toString();
-  }
   try {
-    const updateUser = await Admin.findByIdAndUpdate(
-      req.params.id,
-      { $set: req.body },
-      { new: true }
-    );
+    let updateUser = {};
+    if (req.body.password) {
+      req.body.password = CryptoJS.AES.encrypt(req.body.password, process.env.PASS_KEY).toString();
+      updateUser = await Admin.findByIdAndUpdate(
+        req.params.id,
+        { $set: req.body },
+        { new: true }
+      );
+    } else {
+      updateUser = await Admin.findByIdAndUpdate(
+        req.params.id,
+        {
+          $set: {
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            email: req.body.email,
+            role: req.body.role,
+            isActive: req.body.isActive
+          }
+        },
+        { new: true }
+      );
+    }
     res.status(200).json(updateUser);
   } catch (err) {
     res.status(500).json(err);
