@@ -5,20 +5,20 @@ import TreeView from '@mui/lab/TreeView';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import CustomTreeItem from "./CustomTreeItem/CustomTreeItem";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { selectData } from "../../redux/selectors";
+import { resetErrorSlug } from "../../redux/slice/categorySlice";
 
 const FormCategory = (props) => {
+  const { objectData, inputs, imgURL, handleOnSubmit, handleOnChange, handleFile, handleDelImg } = props;
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [formErrors, setFormErrors] = useState({});
-  const imgURL = props.tempURL ? props.tempURL : props.file.name ? URL.createObjectURL(props.file) : null;
-
-  const handleDelImg = () => {
-    props.setTempURL("");
-    props.setFile({});
-  }
-
+  const errorApi = useSelector(selectData("category", "error"));
   const handleChange = (e) => {
     const { value, name } = e.target;
-
-    props.handleOnChange(e);
+    handleOnChange(e);
 
     if (value) {
       setFormErrors({
@@ -47,18 +47,6 @@ const FormCategory = (props) => {
       errors.slug = "Vui lòng điền vào mục này!";
     }
 
-    props.categories.map(item => {
-      if (props.category) {
-        if (props.category._id !== item._id && item.slug === inputs.slug) {
-          return errors.slug = "Đường dẫn đã tồn tại!"
-        }
-      } else {
-        if (item.slug === inputs.slug) {
-          return errors.slug = "Đường dẫn đã tồn tại!"
-        }
-      }
-    })
-
     if (!imgURL) {
       errors.img = "Vui lòng upload ảnh bìa!";
     }
@@ -68,9 +56,16 @@ const FormCategory = (props) => {
 
   const submitFrom = (e) => {
     e.preventDefault();
-    setFormErrors(validate(props.inputs));
-    Object.keys(validate(props.inputs)).length === 0 && props.handleOnSubmit();
+    dispatch(resetErrorSlug());
+    setFormErrors(validate(inputs));
+    Object.keys(validate(inputs)).length === 0 && handleOnSubmit();
   }
+
+  // back to categories
+  const handleCancel = () => {
+    return navigate("/categories");
+  };
+
 
   const renderTree = (nodes) => (
     <CustomTreeItem
@@ -96,7 +91,7 @@ const FormCategory = (props) => {
               type="text"
               className={"input-default form-default__input"}
               name="name"
-              value={props.inputs.name}
+              value={inputs.name}
               onChange={e => handleChange(e)}
             />
             <p className={formErrors.name ? "form-default__error show" : "form-default__error"}>{formErrors.name}</p>
@@ -111,7 +106,7 @@ const FormCategory = (props) => {
               type="text"
               className={"input-default form-default__input"}
               name="desc"
-              value={props.inputs.desc}
+              value={inputs.desc}
               onChange={(e) => handleChange(e)}
             />
             <p className={formErrors.desc ? "form-default__error show" : "form-default__error"}>{formErrors.desc}</p>
@@ -122,7 +117,7 @@ const FormCategory = (props) => {
             <label>Danh mục</label>
           </Grid>
           <Grid item xs={12} sm={6} className="form-default__input-group">
-            {props.inputs.parentId &&
+            {inputs.parentId &&
               <TreeView
                 aria-label="icon expansion"
                 defaultCollapseIcon={<ExpandMoreIcon />}
@@ -132,10 +127,10 @@ const FormCategory = (props) => {
               >
                 <RadioGroup
                   name="parentId"
-                  value={props.inputs.parentId}
-                  onChange={(e) => props.handleOnChange(e)}
+                  value={inputs.parentId}
+                  onChange={(e) => handleOnChange(e)}
                 >
-                  {renderTree(props.objectData)}
+                  {renderTree(objectData)}
                 </RadioGroup>
               </TreeView>
             }
@@ -161,7 +156,7 @@ const FormCategory = (props) => {
                   accept="image/*"
                   className={"input-default form-default__input"}
                   name="img"
-                  onChange={(e) => props.setFile(e.target.files[0])}
+                  onChange={(e) => handleFile(e)}
                 />
                 <p className="form-default__desc">Kích thước ảnh khuyến nghị 1200x400px</p>
                 <p className={formErrors.img ? "form-default__error show" : "form-default__error"}>{formErrors.img}</p>
@@ -178,12 +173,12 @@ const FormCategory = (props) => {
               type="text"
               name="slug"
               className="input-default form-default__input"
-              value={props.inputs.slug}
+              value={inputs.slug}
               onChange={(e) => handleChange(e)}
               placeholder="duong-dan-1"
             />
             <p className="form-default__desc">Viết liền không dấu, chỉ chấp nhận chữ cái, số và dấu gạch ngang "-"</p>
-            <p className={formErrors.slug ? "form-default__error show" : "form-default__error"}>{formErrors.slug}</p>
+            <p className={formErrors.slug || errorApi.slug ? "form-default__error show" : "form-default__error"}>{formErrors.slug || errorApi.slug}</p>
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
@@ -194,14 +189,14 @@ const FormCategory = (props) => {
             <Switch
               name="isActive"
               className="form-default__input"
-              checked={props.inputs.isActive}
-              onChange={(e) => props.handleOnChange(e)}
+              checked={inputs.isActive}
+              onChange={(e) => handleOnChange(e)}
             />
           </Grid>
         </Grid>
       </Grid>
       <div className="flex-bw-center form-default__bot-nav">
-        <button className="btn-default btn-default--del" onClick={() => props.handleCancel()}>Quay lại</button>
+        <button className="btn-default btn-default--del" onClick={() => handleCancel()}>Quay lại</button>
         <button className="btn-default" type="submit" >Lưu</button>
       </div>
     </form >

@@ -6,31 +6,53 @@ export const getCustomers = createAsyncThunk('customer/fetchAll', async () => {
   return res.data;
 });
 
-export const addCustomer = createAsyncThunk('customer/add', async (customer) => {
-  const res = await userRequest.post("/customer/create", customer);
+export const getCurrentCustomer = createAsyncThunk('customer/getcurrent', async (id) => {
+  const res = await userRequest.get(`/customer/${id}`);
   return res.data;
+})
+
+export const addCustomer = createAsyncThunk('customer/add', async (customer, { rejectWithValue }) => {
+  try {
+    const res = await userRequest.post("/customer/create", customer);
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
 });
 
-export const updateCustomer = createAsyncThunk('customer/update', async (update) => {
-  const res = await userRequest.put(`customer/${update.id}`, update.updatedCustomer);
-  return res.data;
+export const updateCustomer = createAsyncThunk('customer/update', async (update, { rejectWithValue }) => {
+  try {
+    const res = await userRequest.put(`customer/${update.id}`, update.updatedCustomer);
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
 });
 
-export const deleteCustomer = createAsyncThunk('customer/delete', async (id) => {
-  const res = await userRequest.delete(`customer/delete/${id}`);
-  return res.data;
+export const deleteCustomer = createAsyncThunk('customer/delete', async (id, { rejectWithValue }) => {
+  try {
+    const res = await userRequest.delete(`customer/delete/${id}`);
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
 });
 
 const customerSlice = createSlice({
   name: "customer",
   initialState: {
     customers: [],
+    currentCustomer: {},
     isFetching: "",
     statusSubmit: "",
+    error: {}
   },
   reducers: {
     resetStatusSubmit: (state) => {
       state.statusSubmit = "";
+    },
+    resetErorrEmail: (state) => {
+      state.error.email = "";
     }
   },
   extraReducers: (builders) => {
@@ -46,6 +68,18 @@ const customerSlice = createSlice({
       state.isFetching = "rejected";
     })
 
+    // fetch current customers
+    builders.addCase(getCurrentCustomer.pending, (state, action) => {
+      state.isFetching = "pending";
+    })
+    builders.addCase(getCurrentCustomer.fulfilled, (state, action) => {
+      state.isFetching = "fulfilled";
+      state.currentCustomer = action.payload;
+    })
+    builders.addCase(getCurrentCustomer.rejected, (state, action) => {
+      state.isFetching = "rejected";
+    })
+
     // add customer
     builders.addCase(addCustomer.pending, (state, action) => {
       state.statusSubmit = "pending";
@@ -56,6 +90,7 @@ const customerSlice = createSlice({
     })
     builders.addCase(addCustomer.rejected, (state, action) => {
       state.statusSubmit = "rejected";
+      state.error = action.payload;
     })
 
     // update customer
@@ -70,6 +105,7 @@ const customerSlice = createSlice({
     })
     builders.addCase(updateCustomer.rejected, (state, action) => {
       state.statusSubmit = "rejected";
+      state.error = action.payload;
     })
 
     // delete customer
@@ -84,9 +120,10 @@ const customerSlice = createSlice({
     })
     builders.addCase(deleteCustomer.rejected, (state, action) => {
       state.statusSubmit = "rejected";
+      state.error = action.payload;
     })
   }
 
 });
-export const { resetStatusSubmit } = customerSlice.actions;
+export const { resetStatusSubmit, resetErorrEmail } = customerSlice.actions;
 export default customerSlice;

@@ -5,7 +5,6 @@ import Snackbar from '@mui/material/Snackbar';
 const SubmitAlert = (props) => {
   const { statusSubmit, mess } = props;
   const [open, setOpen] = useState(false);
-
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
@@ -26,7 +25,7 @@ const SubmitAlert = (props) => {
           </Alert>
         </Snackbar>
       }
-      {statusSubmit === "rejected" &&
+      {statusSubmit === "rejected" && mess.error &&
         <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'right' }} open={open} autoHideDuration={3000} onClose={handleClose}>
           <Alert onClose={handleClose} severity="error" variant="filled" sx={{ width: '100%' }}>
             {mess.error}

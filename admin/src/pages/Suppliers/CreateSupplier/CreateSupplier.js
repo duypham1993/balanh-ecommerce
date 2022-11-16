@@ -1,15 +1,12 @@
 import FormSupplier from "../../../components/FormSupplier/FormSupplier";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { selectData, selectStatusSubmit } from "../../../redux/selectors";
-import { addSupplier, getSuppliers, resetStatusSubmit } from "../../../redux/slice/supplierSlice";
+import { selectStatusSubmit } from "../../../redux/selectors";
+import { addSupplier, resetStatusSubmit } from "../../../redux/slice/supplierSlice";
 import SubmitAlert from "../../../components/SubmitAlert/SubmitAlert";
 
 const CreateSupplier = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const suppliers = useSelector(selectData("supplier", "suppliers"))
   const statusSubmit = useSelector(selectStatusSubmit("supplier"));
   const [inputs, setInputs] = useState({
     sku: "",
@@ -30,10 +27,10 @@ const CreateSupplier = () => {
   }
 
   useEffect(() => {
-    dispatch(getSuppliers());
     dispatch(resetStatusSubmit());
   }, [])
 
+  // clear inputs after add supplier success
   useEffect(() => {
     if (statusSubmit === "fulfilled") {
       setInputs({
@@ -50,7 +47,15 @@ const CreateSupplier = () => {
         street: "",
       })
     }
-  }, [statusSubmit])
+  }, [statusSubmit]);
+
+  // clear children item if change value
+  useEffect(() => {
+    setAddress({ ...address, district: "" });
+  }, [address.city]);
+  useEffect(() => {
+    setAddress({ ...address, wards: "" });
+  }, [address.district]);
 
   const handleOnChange = (e) => {
     if (e.target.type === "checkbox") {
@@ -60,6 +65,16 @@ const CreateSupplier = () => {
     }
   };
 
+  const handleAutocomplete = (name, value) => {
+    setAddress({
+      ...address, [name]: value
+    })
+  }
+
+  const handleStreet = (e) => {
+    setAddress({ ...address, [e.target.name]: e.target.value });
+  }
+
   const handleOnSubmit = () => {
     const newSupplier = {
       ...inputs, address
@@ -67,21 +82,15 @@ const CreateSupplier = () => {
     dispatch(addSupplier(newSupplier));
   };
 
-  // back to suppliers
-  const handleCancel = () => {
-    return navigate("/suppliers");
-  }
-
   return (
     <div className="add-supplier">
       <FormSupplier
-        suppliers={suppliers}
         inputs={inputs}
         address={address}
-        setAddress={setAddress}
+        handleAutocomplete={handleAutocomplete}
+        handleStreet={handleStreet}
         handleOnChange={handleOnChange}
         handleOnSubmit={handleOnSubmit}
-        handleCancel={handleCancel}
       />
 
       <SubmitAlert

@@ -1,11 +1,12 @@
 import FormProduct from "../../../components/FormProduct/FormProduct";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getProducts, resetStatusSubmit, updateProduct } from "../../../redux/slice/productSlice";
+import { getCurrentProduct, resetStatusSubmit, updateProduct } from "../../../redux/slice/productSlice";
 import { delImgFireBase, uploadImage } from "../../../services/uploadFirebase";
 import { selectData, selectStatusSubmit } from "../../../redux/selectors";
 import { useParams } from "react-router-dom";
 import SubmitAlert from "../../../components/SubmitAlert/SubmitAlert";
+import ErrorFetching from "../../../components/ErrorFetching/ErrorFetching";
 
 const UpdateProduct = () => {
   const dispatch = useDispatch();
@@ -25,24 +26,25 @@ const UpdateProduct = () => {
     isActive: false
   })
   const [file, setFile] = useState([]);
-  const products = useSelector(selectData("product", "products"));
-  const currentProduct = products.filter(item => item._id === id)[0];
+  const currentProduct = useSelector(selectData("product", "currentProduct"));
   const [arrDelImg, setArrDelImg] = useState([]);
   let imgURLsFirebase = inputs.imgs;
   let imgURLsLocal = file.map(item => URL.createObjectURL(item));
   const statusSubmit = useSelector(selectStatusSubmit("product"));
+  const statusFetching = useSelector(selectData("product", "idFetching"));
+  const errorApi = useSelector(selectData("product", "error"))
   const mess = {
     success: "Cập nhật sản phẩm thành công!",
-    error: "Cập nhật sản phẩm thất bại!"
+    error: errorApi.other
   }
 
   useEffect(() => {
-    dispatch(getProducts());
+    dispatch(getCurrentProduct(id));
     dispatch(resetStatusSubmit());
   }, []);
 
   useEffect(() => {
-    if (currentProduct) {
+    if (currentProduct && Object.keys(currentProduct).length) {
       setInputs({
         name: currentProduct.name,
         desc: currentProduct.desc,
@@ -58,10 +60,45 @@ const UpdateProduct = () => {
         isActive: currentProduct.isActive
       });
 
-      // clear file state after update
+      // clear file after update success
       setFile([]);
     }
   }, [currentProduct]);
+
+  const handleOnChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    if (type === "checkbox") {
+      setInputs({ ...inputs, [name]: checked })
+    } else {
+      setInputs({ ...inputs, [name]: value });
+    }
+  }
+
+  const handleAutoComplete = (name, value) => {
+    setInputs({ ...inputs, [name]: value })
+  }
+
+  const handleMultiCheckbox = (e) => {
+    const { checked, value } = e.target;
+    checked ?
+      setInputs({ ...inputs, categories: [...inputs.categories, value] })
+      :
+      setInputs({ ...inputs, categories: inputs.categories.filter(item => item !== value) })
+  }
+
+  const handleFile = (e) => {
+    setFile(prev => [...prev, ...e.target.files])
+  }
+
+  const handleDelImgFirebase = (img) => {
+    setArrDelImg([...arrDelImg, img]);
+    setInputs({ ...inputs, imgs: imgURLsFirebase.filter((item) => item !== img) });
+  };
+
+  const handleDelImgLocal = (index) => {
+    const tempFile = file.filter((item, i) => i !== index);
+    setFile(tempFile);
+  }
 
   const handleOnSubmit = async () => {
     const imgsLocal = await Promise.all(file.map((item) => uploadImage(item)));
@@ -77,25 +114,32 @@ const UpdateProduct = () => {
     await dispatch(updateProduct({ id, updatedProduct }));
   }
   return (
-    <div className="create-product">
-      <FormProduct
-        inputs={inputs}
-        setInputs={setInputs}
-        file={file}
-        setFile={setFile}
-        imgURLsFirebase={imgURLsFirebase}
-        imgURLsLocal={imgURLsLocal}
-        arrDelImg={arrDelImg}
-        setArrDelImg={setArrDelImg}
-        handleOnSubmit={handleOnSubmit}
-        products={products}
-        currentProduct={currentProduct}
-      />
-      <SubmitAlert
-        statusSubmit={statusSubmit}
-        mess={mess}
-      />
-    </div>
+    <>
+      {statusFetching === "rejected" ?
+        <ErrorFetching /> :
+        <>
+          <div className="create-product">
+            <FormProduct
+              inputs={inputs}
+              imgURLsFirebase={imgURLsFirebase}
+              imgURLsLocal={imgURLsLocal}
+              handleOnChange={handleOnChange}
+              handleAutoComplete={handleAutoComplete}
+              handleMultiCheckbox={handleMultiCheckbox}
+              handleFile={handleFile}
+              handleDelImgFirebase={handleDelImgFirebase}
+              handleDelImgLocal={handleDelImgLocal}
+              handleOnSubmit={handleOnSubmit}
+            />
+            <SubmitAlert
+              statusSubmit={statusSubmit}
+              mess={mess}
+            />
+          </div>
+        </>
+      }
+    </>
+
   );
 };
 

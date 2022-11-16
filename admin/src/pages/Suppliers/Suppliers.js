@@ -9,6 +9,7 @@ import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
 import { deleteSupplier, getSuppliers, resetStatusSubmit } from "../../redux/slice/supplierSlice";
 import SubmitAlert from '../../components/SubmitAlert/SubmitAlert';
+import ErrorFetching from '../../components/ErrorFetching/ErrorFetching';
 
 const Suppliers = () => {
   const dispatch = useDispatch();
@@ -16,9 +17,11 @@ const Suppliers = () => {
   const [selectionModel, setSelectionModel] = useState([]);
   const suppliers = useSelector(selectData("supplier", "suppliers"));
   const statusSubmit = useSelector(selectStatusSubmit("supplier"));
+  const statusFetching = useSelector(selectData("supplier", "isFetching"));
+  const errorApi = useSelector(selectData("supplier", "error"))
   const mess = {
     success: "Xoá thành công!",
-    error: "Xoá thất bại!"
+    error: errorApi.other
   }
 
   useEffect(() => {
@@ -159,31 +162,36 @@ const Suppliers = () => {
 
   return (
     <>
-      <div className="flex-r-c">
-        <Link to='/suppliers/create' className='btn-default'>Tạo nhà cung cấp mới</Link>
-      </div>
-      <div className="wrapper_data-grid suppliers">
-        <DataGrid
-          rows={suppliers}
-          disableSelectionOnClick
-          columns={columns}
-          disableColumnMenu
-          getRowId={(row) => row._id}
-          checkboxSelection={true}
-          pageSize={pageSize}
-          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-          rowsPerPageOptions={[20, 50, 100]}
-          pagination
-          onSelectionModelChange={(newSelectionModel) => {
-            setSelectionModel(newSelectionModel);
-          }}
-          selectionModel={selectionModel}
-        />
-      </div>
-      <SubmitAlert
-        statusSubmit={statusSubmit}
-        mess={mess}
-      />
+      {statusFetching === "rejected" ?
+        <ErrorFetching /> :
+        <>
+          <div className="flex-r-c">
+            <Link to='/suppliers/create' className='btn-default'>Tạo nhà cung cấp mới</Link>
+          </div>
+          <div className="wrapper_data-grid suppliers">
+            <DataGrid
+              rows={suppliers}
+              disableSelectionOnClick
+              columns={columns}
+              disableColumnMenu
+              getRowId={(row) => row._id}
+              checkboxSelection={true}
+              pageSize={pageSize}
+              onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+              rowsPerPageOptions={[20, 50, 100]}
+              pagination
+              onSelectionModelChange={(newSelectionModel) => {
+                setSelectionModel(newSelectionModel);
+              }}
+              selectionModel={selectionModel}
+            />
+          </div>
+          <SubmitAlert
+            statusSubmit={statusSubmit}
+            mess={mess}
+          />
+        </>
+      }
     </>
   )
 }

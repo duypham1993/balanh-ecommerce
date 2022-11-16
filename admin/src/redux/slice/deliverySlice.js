@@ -17,7 +17,6 @@ export const addAddress = createAsyncThunk('deliveryInfo/add', async (deliveryIn
 });
 
 export const updateAddress = createAsyncThunk('deliveryInfo/update', async (update) => {
-  console.log(update)
   const res = await userRequest.put(`deliveryInfo/${update.id}`, update.updatedAddress);
   return res.data;
 });

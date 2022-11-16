@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import SubmitAlert from "../../../components/SubmitAlert/SubmitAlert";
-import { addCustomer, getCustomers, resetStatusSubmit } from "../../../redux/slice/customerSlice";
+import { addCustomer, resetStatusSubmit } from "../../../redux/slice/customerSlice";
 import { selectData, selectStatusSubmit } from "../../../redux/selectors";
 import FormCustomer from "../../../components/FormCustomer/FormCustomer";
 
 const CreateCustomer = () => {
   const dispatch = useDispatch();
-  const customers = useSelector(selectData("customer", "customers"))
   const statusSubmit = useSelector(selectStatusSubmit("customer"));
   const [inputs, setInputs] = useState({
     name: "",
@@ -18,13 +17,13 @@ const CreateCustomer = () => {
     dateOfBirth: null,
     isActive: false,
   });
+  const errorApi = useSelector(selectData("customer", "error"));
   const mess = {
     success: "Tạo khách hàng thành công!",
-    error: "Tạo khách hàng thất bại!"
+    error: errorApi.other
   }
 
   useEffect(() => {
-    dispatch(getCustomers());
     dispatch(resetStatusSubmit());
   }, [])
 
@@ -71,7 +70,6 @@ const CreateCustomer = () => {
   return (
     <div className="add-customer">
       <FormCustomer
-        customers={customers}
         inputs={inputs}
         handleDatePicker={handleDatePicker}
         handleOnChange={handleOnChange}

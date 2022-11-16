@@ -6,32 +6,54 @@ export const getProducts = createAsyncThunk('product/fetchAll', async () => {
   return res.data;
 });
 
-export const addProduct = createAsyncThunk('product/add', async (product) => {
-  const res = await userRequest.post("/product/create", product);
+export const getCurrentProduct = createAsyncThunk('product/getcurrent', async (id) => {
+  const res = await userRequest.get(`/product/${id}`);
   return res.data;
+})
+
+export const addProduct = createAsyncThunk('product/add', async (product, { rejectWithValue }) => {
+  try {
+    const res = await userRequest.post("/product/create", product);
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
 });
 
-export const updateProduct = createAsyncThunk('product/update', async (update) => {
-  const res = await userRequest.put(`product/${update.id}`, update.updatedProduct);
-  return res.data;
+export const updateProduct = createAsyncThunk('product/update', async (update, { rejectWithValue }) => {
+  try {
+    const res = await userRequest.put(`product/${update.id}`, update.updatedProduct);
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error.response.data)
+  }
 });
 
-export const deleteProduct = createAsyncThunk('product/delete', async (id) => {
-  const res = await userRequest.delete(`product/delete/${id}`);
-  return res.data;
+export const deleteProduct = createAsyncThunk('product/delete', async (id, { rejectWithValue }) => {
+  try {
+    const res = await userRequest.delete(`product/delete/${id}`);
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error.response.data)
+  }
 });
 
 const productSlice = createSlice({
   name: "product",
   initialState: {
     products: [],
+    currentProduct: {},
     isFetching: "",
     statusSubmit: "",
+    error: {}
   },
   reducers: {
     resetStatusSubmit: (state) => {
       state.statusSubmit = "";
-    }
+    },
+    resetErrorSku: (state) => {
+      state.error.sku = "";
+    },
   },
   extraReducers: (builders) => {
     // fetch all products
@@ -46,6 +68,18 @@ const productSlice = createSlice({
       state.isFetching = "rejected";
     })
 
+    // fetch current product
+    builders.addCase(getCurrentProduct.pending, (state, action) => {
+      state.isFetching = "pending";
+    })
+    builders.addCase(getCurrentProduct.fulfilled, (state, action) => {
+      state.isFetching = "fulfilled";
+      state.currentProduct = action.payload;
+    })
+    builders.addCase(getCurrentProduct.rejected, (state, action) => {
+      state.isFetching = "rejected";
+    })
+
     // add product
     builders.addCase(addProduct.pending, (state, action) => {
       state.statusSubmit = "pending";
@@ -56,6 +90,7 @@ const productSlice = createSlice({
     })
     builders.addCase(addProduct.rejected, (state, action) => {
       state.statusSubmit = "rejected";
+      state.error = action.payload;
     })
 
     // update product
@@ -70,6 +105,7 @@ const productSlice = createSlice({
     })
     builders.addCase(updateProduct.rejected, (state, action) => {
       state.statusSubmit = "rejected";
+      state.error = action.payload;
     })
 
     // delete product
@@ -85,9 +121,10 @@ const productSlice = createSlice({
 
     builders.addCase(deleteProduct.rejected, (state, action) => {
       state.statusSubmit = "rejected";
+      state.error = action.payload;
     })
   }
 
 });
-export const { resetStatusSubmit } = productSlice.actions;
+export const { resetStatusSubmit, resetErrorSku } = productSlice.actions;
 export default productSlice;

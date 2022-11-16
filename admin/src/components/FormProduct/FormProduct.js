@@ -12,8 +12,9 @@ import { getCategories } from "../../redux/slice/categorySlice";
 import { getSuppliers } from "../../redux/slice/supplierSlice";
 import { getOrigin } from "../../redux/slice/originSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { selectArrOrigin, selectArrSuppliers, selectObjectData } from "../../redux/selectors";
+import { selectArrOrigin, selectArrSuppliers, selectData, selectObjectData } from "../../redux/selectors";
 import CustomTreeItem from "./CustomTreeItem/CustomTreeItem";
+import { resetErrorSku } from "../../redux/slice/productSlice";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -41,13 +42,14 @@ function a11yProps(index) {
 }
 
 const FormProduct = (props) => {
-  const { inputs, setInputs, file, setFile, handleOnSubmit, products, currentProduct, imgURLsFirebase, imgURLsLocal, arrDelImg, setArrDelImg } = props;
+  const { inputs, imgURLsFirebase, imgURLsLocal, handleOnChange, handleAutoComplete, handleMultiCheckbox, handleFile, handleDelImgFirebase, handleDelImgLocal, handleOnSubmit } = props;
   const dispatch = useDispatch();
   const [valueTabs, setValueTabs] = useState(0);
   const objectCategories = useSelector(selectObjectData);
   const arrOrigin = useSelector(selectArrOrigin);
   const arrSuplliers = useSelector(selectArrSuppliers);
   const [formErrors, setFormErrors] = useState({});
+  const errorApi = useSelector(selectData("product", "error"));
 
   useEffect(() => {
     // get categories, suppliers, origin for select menu
@@ -57,43 +59,12 @@ const FormProduct = (props) => {
   }, [])
 
   useEffect(() => {
-    // set categories of update product
+    // set categories of product
     renderTree(objectCategories)
   }, [inputs.categories])
 
   const handleChangeTabs = (e, newValue) => {
     setValueTabs(newValue);
-  }
-
-  const handleOnChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    if (type === "checkbox") {
-      setInputs({ ...inputs, [name]: checked })
-    } else {
-      setInputs({ ...inputs, [name]: value });
-    }
-  }
-
-  const handleAutoComplete = (name, value) => {
-    setInputs({ ...inputs, [name]: value })
-  }
-
-  const handleMultiCheckbox = (e) => {
-    const { checked, value } = e.target;
-    checked ?
-      setInputs({ ...inputs, categories: [...inputs.categories, value] })
-      :
-      setInputs({ ...inputs, categories: inputs.categories.filter(item => item !== value) })
-  }
-
-  const handleDelImgFirebase = (img) => {
-    setArrDelImg([...arrDelImg, img]);
-    setInputs({ ...inputs, imgs: imgURLsFirebase.filter((item) => item !== img) });
-  };
-
-  const handleDelImgLocal = (index) => {
-    const tempFile = file.filter((item, i) => i !== index);
-    setFile(tempFile);
   }
 
   const validate = (inputs) => {
@@ -107,17 +78,6 @@ const FormProduct = (props) => {
     if (!inputs.sku || !inputs.sku.trim()) {
       errors.sku = "Vui lòng điền vào mục này!";
     }
-    products.map(item => {
-      if (currentProduct) {
-        if (currentProduct._id !== item._id && item.sku === inputs.sku) {
-          return errors.sku = "Mã đã tồn tại!"
-        }
-      } else {
-        if (item.sku === inputs.sku) {
-          return errors.sku = "Mã đã tồn tại!"
-        }
-      }
-    })
 
     if (!inputs.name || !inputs.name.trim()) {
       errors.name = "Vui lòng điền vào mục này!";
@@ -160,6 +120,7 @@ const FormProduct = (props) => {
 
   const submitForm = async (e) => {
     e.preventDefault();
+    dispatch(resetErrorSku())
     setFormErrors(validate(inputs));
     Object.keys(validate(inputs)).length === 0 && handleOnSubmit();
   }
@@ -239,7 +200,7 @@ const FormProduct = (props) => {
                     name="img"
                     multiple
                     accept="image/*"
-                    onChange={e => setFile(prev => [...prev, ...e.target.files])}
+                    onChange={e => handleFile(e)}
                   />
                   <p className={formErrors.file ? "form-product__error show" : "form-product__error"}>{formErrors.file}</p>
                 </Grid>
@@ -298,7 +259,7 @@ const FormProduct = (props) => {
                     value={inputs.sku}
                     onChange={(e) => handleOnChange(e)}
                   />
-                  <p className={formErrors.sku ? "form-product__error show" : "form-product__error"}>{formErrors.sku}</p>
+                  <p className={formErrors.sku || errorApi.sku ? "form-product__error show" : "form-product__error"}>{formErrors.sku || errorApi.sku}</p>
                 </Grid>
                 <Grid item xs={12} className="form-product__item form-product__qty">
                   <h5 className="form-product__title">Số lượng</h5>

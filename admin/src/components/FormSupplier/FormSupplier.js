@@ -1,28 +1,25 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Grid, Switch, Autocomplete, TextField } from '@mui/material';
 import { cityData } from "../../data/city";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { selectData } from "../../redux/selectors";
+import { resetErrorSku } from "../../redux/slice/supplierSlice";
 
 const FormSupplier = (props) => {
-  const { inputs, address, setAddress, suppliers, currentSupplier, handleOnChange, handleOnSubmit, handleCancel } = props;
-
+  const { inputs, address, handleAutocomplete, handleStreet, handleOnChange, handleOnSubmit } = props;
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [formErrors, setFormErrors] = useState({});
   const city = cityData.map(item => item.name);
   const district = cityData.find(item => item.name === address.city);
   const arrDistrict = district && district.districts.map(item => item.name);
   const wards = district && district.districts.find(item => item.name === address.district);
   const arrWards = wards && wards.wards.map(item => item.name);
-
-  // clear children item if change value
-  useEffect(() => {
-    setAddress({ ...address, district: "" });
-  }, [address.city]);
-  useEffect(() => {
-    setAddress({ ...address, wards: "" });
-  }, [address.district]);
+  const errorApi = useSelector(selectData("supplier", "error"))
 
   const handleChangeInputs = (e) => {
     const { value, name } = e.target;
-
     handleOnChange(e);
     // remove error if target has value
     if (value) {
@@ -34,9 +31,7 @@ const FormSupplier = (props) => {
 
   const handleChangeAddress = (name, value) => {
 
-    setAddress({
-      ...address, [name]: value
-    })
+    handleAutocomplete(name, value)
     // remove error if target has value
     if (value) {
       setFormErrors({
@@ -58,17 +53,6 @@ const FormSupplier = (props) => {
     if (!inputs.inputs.sku || !inputs.inputs.sku.trim()) {
       errors.sku = "Vui lòng điền vào mục này!";
     }
-    suppliers.map(item => {
-      if (currentSupplier) {
-        if (currentSupplier._id !== item._id && item.sku === inputs.sku) {
-          return errors.sku = "Mã đã tồn tại!"
-        }
-      } else {
-        if (item.sku === inputs.inputs.sku) {
-          return errors.sku = "Mã đã tồn tại!"
-        }
-      }
-    })
 
     if (!formatEmail.test(inputs.inputs.email)) {
       errors.email = "Email không hợp lệ!";
@@ -111,8 +95,14 @@ const FormSupplier = (props) => {
 
   const submitFrom = (e) => {
     e.preventDefault();
+    dispatch(resetErrorSku());
     setFormErrors(validate({ inputs, address }));
     Object.keys(validate({ inputs, address })).length === 0 && handleOnSubmit();
+  }
+
+  // back to suppliers
+  const handleCancel = () => {
+    return navigate("/suppliers");
   }
 
   return (
@@ -145,7 +135,7 @@ const FormSupplier = (props) => {
               value={inputs.sku}
               onChange={(e) => handleChangeInputs(e)}
             />
-            <p className={formErrors.sku ? "form-default__error show" : "form-default__error"}>{formErrors.sku}</p>
+            <p className={formErrors.sku || errorApi.sku ? "form-default__error show" : "form-default__error"}>{formErrors.sku || errorApi.sku}</p>
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
@@ -260,7 +250,7 @@ const FormSupplier = (props) => {
               name="street"
               className="input-default form-default__input"
               value={address.street}
-              onChange={(e) => setAddress({ ...address, street: e.target.value })}
+              onChange={(e) => handleStreet(e)}
             />
             <p className={formErrors.street ? "form-default__error show" : "form-default__error"}>{formErrors.street}</p>
           </Grid>

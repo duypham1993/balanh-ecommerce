@@ -1,19 +1,19 @@
 import FormSupplier from "../../../components/FormSupplier/FormSupplier";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { selectData, selectStatusSubmit } from "../../../redux/selectors";
-import { getSuppliers, updateSupplier, resetStatusSubmit } from "../../../redux/slice/supplierSlice";
+import { updateSupplier, resetStatusSubmit, getCurrnetSupplier } from "../../../redux/slice/supplierSlice";
 import SubmitAlert from "../../../components/SubmitAlert/SubmitAlert";
+import ErrorFetching from "../../../components/ErrorFetching/ErrorFetching";
 
 const UpdateSupplier = () => {
-
   const { id } = useParams();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const suppliers = useSelector(selectData("supplier", suppliers));
-  const currentSupplier = suppliers.filter(item => item._id === id)[0];
+  const currentSupplier = useSelector(selectData("supplier", "currentSupplier"));
   const statusSubmit = useSelector(selectStatusSubmit("supplier"));
+  const statusFetching = useSelector(selectData("supplier", "isFetching"));
+  const errorApi = useSelector(selectData("supplier", "error"))
   const [inputs, setInputs] = useState({
     sku: "",
     name: "",
@@ -29,16 +29,16 @@ const UpdateSupplier = () => {
   });
   const mess = {
     success: "Cập nhật thành công!",
-    error: "Cập nhật thất bại!"
+    error: errorApi.other
   };
 
   useEffect(() => {
-    dispatch(getSuppliers());
+    dispatch(getCurrnetSupplier(id));
     dispatch(resetStatusSubmit());
   }, [])
 
   useEffect(() => {
-    if (currentSupplier) {
+    if (currentSupplier && Object.keys(currentSupplier).length) {
       setInputs({
         sku: currentSupplier.sku,
         name: currentSupplier.name,
@@ -55,6 +55,14 @@ const UpdateSupplier = () => {
     }
   }, [currentSupplier]);
 
+  // clear children item if change value
+  useEffect(() => {
+    setAddress({ ...address, district: "" });
+  }, [address.city]);
+  useEffect(() => {
+    setAddress({ ...address, wards: "" });
+  }, [address.district]);
+
   const handleOnChange = (e) => {
     if (e.target.type === "checkbox") {
       setInputs(prev => ({ ...prev, [e.target.name]: e.target.checked }));
@@ -70,28 +78,29 @@ const UpdateSupplier = () => {
     await dispatch(updateSupplier({ id, updatedSupplier }));
   };
 
-  // back to suppliers
-  const handleCancel = () => {
-    return navigate("/suppliers");
-  }
-
   return (
-    <div className="add-supplier">
-      <FormSupplier
-        suppliers={suppliers}
-        currentSupplier={currentSupplier}
-        inputs={inputs}
-        address={address}
-        setAddress={setAddress}
-        handleOnChange={handleOnChange}
-        handleOnSubmit={handleOnSubmit}
-        handleCancel={handleCancel}
-      />
-      <SubmitAlert
-        statusSubmit={statusSubmit}
-        mess={mess}
-      />
-    </div>
+    <>
+      {statusFetching === "rejected" ?
+        <ErrorFetching /> :
+        <>
+          <div className="add-supplier">
+            <FormSupplier
+              currentSupplier={currentSupplier}
+              inputs={inputs}
+              address={address}
+              setAddress={setAddress}
+              handleOnChange={handleOnChange}
+              handleOnSubmit={handleOnSubmit}
+            />
+            <SubmitAlert
+              statusSubmit={statusSubmit}
+              mess={mess}
+            />
+          </div>
+        </>
+
+      }
+    </>
   );
 };
 

@@ -1,17 +1,14 @@
 import FormCategory from "../../../components/FormCategory/FormCategory";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { selectObjectData, selectData, selectStatusSubmit } from "../../../redux/selectors";
+import { selectData, selectObjectData, selectStatusSubmit } from "../../../redux/selectors";
 import { uploadImage } from "../../../services/uploadFirebase";
 import { addCategory, getCategories, resetStatusSubmit } from "../../../redux/slice/categorySlice";
 import SubmitAlert from "../../../components/SubmitAlert/SubmitAlert";
 
 const CreateCategory = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const objectData = useSelector(selectObjectData);
-  const categories = useSelector(selectData("category", "categories"));
   const statusSubmit = useSelector(selectStatusSubmit("category"));
   const [inputs, setInputs] = useState({
     name: "",
@@ -20,18 +17,20 @@ const CreateCategory = () => {
     parentId: "",
     isActive: false,
   });
+  const errorApi = useSelector(selectData("category", "error"))
   const [file, setFile] = useState({});
-  const [tempURL, setTempURL] = useState("");
   const mess = {
     success: "Tạo danh mục thành công!",
-    error: "Tạo danh mục thất bại!"
+    error: errorApi.other
   }
+  const imgURL = file.name ? URL.createObjectURL(file) : null;
 
   useEffect(() => {
     dispatch(getCategories());
     dispatch(resetStatusSubmit());
   }, [])
 
+  // set default root category as parent category
   useEffect(() => {
     if (Object.keys(objectData).length !== 0) {
       setInputs({
@@ -39,7 +38,21 @@ const CreateCategory = () => {
         parentId: objectData._id
       })
     }
-  }, [objectData])
+  }, [objectData]);
+
+  // after add category success clear input 
+  useEffect(() => {
+    if (statusSubmit === 'fulfilled') {
+      setInputs({
+        name: "",
+        desc: "",
+        slug: "",
+        parentId: objectData._id,
+        isActive: false,
+      });
+      setFile({});
+    }
+  }, [statusSubmit])
 
   const handleOnChange = (e) => {
     if (e.target.type === "checkbox") {
@@ -48,6 +61,14 @@ const CreateCategory = () => {
       setInputs(prev => ({ ...prev, [e.target.name]: e.target.value }));
     }
   };
+
+  const handleFile = (e) => {
+    setFile(e.target.files[0])
+  }
+
+  const handleDelImg = () => {
+    setFile({});
+  }
 
   const handleOnSubmit = async () => {
     const imgURl = await uploadImage(file);
@@ -58,24 +79,16 @@ const CreateCategory = () => {
     dispatch(addCategory(category));
   };
 
-  // back to categories
-  const handleCancel = () => {
-    return navigate("/categories");
-  };
-
   return (
     <div className="add-category">
       <FormCategory
-        categories={categories}
         objectData={objectData}
-        file={file}
-        setFile={setFile}
-        tempURL={tempURL}
-        setTempURL={setTempURL}
         inputs={inputs}
+        imgURL={imgURL}
+        handleDelImg={handleDelImg}
         handleOnChange={handleOnChange}
         handleOnSubmit={handleOnSubmit}
-        handleCancel={handleCancel}
+        handleFile={handleFile}
       />
       <SubmitAlert
         statusSubmit={statusSubmit}

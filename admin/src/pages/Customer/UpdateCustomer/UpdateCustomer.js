@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import SubmitAlert from "../../../components/SubmitAlert/SubmitAlert";
-import { getCustomers, resetStatusSubmit, updateCustomer } from "../../../redux/slice/customerSlice";
+import { getCurrentCustomer, resetStatusSubmit, updateCustomer } from "../../../redux/slice/customerSlice";
 import { selectData, selectStatusSubmit } from "../../../redux/selectors";
 import FormCustomer from "../../../components/FormCustomer/FormCustomer";
 import { useParams } from "react-router-dom";
 import moment from "moment";
+import ErrorFetching from "../../../components/ErrorFetching/ErrorFetching";
 
 const UpdateCustomer = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const customers = useSelector(selectData("customer", "customers"));
-  const currentCustomer = customers.filter(item => item._id === id)[0];
+  const currentCustomer = useSelector(selectData("customer", "currentCustomer"));
   const statusSubmit = useSelector(selectStatusSubmit("customer"));
+  const statusFetching = useSelector(selectData("customer", "isFetching"));
   const [inputs, setInputs] = useState({
     name: "",
     email: "",
@@ -22,18 +23,19 @@ const UpdateCustomer = () => {
     dateOfBirth: null,
     isActive: false,
   });
+  const errorApi = useSelector(selectData("customer", "error"));
   const mess = {
     success: "Cập nhật thông tin thành công!",
-    error: "Cập nhật thông tin thất bại!"
+    error: errorApi.other
   }
 
   useEffect(() => {
-    dispatch(getCustomers());
+    dispatch(getCurrentCustomer(id));
     dispatch(resetStatusSubmit());
   }, []);
 
   useEffect(() => {
-    if (currentCustomer) {
+    if (currentCustomer && Object.keys(currentCustomer).length) {
       setInputs({
         ...inputs,
         name: currentCustomer.name,
@@ -44,7 +46,7 @@ const UpdateCustomer = () => {
         isActive: currentCustomer.isActive,
       });
     }
-  }, [currentCustomer])
+  }, [currentCustomer]);
 
   const handleOnChange = (e) => {
     if (e.target.type === "checkbox") {
@@ -74,20 +76,26 @@ const UpdateCustomer = () => {
   };
 
   return (
-    <div className="update-customer">
-      <FormCustomer
-        customers={customers}
-        inputs={inputs}
-        handleDatePicker={handleDatePicker}
-        handleOnChange={handleOnChange}
-        handleOnSubmit={handleOnSubmit}
-        id={id}
-      />
-      <SubmitAlert
-        statusSubmit={statusSubmit}
-        mess={mess}
-      />
-    </div>
+    <>
+      {statusFetching === "rejected" ?
+        <ErrorFetching /> :
+        <>
+          <div className="update-customer">
+            <FormCustomer
+              inputs={inputs}
+              handleDatePicker={handleDatePicker}
+              handleOnChange={handleOnChange}
+              handleOnSubmit={handleOnSubmit}
+              id={id}
+            />
+            <SubmitAlert
+              statusSubmit={statusSubmit}
+              mess={mess}
+            />
+          </div>
+        </>
+      }
+    </>
   );
 };
 

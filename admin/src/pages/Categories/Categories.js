@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectCategoriesWithoutRoot, selectStatusSubmit } from "../../redux/selectors";
+import { selectCategoriesWithoutRoot, selectData, selectStatusSubmit } from "../../redux/selectors";
 import { deleteCategory, getCategories, resetStatusSubmit } from "../../redux/slice/categorySlice";
 import CustomDialog from "../../components/CustomDialog/CustomDialog";
 import { DataGrid } from '@mui/x-data-grid';
@@ -10,6 +10,7 @@ import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
 import { delImgFireBase } from "../../services/uploadFirebase";
 import SubmitAlert from '../../components/SubmitAlert/SubmitAlert';
+import ErrorFetching from '../../components/ErrorFetching/ErrorFetching';
 
 const Categories = () => {
   const dispatch = useDispatch();
@@ -17,9 +18,11 @@ const Categories = () => {
   const [selectionModel, setSelectionModel] = useState([]);
   const categoriesWithoutRoot = useSelector(selectCategoriesWithoutRoot);
   const statusSubmit = useSelector(selectStatusSubmit("category"));
+  const statusFetching = useSelector(selectData("category", "isFetching"));
+  const errorApi = useSelector(selectData("category", "error"))
   const mess = {
     success: "Xoá danh mục thành công!",
-    error: "Xoá danh mục thất bại!"
+    error: errorApi.other
   }
 
   useEffect(() => {
@@ -30,8 +33,8 @@ const Categories = () => {
   const selectedCategories = [...categoriesWithoutRoot.filter(item => selectionModel.includes(item._id))];
 
   const handleDelete = async (item) => {
-    dispatch(deleteCategory(item._id));
-    await delImgFireBase(item.img);
+    await dispatch(deleteCategory(item._id));
+    delImgFireBase(item.img);
   };
 
   const columns = [
@@ -115,31 +118,36 @@ const Categories = () => {
 
   return (
     <>
-      <div className="flex-r-c">
-        <Link to='/categories/create' className='btn-default'>Tạo danh mục mới</Link>
-      </div>
-      <div className="wrapper_data-grid categories">
-        <DataGrid
-          rows={categoriesWithoutRoot}
-          disableSelectionOnClick
-          columns={columns}
-          disableColumnMenu
-          getRowId={(row) => row._id}
-          checkboxSelection={true}
-          pageSize={pageSize}
-          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-          rowsPerPageOptions={[20, 50, 100]}
-          pagination
-          onSelectionModelChange={(newSelectionModel) => {
-            setSelectionModel(newSelectionModel);
-          }}
-          selectionModel={selectionModel}
-        />
-      </div>
-      <SubmitAlert
-        statusSubmit={statusSubmit}
-        mess={mess}
-      />
+      {statusFetching === "rejected" ?
+        <ErrorFetching /> :
+        <>
+          <div className="flex-r-c">
+            <Link to='/categories/create' className='btn-default'>Tạo danh mục mới</Link>
+          </div>
+          <div className="wrapper_data-grid categories">
+            <DataGrid
+              rows={categoriesWithoutRoot}
+              disableSelectionOnClick
+              columns={columns}
+              disableColumnMenu
+              getRowId={(row) => row._id}
+              checkboxSelection={true}
+              pageSize={pageSize}
+              onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+              rowsPerPageOptions={[20, 50, 100]}
+              pagination
+              onSelectionModelChange={(newSelectionModel) => {
+                setSelectionModel(newSelectionModel);
+              }}
+              selectionModel={selectionModel}
+            />
+          </div>
+          <SubmitAlert
+            statusSubmit={statusSubmit}
+            mess={mess}
+          />
+        </>
+      }
     </>
   )
 };

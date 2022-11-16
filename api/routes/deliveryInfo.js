@@ -7,16 +7,16 @@ const router = express.Router();
 
 // CREATE
 router.post("/create", verifyTokenRoleAdmin, async (req, res) => {
-  const [id] = await Customer.find({ email: req.body.email }, "_id");
-  const newAddress = new DeliveryInfo({
-    customerId: id._id,
-    alias: req.body.alias,
-    name: req.body.name,
-    address: req.body.address,
-    phone: req.body.phone,
-    other: req.body.other
-  });
   try {
+    const [id] = await Customer.find({ email: req.body.email }, "_id");
+    const newAddress = new DeliveryInfo({
+      customerId: id._id,
+      alias: req.body.alias,
+      name: req.body.name,
+      address: req.body.address,
+      phone: req.body.phone,
+      other: req.body.other
+    });
     const saveAddress = await newAddress.save();
     res.status(201).json(saveAddress);
   } catch (error) {

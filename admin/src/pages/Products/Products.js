@@ -9,6 +9,7 @@ import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
 import CustomDialog from "../../components/CustomDialog/CustomDialog";
 import SubmitAlert from '../../components/SubmitAlert/SubmitAlert';
+import ErrorFetching from '../../components/ErrorFetching/ErrorFetching';
 
 
 const ProductList = () => {
@@ -17,9 +18,11 @@ const ProductList = () => {
   const products = useSelector(selectData("product", 'products'));
   const [selectionModel, setSelectionModel] = useState([]);
   const statusSubmit = useSelector(selectStatusSubmit("product"));
+  const statusFetching = useSelector(selectData("product", "isFetching"))
+  const errorApi = useSelector(selectData("product", "error"))
   const mess = {
     success: "Xoá sản phẩm thành công!",
-    error: "Xoá sản phẩm thất bại!"
+    error: errorApi.other
   }
 
   useEffect(() => {
@@ -139,31 +142,36 @@ const ProductList = () => {
   ];
   return (
     <>
-      <div className="flex-r-c">
-        <Link to='/add-product' className='btn-default'>Sản phẩm mới</Link>
-      </div>
-      <div className="wrapper_data-grid productList"  >
-        <DataGrid
-          rows={products}
-          disableSelectionOnClick
-          columns={columns}
-          disableColumnMenu
-          getRowId={(row) => row._id}
-          checkboxSelection
-          pageSize={pageSize}
-          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-          rowsPerPageOptions={[20, 50, 100]}
-          pagination
-          onSelectionModelChange={(newSelectionModel) => {
-            setSelectionModel(newSelectionModel);
-          }}
-          selectionModel={selectionModel}
-        />
-      </div>
-      <SubmitAlert
-        statusSubmit={statusSubmit}
-        mess={mess}
-      />
+      {statusFetching === "rejected" ?
+        <ErrorFetching /> :
+        <>
+          <div className="flex-r-c">
+            <Link to='/add-product' className='btn-default'>Sản phẩm mới</Link>
+          </div>
+          <div className="wrapper_data-grid productList"  >
+            <DataGrid
+              rows={products}
+              disableSelectionOnClick
+              columns={columns}
+              disableColumnMenu
+              getRowId={(row) => row._id}
+              checkboxSelection
+              pageSize={pageSize}
+              onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+              rowsPerPageOptions={[20, 50, 100]}
+              pagination
+              onSelectionModelChange={(newSelectionModel) => {
+                setSelectionModel(newSelectionModel);
+              }}
+              selectionModel={selectionModel}
+            />
+          </div>
+          <SubmitAlert
+            statusSubmit={statusSubmit}
+            mess={mess}
+          />
+        </>
+      }
     </>
   )
 };

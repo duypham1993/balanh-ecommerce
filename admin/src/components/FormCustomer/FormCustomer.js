@@ -4,11 +4,16 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { selectData } from "../../redux/selectors";
+import { resetErorrEmail } from "../../redux/slice/customerSlice";
 
 const FormCustomer = (props) => {
   const { inputs, handleDatePicker, handleOnChange, handleOnSubmit, id } = props;
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [formErrors, setFormErrors] = useState({});
+  const errorApi = useSelector(selectData("customer", "error"))
 
   const handleChangeInputs = (e) => {
     const { value, name } = e.target;
@@ -59,7 +64,7 @@ const FormCustomer = (props) => {
       errors.gender = "Vui lòng chọn mục này!";
     }
 
-    if (inputs.dateOfBirth && !inputs.dateOfBirth.isValid()) {
+    if ((inputs.dateOfBirth && !inputs.dateOfBirth.isValid()) || (inputs.dateOfBirth && inputs.dateOfBirth.isAfter(new Date()))) {
       errors.dateOfBirth = "Ngày sinh không hợp lệ!";
     }
 
@@ -68,6 +73,7 @@ const FormCustomer = (props) => {
 
   const submitFrom = (e) => {
     e.preventDefault();
+    dispatch(resetErorrEmail());
     setFormErrors(validate(inputs));
     Object.keys(validate(inputs)).length === 0 && handleOnSubmit();
   }
@@ -75,7 +81,7 @@ const FormCustomer = (props) => {
   // back to suppliers
   const handleCancel = () => {
     return navigate("/customers");
-  }
+  };
 
   return (
     <form className="form-default" onSubmit={(e) => submitFrom(e)}>
@@ -108,7 +114,7 @@ const FormCustomer = (props) => {
               onChange={(e) => handleChangeInputs(e)}
               placeholder="example@abc.com"
             />
-            <p className={formErrors.email ? "form-default__error show" : "form-default__error"}>{formErrors.email}</p>
+            <p className={formErrors.email || errorApi.email ? "form-default__error show" : "form-default__error"}>{formErrors.email || errorApi.email}</p>
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
@@ -177,6 +183,7 @@ const FormCustomer = (props) => {
                 inputFormat="DD/MM/YYYY"
               />
             </LocalizationProvider>
+            <p className={formErrors.dateOfBirth ? "form-default__error show" : "form-default__error"}>{formErrors.dateOfBirth}</p>
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">

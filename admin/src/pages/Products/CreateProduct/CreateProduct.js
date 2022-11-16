@@ -1,7 +1,7 @@
 import FormProduct from "../../../components/FormProduct/FormProduct";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addProduct, getProducts, resetStatusSubmit } from "../../../redux/slice/productSlice";
+import { addProduct, resetStatusSubmit } from "../../../redux/slice/productSlice";
 import { uploadImage } from "../../../services/uploadFirebase";
 import { selectData, selectStatusSubmit } from "../../../redux/selectors";
 import SubmitAlert from "../../../components/SubmitAlert/SubmitAlert";
@@ -24,18 +24,18 @@ const AddProduct = () => {
   });
   const [file, setFile] = useState([]);
   let imgURLsLocal = file.map(item => URL.createObjectURL(item));
-  const products = useSelector(selectData("product", "products"));
   const statusSubmit = useSelector(selectStatusSubmit("product"));
+  const errorApi = useSelector(selectData("product", "error"))
   const mess = {
     success: "Tạo sản phẩm thành công!",
-    error: "Tạo sản phẩm thất bại!"
+    error: errorApi.other
   }
 
   useEffect(() => {
-    dispatch(getProducts());
     dispatch(resetStatusSubmit());
   }, []);
 
+  // clear inputs after add product success
   useEffect(() => {
     if (statusSubmit === "fulfilled") {
       setInputs({
@@ -52,8 +52,40 @@ const AddProduct = () => {
         imgs: [],
         isActive: false
       });
+
+      setFile([]);
     }
   }, [statusSubmit]);
+
+  const handleOnChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    if (type === "checkbox") {
+      setInputs({ ...inputs, [name]: checked })
+    } else {
+      setInputs({ ...inputs, [name]: value });
+    }
+  }
+
+  const handleAutoComplete = (name, value) => {
+    setInputs({ ...inputs, [name]: value })
+  }
+
+  const handleMultiCheckbox = (e) => {
+    const { checked, value } = e.target;
+    checked ?
+      setInputs({ ...inputs, categories: [...inputs.categories, value] })
+      :
+      setInputs({ ...inputs, categories: inputs.categories.filter(item => item !== value) })
+  }
+
+  const handleFile = (e) => {
+    setFile(prev => [...prev, ...e.target.files])
+  }
+
+  const handleDelImgLocal = (index) => {
+    const tempFile = file.filter((item, i) => i !== index);
+    setFile(tempFile);
+  }
 
   const handleOnSubmit = async () => {
     const imgs = await Promise.all(file.map((item) => uploadImage(item)));
@@ -71,12 +103,13 @@ const AddProduct = () => {
     <div className="create-product">
       <FormProduct
         inputs={inputs}
-        setInputs={setInputs}
-        file={file}
-        setFile={setFile}
+        handleDelImgLocal={handleDelImgLocal}
+        handleOnChange={handleOnChange}
+        handleAutoComplete={handleAutoComplete}
+        handleMultiCheckbox={handleMultiCheckbox}
+        handleFile={handleFile}
         imgURLsLocal={imgURLsLocal}
         handleOnSubmit={handleOnSubmit}
-        products={products}
       />
       <SubmitAlert
         statusSubmit={statusSubmit}

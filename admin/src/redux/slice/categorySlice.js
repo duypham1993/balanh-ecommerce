@@ -6,19 +6,32 @@ export const getCategories = createAsyncThunk('category/fetchAll', async () => {
   return res.data;
 });
 
-export const addCategory = createAsyncThunk('category/add', async (category) => {
-  const res = await userRequest.post("/category/create", category);
-  return res.data;
+export const addCategory = createAsyncThunk('category/add', async (category, { rejectWithValue }) => {
+  try {
+    const res = await userRequest.post("/category/create", category);
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
 });
 
-export const updateCategory = createAsyncThunk('category/update', async (update) => {
-  const res = await userRequest.put(`category/${update.id}`, update.updatedCategory);
-  return res.data;
+export const updateCategory = createAsyncThunk('category/update', async (update, { rejectWithValue }) => {
+  try {
+    const res = await userRequest.put(`category/${update.id}`, update.updatedCategory);
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
 });
 
-export const deleteCategory = createAsyncThunk('category/delete', async (id) => {
-  const res = await userRequest.delete(`category/delete/${id}`);
-  return res.data;
+export const deleteCategory = createAsyncThunk('category/delete', async (id, { rejectWithValue }) => {
+  try {
+    const res = await userRequest.delete(`category/delete/${id}`);
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
+
 });
 
 const categorySlice = createSlice({
@@ -28,10 +41,14 @@ const categorySlice = createSlice({
     objectData: {},
     isFetching: "",
     statusSubmit: "",
+    error: {},
   },
   reducers: {
     resetStatusSubmit: (state) => {
       state.statusSubmit = "";
+    },
+    resetErrorSlug: (state) => {
+      state.error.slug = "";
     }
   },
   extraReducers: (builders) => {
@@ -58,6 +75,7 @@ const categorySlice = createSlice({
     })
     builders.addCase(addCategory.rejected, (state, action) => {
       state.statusSubmit = "rejected";
+      state.error = action.payload;
     })
 
     // update category
@@ -72,6 +90,7 @@ const categorySlice = createSlice({
     })
     builders.addCase(updateCategory.rejected, (state, action) => {
       state.statusSubmit = "rejected";
+      state.error = action.payload;
     })
 
     // delete category
@@ -87,9 +106,10 @@ const categorySlice = createSlice({
 
     builders.addCase(deleteCategory.rejected, (state, action) => {
       state.statusSubmit = "rejected";
+      state.error = action.payload;
     })
   }
 
 });
-export const { resetStatusSubmit } = categorySlice.actions;
+export const { resetStatusSubmit, resetErrorSlug } = categorySlice.actions;
 export default categorySlice;
