@@ -1,11 +1,53 @@
+.navbar {
+  box-shadow     : 0 0 5px var(--border-gray-1) !important;
+  background     : var(--white) !important;
+  color          : var(--text-gray-1) !important;
+  justify-content: space-between;
+  flex-direction : row !important;
+  align-items    : center;
+
+  &__account {
+    margin-right: 15px;
+  }
+}
+
 .sidebar {
-  &__header {
-    box-shadow     : 0 0 5px var(--border-gray-1) !important;
-    background     : var(--white) !important;
-    color          : var(--text-gray-1) !important;
-    justify-content: space-between;
-    flex-direction : row !important;
-    align-items    : center;
+  &__list-item {
+    list-style  : none;
+    padding-left: 10px;
+
+    &--sub {
+      padding-left: 15px;
+
+
+      .sidebar__item {
+        margin    : 0;
+        padding   : 0;
+        max-height: 0;
+        overflow  : hidden;
+        transition: max-height 0.3s;
+      }
+
+      &.show {
+        .sidebar__item {
+          max-height: 31px;
+        }
+      }
+    }
+  }
+
+  &__item {
+    padding: 10px 0;
+  }
+
+  &__item-wrapper {
+    display      : flex;
+    align-items  : center;
+    width        : 100%;
+    border       : none;
+    background   : none;
+    cursor       : pointer;
+    margin-bottom: 5px;
   }
 
   &__logo {
@@ -15,25 +57,117 @@
     padding-left: 15px;
   }
 
-  &__account {
-    margin-right: 15px;
-  }
-
   &__link {
     text-decoration: none;
     color          : var(--text-gray-1);
+    padding        : 5px 25px 5px;
     display        : flex;
-    flex-basis     : 100%;
-    padding        : 12px 20px;
     border-left    : 4px solid transparent;
     transition     : all 0.3s;
+  }
 
-    &:hover {
-      border-left-color: var(--green);
+  &__icon {
+    margin-right   : 16px;
+    justify-content: center;
+    display        : inline-flex;
+  }
+
+  &__arrow {
+    position: absolute;
+    right   : 15px;
+  }
+
+  &__title {
+    opacity: 1;
+    display: inline-block;
+  }
+
+  &.hidden {
+    &.MuiDrawer-root {
+      overflow: visible;
+      width   : 0;
+
+      .MuiPaper-root {
+        overflow: hidden;
+        width   : 0;
+      }
     }
 
-    &.active {
-      border-left: 4px solid var(--green);
+    .sidebar {
+      &__list-item {
+        padding: 0;
+
+        &--sub {
+          width     : 0;
+          display   : none;
+          position  : absolute;
+          padding   : 8px 0 8px 16px;
+          top       : 0;
+          left      : 100%;
+          background: var(--text-gray-1);
+          min-height: 48px;
+
+          .sidebar__item {
+            max-height: none !important;
+            padding   : 5px 0;
+          }
+        }
+      }
+
+      &__title {
+        opacity: 0;
+        display: none;
+      }
+
+      &__item {
+        position: relative;
+
+        &:hover {
+          background: var(--text-gray-1);
+          color     : var(--white);
+
+          .sidebar__list-item--sub {
+            width    : 180px;
+            animation: side 0.3s;
+            display  : block;
+
+            .sidebar__link {
+              color  : var(--white);
+              padding: 0;
+              margin : 0;
+            }
+          }
+        }
+      }
+
+      &__item-wrapper {
+        justify-content: center;
+      }
+
+      &__icon {
+        margin-right: 0;
+      }
+
+      &__arrow {
+        display: none;
+        opacity: 0;
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 900px) {
+  .sidebar {
+    &.hidden {
+      &.MuiDrawer-root {
+        overflow: visible;
+        width   : 64px;
+
+        .MuiPaper-root {
+          overflow: visible;
+          width   : 64px;
+        }
+      }
     }
   }
 }

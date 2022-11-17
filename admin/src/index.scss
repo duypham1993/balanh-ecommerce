@@ -139,7 +139,7 @@ body {
 }
 
 .form-default {
-  padding-top: 20px;
+  padding-top: 35px;
 
   .form-default {
     &__group {
@@ -324,5 +324,25 @@ body {
 
   .input-default {
     width: 50%;
+  }
+}
+
+@keyframes side {
+  0% {
+    width: 0;
+  }
+
+  100% {
+    width: 180px;
+  }
+}
+
+@keyframes dropdown {
+  0% {
+    height: 0;
+  }
+
+  100% {
+    height: auto;
   }
 }
