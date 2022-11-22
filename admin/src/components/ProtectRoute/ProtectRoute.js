@@ -1,8 +1,9 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { getLocalAccessToken, getLocalCurrentUser } from "../../services/localStorage";
 
 const ProtectRoute = () => {
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  const accessToken = JSON.parse(localStorage.getItem("currentUser"));
+  const currentUser = getLocalCurrentUser();
+  const accessToken = getLocalAccessToken();
   const location = useLocation();
 
   return (

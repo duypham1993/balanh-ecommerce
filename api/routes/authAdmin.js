@@ -39,36 +39,43 @@ router.post("/login", async (req, res) => {
         role: user.role
       },
       process.env.JWT_KEY,
-      { expiresIn: "15m" }
-    );
-    const newRefreshToken = jwt.sign(
-      {
-        _id: user._id,
-        role: user.role,
-        isActive: user.isActive
-      },
-      process.env.REFRESH_TOKEN_KEY
+      { expiresIn: "5s" }
     );
 
-    let newRefreshTokenArr = !cookies?.jwt ? user.refreshToken : user.refreshToken.filter(item => item !== cookies.jwt);
+    if (req.body.rememberMe) {
+      const newRefreshToken = jwt.sign(
+        {
+          _id: user._id,
+          role: user.role,
+          isActive: user.isActive
+        },
+        process.env.REFRESH_TOKEN_KEY
+      );
 
-    if (cookies?.jwt) {
-      const refreshToken = cookies.jwt;
-      const foundToken = await Admin.findOne({ refreshToken }).exec();
+      let newRefreshTokenArr = !cookies?.jwt ? user.refreshToken : user.refreshToken.filter(item => item !== cookies.jwt);
 
-      if (!foundToken) {
-        newRefreshTokenArr = [];
+      if (cookies?.jwt) {
+        const refreshToken = cookies.jwt;
+        const foundToken = await Admin.findOne({ refreshToken }).exec();
+
+        if (!foundToken) {
+          newRefreshTokenArr = [];
+        }
+
+        res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
       }
 
-      res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
+      // Save refreshToken with current user
+      user.refreshToken = [...newRefreshTokenArr, newRefreshToken];
+      await user.save();
+
+      // Creates Secure Cookie with refresh accessToken
+      res.cookie('jwt', newRefreshToken, { httpOnly: true, sameSite: 'None', secure: true, maxAge: 24 * 60 * 60 * 1000 })
+    } else {
+      if (cookies?.jwt) {
+        res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
+      }
     }
-
-    // Save refreshToken with current user
-    user.refreshToken = [...newRefreshTokenArr, newRefreshToken];
-    await user.save();
-
-    // Creates Secure Cookie with refresh accessToken
-    res.cookie('jwt', newRefreshToken, { httpOnly: true, sameSite: 'None', secure: true, maxAge: 24 * 60 * 60 * 1000 })
 
     const currentUser = {
       _id: user._doc._id,
@@ -85,5 +92,29 @@ router.post("/login", async (req, res) => {
     res.status(501).json(error)
   }
 });
+
+router.delete("/logout", async (req, res) => {
+  let error = {};
+  try {
+    const cookies = req.cookies;
+    if (!cookies?.jwt) return res.sendStatus(204);
+    const refreshToken = cookies.jwt;
+
+    const user = await Admin.findOne({ refreshToken: refreshToken }).exec();
+
+    if (!user) {
+      res.clearCookie('jwt', { httpOnly: true, secure: true, sameSite: 'None' })
+      return res.sendStatus(204);
+    }
+
+    user.refreshToken = user.refreshToken.filter(item => item !== refreshToken);
+    user.save();
+    res.clearCookie('jwt', { httpOnly: true, secure: true, sameSite: "None" });
+    return res.sendStatus(204);
+  } catch {
+    error.other = "Đăng xuất thất bại!"
+    res.status(201).json(error);
+  }
+})
 
 module.exports = router;

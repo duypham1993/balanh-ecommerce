@@ -9,12 +9,13 @@ import Logout from '@mui/icons-material/Logout';
 import MenuItem from '@mui/material/MenuItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import { useDispatch } from "react-redux";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { logout } from "../../redux/slice/loginSlice";
-import { Link, useNavigate } from "react-router-dom";
 
 const Account = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const [anchorEl, setAnchorEl] = useState(null);
   const openAcc = Boolean(anchorEl);
 
@@ -25,9 +26,11 @@ const Account = () => {
     setAnchorEl(null);
   };
 
-  const handleLogOut = () => {
-    dispatch(logout());
-    navigate("/login");
+  const handleLogOut = async () => {
+    await dispatch(logout());
+    navigate("/login", {
+      state: { from: location }, replace: true
+    });
   }
   return (
     <>

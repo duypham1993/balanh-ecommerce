@@ -12,6 +12,15 @@ export const login = createAsyncThunk('login', async (user, { rejectWithValue })
   }
 });
 
+export const logout = createAsyncThunk("logout", async (a, { rejectWithValue }) => {
+  try {
+    await axiosPrivate.delete("authAdmin/logout");
+    localStorage.clear();
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
+})
+
 export const getCurrentUser = createAsyncThunk('admin/currentadmin', async (id) => {
   const res = await axiosPrivate.get(`/admin/${id}`);
   localStorage.setItem("currentUser", JSON.stringify(res.data));
@@ -26,10 +35,6 @@ const loginSlice = createSlice({
     error: {}
   },
   reducers: {
-    logout: (state) => {
-      state.currentUser = null;
-      localStorage.clear();
-    },
     resetErrorValidate: (state) => {
       state.error.validate = "";
     }
@@ -43,7 +48,7 @@ const loginSlice = createSlice({
       state.currentUser = action.payload;
     })
     builders.addCase(login.rejected, (state, action) => {
-      state.isFetching = "fulfilled";
+      state.isFetching = "rejected";
       state.error = action.payload;
     })
 
@@ -55,10 +60,22 @@ const loginSlice = createSlice({
       state.currentUser = action.payload;
     })
     builders.addCase(getCurrentUser.rejected, (state, action) => {
+      state.isFetching = "rejected";
+      state.error = action.payload;
+    })
+
+    builders.addCase(logout.pending, (state, action) => {
+      state.isFetching = "pending";
+    })
+    builders.addCase(logout.fulfilled, (state, action) => {
       state.isFetching = "fulfilled";
+      state.currentUser = {};
+    })
+    builders.addCase(logout.rejected, (state, action) => {
+      state.isFetching = "rejected";
       state.error = action.payload;
     })
   }
 });
-export const { logout, resetErrorValidate } = loginSlice.actions
+export const { resetErrorValidate } = loginSlice.actions
 export default loginSlice;

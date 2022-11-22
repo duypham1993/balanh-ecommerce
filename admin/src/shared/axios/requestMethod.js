@@ -1,6 +1,6 @@
 import axios from "axios";
 import { refreshToken } from "../../services/refreshToken";
-import { getLocalAccessToken } from "../../services/token";
+import { clearLocalStorage, getLocalAccessToken } from "../../services/localStorage";
 
 const BASE_URL = process.env.REACT_APP_URL_API;
 
@@ -34,6 +34,11 @@ axiosPrivate.interceptors.response.use(
   response => response,
   async (error) => {
     const prevRequestConfig = error?.config;
+
+    if (error?.response?.status === 403 && error?.response?.data === "logout") {
+      clearLocalStorage();
+      return window.location.reload();
+    }
 
     if (error?.response?.status === 401 && !prevRequestConfig.sent) {
       const newAccessToken = await refreshToken();

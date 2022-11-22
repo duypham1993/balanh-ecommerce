@@ -5,11 +5,12 @@ import { selectData } from "../../redux/selectors";
 import { useDispatch, useSelector } from "react-redux";
 import { resetErrorEmail, updateAdmin } from "../../redux/slice/adminSlice";
 import { getCurrentUser } from "../../redux/slice/loginSlice";
+import { getLocalCurrentUser } from "../../services/localStorage";
 
 const Profile = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const localUser = JSON.parse(localStorage.getItem("currentUser"));
+  const localUser = getLocalCurrentUser();
   const userID = localUser._id;
   const currentUser = useSelector(selectData("login", "currentUser"));
   const [inputs, setInputs] = useState({

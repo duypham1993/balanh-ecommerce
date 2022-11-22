@@ -23,6 +23,7 @@ const Login = () => {
     email: "",
     password: ""
   });
+  const [rememberMe, setRemeberMe] = useState(false);
   const [showPw, setShowPw] = useState(false);
   const [formErrors, setFormErrors] = useState({});
   const dispatch = useDispatch();
@@ -31,7 +32,7 @@ const Login = () => {
   const errorApi = useSelector(selectData("login", "error"));
 
   useEffect(() => {
-    if (currentUser && Object.keys(currentUser).length || localUser) {
+    if (currentUser && Object.keys(currentUser).length && localUser) {
       navigate("/", { replace: true });
     }
   }, [currentUser]);
@@ -52,7 +53,10 @@ const Login = () => {
     e.preventDefault();
     dispatch(resetErrorValidate())
     setFormErrors(validate(inputs));
-    !Object.keys(validate(inputs)).length && await dispatch(login(inputs));
+    if (!Object.keys(validate(inputs)).length) {
+      const loginInfo = { ...inputs, rememberMe }
+      await dispatch(login(loginInfo));
+    }
   };
 
   const validate = (inputs) => {
@@ -116,10 +120,10 @@ const Login = () => {
           <Button variant="contained" type="submit" className='login-form__button' onClick={(e) => handleOnClick(e)}>Đăng nhập</Button>
           <div className="flex-bw-center">
             <div>
-              <FormControlLabel control={<Checkbox name="remember-login" />} label="Duy trì đăng nhập" />
+              <FormControlLabel control={<Checkbox name="remember-login" onChange={(e) => setRemeberMe(e.target.checked)} />} label="Duy trì đăng nhập" />
             </div>
             <div>
-              <Link to="/forgot-password" className="link-default">Bạn quên mật khẩu?</Link>
+              <Link to="#" className="link-default">Bạn quên mật khẩu?</Link>
             </div>
           </div>
         </Box>

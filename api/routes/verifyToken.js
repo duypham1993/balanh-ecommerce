@@ -2,11 +2,14 @@ import jwt from "jsonwebtoken";
 
 const verifyToken = (req, res, next) => {
   const authHeader = req.headers.accesstoken;
+  const cookies = req.cookies;
   if (authHeader) {
     const token = authHeader.split(" ")[1];
 
     jwt.verify(token, process.env.JWT_KEY, (err, user) => {
-      if (err) return res.status(401).json("Token expired");
+      if (err && cookies?.jwt) return res.status(401).json("Token expired");
+      if (err && !cookies?.jwt) return res.status(403).json("logout");
+
       req.user = user;
       next();
     })

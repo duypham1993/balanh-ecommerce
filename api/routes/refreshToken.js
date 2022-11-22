@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   const cookies = req.cookies;
-  if (!cookies?.jwt) return res.status(401).json("Cookies not found");
+  if (!cookies?.jwt) return res.status(401).json("Not found the key");
 
   const refreshToken = cookies.jwt;
 
