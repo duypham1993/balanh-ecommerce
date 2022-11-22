@@ -1,30 +1,30 @@
 import { createAsyncThunk, createSlice, current } from "@reduxjs/toolkit";
-import { userRequest } from "../../shared/axios/requestMethod";
+import axiosPrivate from "../../shared/axios/requestMethod";
 
 export const getOrigin = createAsyncThunk(
   "orgin/fetchAll", async () => {
-    const res = await userRequest.get("/origin");
+    const res = await axiosPrivate.get("/origin");
     return res.data;
   }
 )
 
 export const addOrigin = createAsyncThunk(
   "orgin/add", async (origin) => {
-    const res = await userRequest.post("/origin/create", origin);
+    const res = await axiosPrivate.post("/origin/create", origin);
     return res.data;
   }
 )
 
 export const updateOrigin = createAsyncThunk(
   "origin/update", async (update) => {
-    const res = await userRequest.put(`/origin/${update.id}`, update.updatedOrigin);
+    const res = await axiosPrivate.put(`/origin/${update.id}`, update.updatedOrigin);
     return res.data;
   }
 )
 
 export const deleteOrigin = createAsyncThunk(
   "origin/delete", async (id) => {
-    const res = await userRequest.delete(`origin/delete/${id}`);
+    const res = await axiosPrivate.delete(`origin/delete/${id}`);
     return res.data;
   }
 )

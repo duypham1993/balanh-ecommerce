@@ -1,28 +1,28 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { userRequest } from "../../shared/axios/requestMethod";
+import axiosPrivate from "../../shared/axios/requestMethod";
 
 export const getAddresssList = createAsyncThunk('deliveryInfo/fetchAll', async () => {
-  const res = await userRequest.get("/deliveryInfo/");
+  const res = await axiosPrivate.get("/deliveryInfo/");
   return res.data;
 });
 
 export const getCurrentAddress = createAsyncThunk('deliveryInfo/getcurrent', async (id) => {
-  const res = await userRequest.get(`/deliveryInfo/${id}`);
+  const res = await axiosPrivate.get(`/deliveryInfo/${id}`);
   return res.data;
 });
 
 export const addAddress = createAsyncThunk('deliveryInfo/add', async (deliveryInfo) => {
-  const res = await userRequest.post("/deliveryInfo/create", deliveryInfo);
+  const res = await axiosPrivate.post("/deliveryInfo/create", deliveryInfo);
   return res.data;
 });
 
 export const updateAddress = createAsyncThunk('deliveryInfo/update', async (update) => {
-  const res = await userRequest.put(`deliveryInfo/${update.id}`, update.updatedAddress);
+  const res = await axiosPrivate.put(`deliveryInfo/${update.id}`, update.updatedAddress);
   return res.data;
 });
 
 export const deleteAddress = createAsyncThunk('deliveryInfo/delete', async (id) => {
-  const res = await userRequest.delete(`deliveryInfo/delete/${id}`);
+  const res = await axiosPrivate.delete(`deliveryInfo/delete/${id}`);
   return res.data;
 });
 

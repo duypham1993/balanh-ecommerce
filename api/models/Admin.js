@@ -7,7 +7,8 @@ const adminSchema = new mongoose.Schema(
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     isActive: { type: Boolean, default: false },
-    role: { type: String, required: true }
+    role: { type: String, required: true },
+    refreshToken: { type: Array }
   },
   { timestamps: true }
 )

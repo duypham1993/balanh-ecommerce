@@ -12,6 +12,8 @@ import supplierRouter from "./routes/supplier";
 import originRouter from "./routes/origin";
 import categoryRouter from "./routes/category";
 import deliveryInfoRouter from "./routes/deliveryInfo";
+import refreshTokenRouter from "./routes/refreshToken";
+import cookieParse from "cookie-parser";
 import cors from "cors";
 
 const app = express();
@@ -24,8 +26,12 @@ mongoose.connect(mongoURL)
     console.log(err);
   });
 
-app.use(cors());
+app.use(cors({
+  credentials: true,
+  origin: 'http://localhost:3000'
+}));
 app.use(express.json());
+app.use(cookieParse());
 app.use("/api/admin", adminRouter);
 app.use("/api/authClient", authClientRouter);
 app.use("/api/authAdmin", authAdminRouter);
@@ -37,6 +43,8 @@ app.use("/api/product", productRouter);
 app.use("/api/supplier", supplierRouter);
 app.use("/api/origin", originRouter);
 app.use("/api/category", categoryRouter);
+app.use("/api/refreshToken", refreshTokenRouter);
+
 app.listen(port, () => {
   console.log("Port is: ", port);
 });

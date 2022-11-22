@@ -1,19 +1,19 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { userRequest } from "../../shared/axios/requestMethod";
+import axiosPrivate from "../../shared/axios/requestMethod";
 
 export const getCustomers = createAsyncThunk('customer/fetchAll', async () => {
-  const res = await userRequest.get("/customer/");
+  const res = await axiosPrivate.get("/customer/");
   return res.data;
 });
 
 export const getCurrentCustomer = createAsyncThunk('customer/getcurrent', async (id) => {
-  const res = await userRequest.get(`/customer/${id}`);
+  const res = await axiosPrivate.get(`/customer/${id}`);
   return res.data;
 })
 
 export const addCustomer = createAsyncThunk('customer/add', async (customer, { rejectWithValue }) => {
   try {
-    const res = await userRequest.post("/customer/create", customer);
+    const res = await axiosPrivate.post("/customer/create", customer);
     return res.data;
   } catch (error) {
     return rejectWithValue(error.response.data);
@@ -22,7 +22,7 @@ export const addCustomer = createAsyncThunk('customer/add', async (customer, { r
 
 export const updateCustomer = createAsyncThunk('customer/update', async (update, { rejectWithValue }) => {
   try {
-    const res = await userRequest.put(`customer/${update.id}`, update.updatedCustomer);
+    const res = await axiosPrivate.put(`customer/${update.id}`, update.updatedCustomer);
     return res.data;
   } catch (error) {
     return rejectWithValue(error.response.data);
@@ -31,7 +31,7 @@ export const updateCustomer = createAsyncThunk('customer/update', async (update,
 
 export const deleteCustomer = createAsyncThunk('customer/delete', async (id, { rejectWithValue }) => {
   try {
-    const res = await userRequest.delete(`customer/delete/${id}`);
+    const res = await axiosPrivate.delete(`customer/delete/${id}`);
     return res.data;
   } catch (error) {
     return rejectWithValue(error.response.data);

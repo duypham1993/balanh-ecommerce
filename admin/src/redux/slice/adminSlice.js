@@ -1,24 +1,24 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { userRequest } from "../../shared/axios/requestMethod";
+import axiosPrivate from "../../shared/axios/requestMethod";
 
 export const getAdmins = createAsyncThunk('admin/fetchAll', async () => {
-  const res = await userRequest.get("/admin/");
+  const res = await axiosPrivate.get("/admin/");
   return res.data;
 });
 
 export const getCurrentAdmin = createAsyncThunk('admin/currentadmin', async (id) => {
-  const res = await userRequest.get(`/admin/${id}`);
+  const res = await axiosPrivate.get(`/admin/${id}`);
   return res.data;
 })
 
 export const addAdmin = createAsyncThunk('admin/add', async (admin) => {
-  const res = await userRequest.post("/admin/create", admin);
+  const res = await axiosPrivate.post("/admin/create", admin);
   return res.data;
 });
 
 export const updateAdmin = createAsyncThunk('admin/update', async (update, { rejectWithValue }) => {
   try {
-    const res = await userRequest.put(`admin/${update.id}`, update.updatedAdmin);
+    const res = await axiosPrivate.put(`admin/${update.id}`, update.updatedAdmin);
     return res.data;
   } catch (error) {
     return rejectWithValue(error.response.data)
@@ -26,7 +26,7 @@ export const updateAdmin = createAsyncThunk('admin/update', async (update, { rej
 });
 
 export const deleteAdmin = createAsyncThunk('admin/delete', async (id) => {
-  const res = await userRequest.delete(`admin/delete/${id}`);
+  const res = await axiosPrivate.delete(`admin/delete/${id}`);
   return res.data;
 });
 
@@ -82,6 +82,7 @@ const adminSlice = createSlice({
     })
     builders.addCase(addAdmin.rejected, (state, action) => {
       state.statusSubmit = "rejected";
+      state.error = action.payload;
     })
 
     // update admin

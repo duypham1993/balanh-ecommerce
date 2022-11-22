@@ -10,9 +10,11 @@ import MenuItem from '@mui/material/MenuItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import { useDispatch } from "react-redux";
 import { logout } from "../../redux/slice/loginSlice";
+import { Link, useNavigate } from "react-router-dom";
 
 const Account = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const openAcc = Boolean(anchorEl);
 
@@ -25,6 +27,7 @@ const Account = () => {
 
   const handleLogOut = () => {
     dispatch(logout());
+    navigate("/login");
   }
   return (
     <>
@@ -78,7 +81,9 @@ const Account = () => {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <MenuItem>
-          <Avatar /> Profile
+          <Link to="/profile">
+            <Avatar /> Profile
+          </Link>
         </MenuItem>
         <MenuItem onClick={() => handleLogOut()}>
           <ListItemIcon>

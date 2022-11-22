@@ -1,19 +1,19 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { userRequest } from "../../shared/axios/requestMethod";
+import axiosPrivate from "../../shared/axios/requestMethod";
 
 export const getSuppliers = createAsyncThunk('supplier/fetchAll', async () => {
-  const res = await userRequest.get("/supplier/");
+  const res = await axiosPrivate.get("/supplier/");
   return res.data;
 });
 
 export const getCurrnetSupplier = createAsyncThunk('supplier/getcurrent', async (id) => {
-  const res = await userRequest.get(`/supplier/${id}`);
+  const res = await axiosPrivate.get(`/supplier/${id}`);
   return res.data;
 })
 
 export const addSupplier = createAsyncThunk('supplier/add', async (supplier, { rejectWithValue }) => {
   try {
-    const res = await userRequest.post("/supplier/create", supplier);
+    const res = await axiosPrivate.post("/supplier/create", supplier);
     return res.data;
   } catch (error) {
     return rejectWithValue(error.response.data);
@@ -22,7 +22,7 @@ export const addSupplier = createAsyncThunk('supplier/add', async (supplier, { r
 
 export const updateSupplier = createAsyncThunk('supplier/update', async (update, { rejectWithValue }) => {
   try {
-    const res = await userRequest.put(`supplier/${update.id}`, update.updatedSupplier);
+    const res = await axiosPrivate.put(`supplier/${update.id}`, update.updatedSupplier);
     return res.data;
   } catch (error) {
     return rejectWithValue(error.response.data);
@@ -31,7 +31,7 @@ export const updateSupplier = createAsyncThunk('supplier/update', async (update,
 
 export const deleteSupplier = createAsyncThunk('supplier/delete', async (id, { rejectWithValue }) => {
   try {
-    const res = await userRequest.delete(`supplier/delete/${id}`);
+    const res = await axiosPrivate.delete(`supplier/delete/${id}`);
     return res.data;
   } catch (error) {
     return rejectWithValue(error.response.data);

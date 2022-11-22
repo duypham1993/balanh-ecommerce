@@ -36,7 +36,7 @@ router.get("/", verifyToken, async (req, res) => {
   const categories = await Category.find();
   let root = {};
 
-  if (categories.length > 0) {
+  if (categories && categories.length > 0) {
     const idMapping = categories.reduce((acc, el, i) => {
       acc[el._id] = i;
       return acc;

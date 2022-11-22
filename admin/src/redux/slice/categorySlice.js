@@ -1,14 +1,17 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { userRequest } from "../../shared/axios/requestMethod";
+import axiosPrivate from "../../shared/axios/requestMethod";
 
 export const getCategories = createAsyncThunk('category/fetchAll', async () => {
-  const res = await userRequest.get("/category/");
+  const controller = new AbortController();
+  const res = await axiosPrivate.get("/category/", {
+    signal: controller.signal
+  });
   return res.data;
 });
 
 export const addCategory = createAsyncThunk('category/add', async (category, { rejectWithValue }) => {
   try {
-    const res = await userRequest.post("/category/create", category);
+    const res = await axiosPrivate.post("/category/create", category);
     return res.data;
   } catch (error) {
     return rejectWithValue(error.response.data);
@@ -17,7 +20,7 @@ export const addCategory = createAsyncThunk('category/add', async (category, { r
 
 export const updateCategory = createAsyncThunk('category/update', async (update, { rejectWithValue }) => {
   try {
-    const res = await userRequest.put(`category/${update.id}`, update.updatedCategory);
+    const res = await axiosPrivate.put(`category/${update.id}`, update.updatedCategory);
     return res.data;
   } catch (error) {
     return rejectWithValue(error.response.data);
@@ -26,7 +29,7 @@ export const updateCategory = createAsyncThunk('category/update', async (update,
 
 export const deleteCategory = createAsyncThunk('category/delete', async (id, { rejectWithValue }) => {
   try {
-    const res = await userRequest.delete(`category/delete/${id}`);
+    const res = await axiosPrivate.delete(`category/delete/${id}`);
     return res.data;
   } catch (error) {
     return rejectWithValue(error.response.data);

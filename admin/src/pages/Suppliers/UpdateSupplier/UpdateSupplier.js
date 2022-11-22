@@ -1,5 +1,5 @@
 import FormSupplier from "../../../components/FormSupplier/FormSupplier";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { selectData, selectStatusSubmit } from "../../../redux/selectors";
@@ -13,7 +13,9 @@ const UpdateSupplier = () => {
   const currentSupplier = useSelector(selectData("supplier", "currentSupplier"));
   const statusSubmit = useSelector(selectStatusSubmit("supplier"));
   const statusFetching = useSelector(selectData("supplier", "isFetching"));
-  const errorApi = useSelector(selectData("supplier", "error"))
+  const errorApi = useSelector(selectData("supplier", "error"));
+  const cityRef = useRef("");
+  const districtRef = useRef("");
   const [inputs, setInputs] = useState({
     sku: "",
     name: "",
@@ -27,6 +29,9 @@ const UpdateSupplier = () => {
     wards: "",
     street: "",
   });
+  const [city, setCity] = useState("");
+  const [district, setDistrict] = useState("");
+  const [wards, setWards] = useState("");
   const mess = {
     success: "Cập nhật thành công!",
     error: errorApi.other
@@ -57,11 +62,11 @@ const UpdateSupplier = () => {
 
   // clear children item if change value
   useEffect(() => {
-    setAddress({ ...address, district: "" });
-  }, [address.city]);
+    setAddress({ ...address, district: "", wards: "" });
+  }, [cityRef.current]);
   useEffect(() => {
     setAddress({ ...address, wards: "" });
-  }, [address.district]);
+  }, [districtRef.current]);
 
   const handleOnChange = (e) => {
     if (e.target.type === "checkbox") {
@@ -69,6 +74,18 @@ const UpdateSupplier = () => {
     } else {
       setInputs(prev => ({ ...prev, [e.target.name]: e.target.value }));
     }
+  };
+
+  const handleAutocomplete = (name, value) => {
+    if (name === "city") {
+      cityRef.current = address.city;
+    }
+    if (name === "district") {
+      districtRef.current = address.district;
+    }
+    setAddress({
+      ...address, [name]: value
+    });
   };
 
   const handleOnSubmit = async () => {
@@ -88,7 +105,7 @@ const UpdateSupplier = () => {
               currentSupplier={currentSupplier}
               inputs={inputs}
               address={address}
-              setAddress={setAddress}
+              handleAutocomplete={handleAutocomplete}
               handleOnChange={handleOnChange}
               handleOnSubmit={handleOnSubmit}
             />

@@ -27,15 +27,17 @@ import UpdateCustomer from './pages/Customer/UpdateCustomer/UpdateCustomer';
 import AddressList from './pages/DeliveryInfo/AddressList';
 import CreateAddress from './pages/DeliveryInfo/CreateAddress/CreateAddress';
 import UpdateAddress from './pages/DeliveryInfo/UpdateAddress/UpdateAddress';
+import Profile from './pages/Profile/Profile';
+import ProtectRoute from './components/ProtectRoute/ProtectRoute';
 
 function App() {
-  const currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
-  console.log(currentUser);
   return (
-    <>
-      <Routes>
-        <Route path='login' element={<Login />} />
+
+    <Routes>
+      <Route path='login' element={<Login />} />
+      <Route element={<ProtectRoute />}>
         <Route element={<Layout />}>
+          <Route path='profile' element={<Profile />} />
           <Route path="orders" element={<Orders />} />
           <Route path="products" element={<Products />} />
           <Route path="add-product" element={<AddProduct />} />
@@ -59,8 +61,9 @@ function App() {
           <Route path='admins/:id' element={<UpdateAdmin />} />
           <Route index element={<Home />} />
         </Route>
-      </Routes>
-    </>
+      </Route>
+    </Routes>
+
   );
 }
 

@@ -27,14 +27,14 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const customer = await Customer.findOne({ username: req.body.username });
-    !customer && res.status(401).json("Tài khoản hoặc mật khẩu không đúng");
+    if (!customer) return res.status(401).json("Tài khoản hoặc mật khẩu không đúng");
 
     const decryptPass = CryptoJS.AES.decrypt(customer.password, process.env.PASS_KEY);
     const originalPass = decryptPass.toString(CryptoJS.enc.Utf8);
-    originalPass !== req.body.password && res.status(401).json("Tài khoản hoặc mật khẩu không đúng");
-    !customer.isActive && res.status(401).json("Tài khoản tạm thời không đăng nhập được. Vui lòng liên hệ CSKH!");
+    if (originalPass !== req.body.password) return res.status(401).json("Tài khoản hoặc mật khẩu không đúng");
+    if (!customer.isActive) return res.status(401).json("Tài khoản tạm thời không đăng nhập được. Vui lòng liên hệ CSKH!");
 
-    const token = await jwt.sign(
+    const accessToken = jwt.sign(
       {
         id: customer._id,
         isActive: customer.isActive

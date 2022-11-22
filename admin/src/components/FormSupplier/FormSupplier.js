@@ -30,7 +30,6 @@ const FormSupplier = (props) => {
   }
 
   const handleChangeAddress = (name, value) => {
-
     handleAutocomplete(name, value)
     // remove error if target has value
     if (value) {
