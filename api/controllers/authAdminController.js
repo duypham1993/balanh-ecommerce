@@ -1,15 +1,12 @@
-import express from "express";
 import Admin from "../models/Admin";
 import CryptoJS from "crypto-js";
 import jwt from "jsonwebtoken";
-
-const router = express.Router();
 
 /*
  * FOR Admin 
  */
 // Login
-router.post("/login", async (req, res) => {
+const loginAdmin = async (req, res) => {
   let error = {};
   try {
     const cookies = req.cookies;
@@ -91,9 +88,9 @@ router.post("/login", async (req, res) => {
     error.other = "Không thể đăng nhập, vui lòng thử lại!"
     res.status(501).json(error)
   }
-});
+};
 
-router.delete("/logout", async (req, res) => {
+const logoutAdmin = async (req, res) => {
   let error = {};
   try {
     const cookies = req.cookies;
@@ -115,6 +112,9 @@ router.delete("/logout", async (req, res) => {
     error.other = "Đăng xuất thất bại!"
     res.status(201).json(error);
   }
-})
+};
 
-module.exports = router;
+module.exports = {
+  loginAdmin,
+  logoutAdmin
+};

@@ -1,11 +1,7 @@
-import express from "express";
 import Product from "../models/Product";
-import { verifyToken, verifyTokenRoleAdmin } from "./verifyToken";
-
-const router = express.Router();
 
 // CREATE
-router.post("/create", verifyTokenRoleAdmin, async (req, res) => {
+const createProduct = async (req, res) => {
   let error = {};
   const checkSku = await Product.find({ sku: req.body.sku });
   if (checkSku && checkSku.length) {
@@ -21,30 +17,30 @@ router.post("/create", verifyTokenRoleAdmin, async (req, res) => {
       res.status(500).json(error);
     }
   }
-});
+};
 
 // GET CURRENT PRODUCT
-router.get("/:id", verifyToken, async (req, res) => {
+const getCurrentProduct = async (req, res) => {
   const product = await Product.findById(req.params.id);
   try {
     res.status(201).json(product);
   } catch (err) {
     res.status(500).json(err);
   }
-});
+};
 
 // GET ALL
-router.get("/", verifyToken, async (req, res) => {
+const getAllProducts = async (req, res) => {
   const products = await Product.find();
   try {
     res.status(201).json(products);
   } catch (err) {
     res.status(500).json(err);
   }
-});
+};
 
 // UPDATE
-router.put("/:id", verifyTokenRoleAdmin, async (req, res) => {
+const updateProduct = async (req, res) => {
   let error = {};
   const checkSku = await Product.find({ sku: req.body.sku, _id: { $ne: req.params.id } });
   if (checkSku && checkSku.length) {
@@ -64,10 +60,10 @@ router.put("/:id", verifyTokenRoleAdmin, async (req, res) => {
     }
   }
 
-});
+};
 
 // DELETE
-router.delete("/delete/:id", verifyTokenRoleAdmin, async (req, res) => {
+const deleteProduct = async (req, res) => {
   let error = {};
   try {
     await Product.findByIdAndDelete(req.params.id);
@@ -76,5 +72,12 @@ router.delete("/delete/:id", verifyTokenRoleAdmin, async (req, res) => {
     error.other = "Xoá sản phẩm thất bại!"
     res.status(500).json(error);
   }
-})
-module.exports = router;
+};
+
+module.exports = {
+  createProduct,
+  getAllProducts,
+  getCurrentProduct,
+  updateProduct,
+  deleteProduct
+};

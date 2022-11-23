@@ -1,15 +1,12 @@
-import express from "express";
 import Customer from "../models/Customer";
 import CryptoJS from "crypto-js";
 import jwt from "jsonwebtoken";
-
-const router = express.Router();
 
 /*
  * FOR CLIENT 
  */
 // Register 
-router.post("/register", async (req, res) => {
+const registerClient = async (req, res) => {
   const newCustomer = new Customer({
     username: req.body.username,
     email: req.body.email,
@@ -21,10 +18,10 @@ router.post("/register", async (req, res) => {
   } catch (error) {
     res.status(501).json(error);
   }
-});
+};
 
 // Login
-router.post("/login", async (req, res) => {
+const loginClient = async (req, res) => {
   try {
     const customer = await Customer.findOne({ username: req.body.username });
     if (!customer) return res.status(401).json("Tài khoản hoặc mật khẩu không đúng");
@@ -47,6 +44,9 @@ router.post("/login", async (req, res) => {
   } catch (err) {
     res.status(501).json(err)
   }
-});
+};
 
-module.exports = router;
+module.exports = {
+  registerClient,
+  loginClient
+};

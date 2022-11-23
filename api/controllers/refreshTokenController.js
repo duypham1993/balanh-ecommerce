@@ -1,10 +1,7 @@
 import Admin from "../models/Admin";
 import jwt from "jsonwebtoken";
-import express from "express";
 
-const router = express.Router();
-
-router.get("/", async (req, res) => {
+const refreshToken = async (req, res) => {
   const cookies = req.cookies;
   if (!cookies?.jwt) return res.status(401).json("Not found the key");
 
@@ -61,6 +58,8 @@ router.get("/", async (req, res) => {
     res.cookie('jwt', newRefreshToken, { httpOnly: true, sameSite: 'None', secure: true, maxAge: 24 * 60 * 60 * 1000 });
     res.status(201).json({ accessToken });
   })
-});
+};
 
-module.exports = router;
+module.exports = {
+  refreshToken
+};

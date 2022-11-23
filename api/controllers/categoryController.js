@@ -1,12 +1,8 @@
-import express from "express";
 import Category from "../models/Category";
 import Product from "../models/Product";
-import { verifyToken, verifyTokenRoleAdmin } from "./verifyToken";
-
-const router = express.Router();
 
 // CREATE
-router.post("/create", verifyTokenRoleAdmin, async (req, res) => {
+const createCategory = async (req, res) => {
   let error = {};
   const checkSlug = Category.find({ slug: req.body.slug });
   if (checkSlug && checkSlug.length) {
@@ -29,10 +25,10 @@ router.post("/create", verifyTokenRoleAdmin, async (req, res) => {
       res.status(500).json(error);
     }
   }
-});
+};
 
 // GET ALL
-router.get("/", verifyToken, async (req, res) => {
+const getAllCategories = async (req, res) => {
   const categories = await Category.find();
   let root = {};
 
@@ -60,10 +56,10 @@ router.get("/", verifyToken, async (req, res) => {
   } catch (err) {
     res.status(500).json(err);
   }
-});
+};
 
 // UPDATE
-router.put("/:id", verifyTokenRoleAdmin, async (req, res) => {
+const updateCategory = async (req, res) => {
   let error = {};
   const checkSlug = await Category.find({ slug: req.body.slug, _id: { $ne: req.params.id } });
   if (checkSlug && checkSlug.length) {
@@ -82,10 +78,10 @@ router.put("/:id", verifyTokenRoleAdmin, async (req, res) => {
       res.status(500).json(error);
     }
   }
-});
+};
 
 // DELETE
-router.delete("/delete/:id", verifyTokenRoleAdmin, async (req, res) => {
+const deleteCategory = async (req, res) => {
   let error = {};
   try {
     await Category.findByIdAndDelete(req.params.id);
@@ -101,5 +97,11 @@ router.delete("/delete/:id", verifyTokenRoleAdmin, async (req, res) => {
     error.other = "Xoá danh mục thất bại!"
     res.status(500).json(error);
   }
-})
-module.exports = router;
+};
+
+module.exports = {
+  createCategory,
+  getAllCategories,
+  updateCategory,
+  deleteCategory
+};

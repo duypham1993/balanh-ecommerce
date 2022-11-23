@@ -1,12 +1,8 @@
-import express from "express";
 import DeliveryInfo from "../models/DeliveryInfo";
 import Customer from "../models/Customer";
-import { verifyToken, verifyTokenRoleAdmin } from "./verifyToken";
-
-const router = express.Router();
 
 // CREATE
-router.post("/create", verifyTokenRoleAdmin, async (req, res) => {
+const createDeliveryInfo = async (req, res) => {
   try {
     const [id] = await Customer.find({ email: req.body.email }, "_id");
     const newAddress = new DeliveryInfo({
@@ -22,20 +18,20 @@ router.post("/create", verifyTokenRoleAdmin, async (req, res) => {
   } catch (error) {
     res.status(501).json(error);
   }
-});
+};
 
 // GET ALL 
-router.get("/", verifyToken, async (req, res) => {
+const getAllDeliveryInfos = async (req, res) => {
   const addressList = await DeliveryInfo.find({});
   try {
     res.status(200).json(addressList);
   } catch (err) {
     res.status(500).json(err);
   }
-});
+};
 
 // GET CURRENT ADDRESS
-router.get("/:id", verifyToken, async (req, res) => {
+const getCurrentDeliveryInfo = async (req, res) => {
   try {
     let currentAddress = await DeliveryInfo.findById(req.params.id);
     const { email } = await Customer.findById(currentAddress.customerId);
@@ -44,10 +40,10 @@ router.get("/:id", verifyToken, async (req, res) => {
   } catch (err) {
     res.status(500).json(err);
   }
-});
+};
 
 // UPDATE
-router.put("/:id", verifyTokenRoleAdmin, async (req, res) => {
+const updateDeliveryInfo = async (req, res) => {
   try {
     const updateAddress = await DeliveryInfo.findByIdAndUpdate(
       req.params.id,
@@ -66,17 +62,22 @@ router.put("/:id", verifyTokenRoleAdmin, async (req, res) => {
   } catch (err) {
     res.status(500).json(err);
   }
-});
+};
 
 // DELETE
-router.delete("/delete/:id", verifyTokenRoleAdmin, async (req, res) => {
+const deleteDeliveryInfo = async (req, res) => {
   try {
     await DeliveryInfo.findByIdAndDelete(req.params.id);
     res.status(200).json(req.params.id);
   } catch (err) {
     res.status(500).json(err);
   }
-});
+};
 
-
-module.exports = router;
+module.exports = {
+  createDeliveryInfo,
+  getAllDeliveryInfos,
+  getCurrentDeliveryInfo,
+  updateDeliveryInfo,
+  deleteDeliveryInfo
+};

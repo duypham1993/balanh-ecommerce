@@ -1,11 +1,7 @@
-import express from "express";
 import Supplier from "../models/Supplier";
-import { verifyToken, verifyTokenRoleAdmin } from "./verifyToken";
-
-const router = express.Router();
 
 // CREATE 
-router.post("/create", verifyTokenRoleAdmin, async (req, res) => {
+const createSupplier = async (req, res) => {
   let error = {};
   const checkSku = await Supplier.find({ sku: req.body.sku });
   if (checkSku && checkSku.length) {
@@ -21,30 +17,30 @@ router.post("/create", verifyTokenRoleAdmin, async (req, res) => {
       res.status(500).json(error);
     }
   }
-})
+};
 
 // GET ALL 
-router.get("/", verifyToken, async (req, res) => {
+const getAllSuppliers = async (req, res) => {
   const supplier = await Supplier.find({});
   try {
     res.status(200).json(supplier);
   } catch (err) {
     res.status(500).json(err);
   }
-});
+};
 
 // GET CURRENT SUPPLIER
-router.get("/:id", verifyTokenRoleAdmin, async (req, res) => {
+const getCurrentSupplier = async (req, res) => {
   try {
     const supplier = await Supplier.findById(req.params.id);
     res.status(200).json(supplier)
   } catch (error) {
     res.status(500).json(error);
   }
-})
+};
 
 // UPDATE
-router.put("/:id", verifyTokenRoleAdmin, async (req, res) => {
+const updateSupplier = async (req, res) => {
   let error = {};
   const checkSku = await Supplier.find({ sku: req.body.sku, _id: { $ne: req.params.id } });
   if (checkSku && checkSku.length) {
@@ -63,10 +59,10 @@ router.put("/:id", verifyTokenRoleAdmin, async (req, res) => {
       res.status(500).json(error);
     }
   }
-});
+};
 
 // DELETE
-router.delete("/delete/:id", verifyTokenRoleAdmin, async (req, res) => {
+const deleteSupplier = async (req, res) => {
   let error = {};
   try {
     await Supplier.findByIdAndDelete(req.params.id);
@@ -75,7 +71,12 @@ router.delete("/delete/:id", verifyTokenRoleAdmin, async (req, res) => {
     error.other = "Xoá nhà cung cấp thất bại!"
     res.status(500).json(error);
   }
-});
+};
 
-
-module.exports = router;
+module.exports = {
+  createSupplier,
+  getAllSuppliers,
+  getCurrentSupplier,
+  updateSupplier,
+  deleteSupplier
+};

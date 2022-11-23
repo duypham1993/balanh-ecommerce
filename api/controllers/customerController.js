@@ -1,12 +1,8 @@
-import express from "express";
 import CryptoJS from "crypto-js";
 import Customer from "../models/Customer";
-import { verifyToken, verifyTokenRoleAdmin } from "./verifyToken";
-
-const router = express.Router();
 
 // CREATE
-router.post("/create", verifyTokenRoleAdmin, async (req, res) => {
+const createCustomer = async (req, res) => {
   let error = {};
   const checkEmail = await Customer.find({ email: req.body.email });
   if (checkEmail && checkEmail.length) {
@@ -30,29 +26,30 @@ router.post("/create", verifyTokenRoleAdmin, async (req, res) => {
       res.status(501).json(error);
     }
   }
-});
+};
 
 // GET ALL 
-router.get("/", verifyToken, async (req, res) => {
+const getAllCustomers = async (req, res) => {
   const user = await Customer.find({}, "_id name email gender phone dateOfBirth isActive");
   try {
     res.status(200).json(user);
   } catch (err) {
     res.status(500).json(err);
   }
-});
+};
+
 // GET CURRENT CUSTOMER
-router.get("/:id", verifyTokenRoleAdmin, async (req, res) => {
+const getCurrentCustomer = async (req, res) => {
   const currentUser = await Customer.findById(req.params.id, "_id name email gender phone dateOfBirth isActive");
   try {
     res.status(200).json(currentUser);
   } catch (error) {
     res.status(500).json(error);
   }
-})
+};
 
 // UPDATE
-router.put("/:id", verifyTokenRoleAdmin, async (req, res) => {
+const updateCustomer = async (req, res) => {
   let error = {};
   const checkEmail = Customer.find({ email: req.body.email, _id: { $ne: req.params.id } });
   if (checkEmail && checkEmail.length) {
@@ -91,10 +88,10 @@ router.put("/:id", verifyTokenRoleAdmin, async (req, res) => {
       res.status(500).json(error);
     }
   }
-});
+};
 
 // DELETE
-router.delete("/delete/:id", verifyTokenRoleAdmin, async (req, res) => {
+const deleteCustomer = async (req, res) => {
   let error = {}
   try {
     await Customer.findByIdAndDelete(req.params.id);
@@ -103,7 +100,12 @@ router.delete("/delete/:id", verifyTokenRoleAdmin, async (req, res) => {
     error.other = "Xoá tài khoản thất bại!"
     res.status(500).json(error);
   }
-});
+};
 
-
-module.exports = router;
+module.exports = {
+  createCustomer,
+  getAllCustomers,
+  getCurrentCustomer,
+  updateCustomer,
+  deleteCustomer
+};
