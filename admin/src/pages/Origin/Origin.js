@@ -26,7 +26,7 @@ const Origin = () => {
   const validate = () => {
     let error;
 
-    if (!name || !name.trim()) {
+    if (!name.trim()) {
       error = "Vui lòng điền vào mục này!";
     }
 

@@ -40,7 +40,7 @@ function App() {
           <Route path='profile' element={<Profile />} />
           <Route path="orders" element={<Orders />} />
           <Route path="products" element={<Products />} />
-          <Route path="add-product" element={<AddProduct />} />
+          <Route path="products/create" element={<AddProduct />} />
           <Route path="products/:id" element={<UpdateProduct />} />
           <Route path="categories" element={<Categories />} />
           <Route path="categories/create" element={<CreateCategory />} />
@@ -53,9 +53,9 @@ function App() {
           <Route path="customers" element={<Customer />} />
           <Route path="customers/create" element={<CreateCustomer />} />
           <Route path="customers/:id" element={<UpdateCustomer />} />
-          <Route path="deliveryinfo" element={<AddressList />} />
-          <Route path="deliveryinfo/create" element={<CreateAddress />} />
-          <Route path="deliveryinfo/:id" element={<UpdateAddress />} />
+          <Route path="delivery-info" element={<AddressList />} />
+          <Route path="delivery-info/create" element={<CreateAddress />} />
+          <Route path="delivery-info/:id" element={<UpdateAddress />} />
           <Route path="admins" element={<Admins />} />
           <Route path='admins/create' element={<CreateAdmin />} />
           <Route path='admins/:id' element={<UpdateAdmin />} />

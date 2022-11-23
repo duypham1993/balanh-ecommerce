@@ -146,7 +146,7 @@ export default function Sidebar() {
         },
         {
           title: "Địa chỉ",
-          link: "/deliveryinfo",
+          link: "/delivery-info",
         },
       ]
     }

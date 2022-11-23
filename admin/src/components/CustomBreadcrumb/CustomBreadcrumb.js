@@ -6,14 +6,22 @@ import Breadcrumbs from '@mui/material/Breadcrumbs';
 
 const CustomBreadcrumb = () => {
   const location = useLocation();
-  const pathnames = location.pathname.split('/').filter((x) => x);
+  const pathnames = location.pathname.split('/').filter((item) => item);
   const breadcrumbNameMap = {
     '/orders': 'Đơn hàng',
     '/products': 'Sản phẩm',
+    '/products/create': 'Tạo sản phẩm',
     '/categories': 'Danh mục sản phẩm',
+    '/categories/create': 'Tạo danh mục sản phẩm',
+    '/origin': 'Xuất xứ',
+    '/suppliers': 'Nhà cung cấp',
+    '/suppliers/create': 'Tạo nhà cung cấp',
     '/customer': 'Khách hàng',
+    '/customer/create': 'Tạo tài khoản khách hàng',
+    '/delivery-info': 'Địa chỉ khách hàng',
+    '/delivery-info/create': 'Tạo địa chỉ khách hàng',
     '/admins': 'Quản trị thành viên',
-    '/add-product': 'Sản phẩm mới',
+    '/admins/create': 'Tạo tài khoản quản trị',
   };
 
   return (

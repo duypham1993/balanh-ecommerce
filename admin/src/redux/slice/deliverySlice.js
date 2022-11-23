@@ -30,7 +30,7 @@ const deliveryInfoSlice = createSlice({
   name: "deliveryInfo",
   initialState: {
     addressList: [],
-    currentAdrress: {},
+    currentAddress: {},
     isFetching: "",
     statusSubmit: "",
   },
@@ -58,7 +58,7 @@ const deliveryInfoSlice = createSlice({
     })
     builders.addCase(getCurrentAddress.fulfilled, (state, action) => {
       state.isFetching = "fulfilled";
-      state.currentAdrress = action.payload;
+      state.currentAddress = action.payload;
     })
     builders.addCase(getCurrentAddress.rejected, (state, action) => {
       state.isFetching = "rejected";

@@ -116,7 +116,7 @@ const AddressList = () => {
       renderCell: (item) => {
         return (
           <>
-            <Link to={"/deliveryinfo/" + item.row._id} className="link-default">
+            <Link to={"/delivery-info/" + item.row._id} className="link-default">
               <button className="flex-bw-center btn-default btn-default--edit text-small">
                 <span>Update</span>
                 <EditIcon className="text-default" />
@@ -132,7 +132,7 @@ const AddressList = () => {
   return (
     <>
       <div className="flex-r-c">
-        <Link to='/customers/delivery-info/create' className='btn-default'>Tạo địa chỉ mới</Link>
+        <Link to='/delivery-info/create' className='btn-default'>Tạo địa chỉ mới</Link>
       </div>
       <div className="wrapper_data-grid addressList">
         <DataGrid

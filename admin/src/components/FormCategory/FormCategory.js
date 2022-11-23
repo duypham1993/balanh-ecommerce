@@ -31,11 +31,11 @@ const FormCategory = (props) => {
     const errors = {};
     const formatSlug = /^[a-z0-9]+(?:-[a-z0-9]+)*$/g;
 
-    if (!inputs.name || !inputs.name.trim()) {
+    if (!inputs.name.trim()) {
       errors.name = "Vui lòng điền vào mục này!";
     }
 
-    if (!inputs.desc || !inputs.desc.trim()) {
+    if (!inputs.desc.trim()) {
       errors.desc = "Vui lòng điền vào mục này!";
     }
 
@@ -43,7 +43,7 @@ const FormCategory = (props) => {
       errors.slug = "Đường dẫn không hợp lệ!";
     }
 
-    if (!inputs.slug || !inputs.slug.trim()) {
+    if (!inputs.slug.trim()) {
       errors.slug = "Vui lòng điền vào mục này!";
     }
 
@@ -83,10 +83,10 @@ const FormCategory = (props) => {
     <form className="form-default" onSubmit={(e) => submitFrom(e)}>
       <Grid container>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={12} sm={4} className="form-default__control">
+          <Grid item xs={12} sm={4} className="form-default__label">
             <label>Tên danh mục</label>
           </Grid>
-          <Grid item xs={12} sm={6} className="form-default__input-group">
+          <Grid item xs={12} sm={6} className="form-default__content">
             <input
               type="text"
               className={"input-default form-default__input"}
@@ -98,10 +98,10 @@ const FormCategory = (props) => {
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={12} sm={4} className="form-default__control">
+          <Grid item xs={12} sm={4} className="form-default__label">
             <label>Mô tả</label>
           </Grid>
-          <Grid item xs={12} sm={6} className="form-default__input-group">
+          <Grid item xs={12} sm={6} className="form-default__content">
             <textarea
               type="text"
               className={"input-default form-default__input"}
@@ -113,10 +113,10 @@ const FormCategory = (props) => {
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={12} sm={4} className="form-default__control">
+          <Grid item xs={12} sm={4} className="form-default__label">
             <label>Danh mục</label>
           </Grid>
-          <Grid item xs={12} sm={6} className="form-default__input-group">
+          <Grid item xs={12} sm={6} className="form-default__content">
             {inputs.parentId &&
               <TreeView
                 aria-label="icon expansion"
@@ -137,10 +137,10 @@ const FormCategory = (props) => {
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={12} sm={4} className="form-default__control">
+          <Grid item xs={12} sm={4} className="form-default__label">
             <label>Ảnh bìa danh mục</label>
           </Grid>
-          <Grid item xs={12} sm={6} className="form-default__input-group">
+          <Grid item xs={12} sm={6} className="form-default__content">
             {imgURL ?
               <>
                 <div className="form-default__img-preview">
@@ -165,10 +165,10 @@ const FormCategory = (props) => {
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={12} sm={4} className="form-default__control">
+          <Grid item xs={12} sm={4} className="form-default__label">
             <label>Đường dẫn danh mục</label>
           </Grid>
-          <Grid item xs={12} sm={6} className="form-default__input-group">
+          <Grid item xs={12} sm={6} className="form-default__content">
             <input
               type="text"
               name="slug"
@@ -182,10 +182,10 @@ const FormCategory = (props) => {
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={4} className="form-default__control">
+          <Grid item xs={4} className="form-default__label">
             <label>Hiển thị</label>
           </Grid>
-          <Grid item xs={6} className="form-default__input-group">
+          <Grid item xs={6} className="form-default__content">
             <Switch
               name="isActive"
               className="form-default__input"

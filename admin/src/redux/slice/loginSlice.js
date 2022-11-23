@@ -1,11 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { clearLocalStorage, updateLocalAccessToken, updateLocalCurrentUser } from "../../services/localStorage";
 import axiosPrivate, { publictRequest } from "../../shared/axios/requestMethod";
 
 export const login = createAsyncThunk('login', async (user, { rejectWithValue }) => {
   try {
     const res = await publictRequest.post("/authAdmin/login", user);
-    localStorage.setItem("currentUser", JSON.stringify(res.data.currentUser));
-    localStorage.setItem("accessToken", JSON.stringify(res.data.accessToken));
+    updateLocalAccessToken(res.data.accessToken);
+    updateLocalCurrentUser(res.data.currentUser);
     return res.data.currentUser;
   } catch (error) {
     return rejectWithValue(error.response.data);
@@ -15,7 +16,17 @@ export const login = createAsyncThunk('login', async (user, { rejectWithValue })
 export const logout = createAsyncThunk("logout", async (a, { rejectWithValue }) => {
   try {
     await axiosPrivate.delete("authAdmin/logout");
-    localStorage.clear();
+    clearLocalStorage();
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
+})
+
+export const updateCurrentUser = createAsyncThunk("update", async (update, { rejectWithValue }) => {
+  try {
+    const res = await axiosPrivate.put(`admin/user/${update.userID}`, update.updatedAdmin);
+    updateLocalCurrentUser(res.data);
+    return res.data;
   } catch (error) {
     return rejectWithValue(error.response.data);
   }
@@ -23,7 +34,7 @@ export const logout = createAsyncThunk("logout", async (a, { rejectWithValue }) 
 
 export const getCurrentUser = createAsyncThunk('admin/currentadmin', async (id) => {
   const res = await axiosPrivate.get(`/admin/${id}`);
-  localStorage.setItem("currentUser", JSON.stringify(res.data));
+  updateLocalCurrentUser(res.data);
   return res.data;
 })
 
@@ -32,11 +43,15 @@ const loginSlice = createSlice({
   initialState: {
     currentUser: {},
     isFetching: false,
+    statusSubmit: "",
     error: {}
   },
   reducers: {
     resetErrorValidate: (state) => {
       state.error.validate = "";
+    },
+    resetErrorPassword: (state) => {
+      state.error.password = "";
     }
   },
   extraReducers: (builders) => {
@@ -64,6 +79,18 @@ const loginSlice = createSlice({
       state.error = action.payload;
     })
 
+    builders.addCase(updateCurrentUser.pending, (state, action) => {
+      state.statusSubmit = "pending";
+    })
+    builders.addCase(updateCurrentUser.fulfilled, (state, action) => {
+      state.statusSubmit = "fulfilled";
+      state.currentUser = action.payload;
+    })
+    builders.addCase(updateCurrentUser.rejected, (state, action) => {
+      state.statusSubmit = "rejected";
+      state.error = action.payload;
+    })
+
     builders.addCase(logout.pending, (state, action) => {
       state.isFetching = "pending";
     })
@@ -77,5 +104,5 @@ const loginSlice = createSlice({
     })
   }
 });
-export const { resetErrorValidate } = loginSlice.actions
+export const { resetErrorValidate, resetErrorPassword } = loginSlice.actions
 export default loginSlice;

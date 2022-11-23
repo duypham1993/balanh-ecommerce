@@ -11,7 +11,7 @@ export const getLocalCurrentUser = () => {
 }
 
 export const updateLocalCurrentUser = (user) => {
-  return localStorage.setItem("currentItem", JSON.stringify(user));
+  return localStorage.setItem("currentUser", JSON.stringify(user));
 }
 
 export const clearLocalStorage = () => {

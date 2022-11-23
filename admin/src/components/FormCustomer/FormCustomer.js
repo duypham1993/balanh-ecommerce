@@ -32,7 +32,7 @@ const FormCustomer = (props) => {
     const formatEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     const formatPhone = /^\d{10,12}$/;
 
-    if (!inputs.name || !inputs.name.trim()) {
+    if (!inputs.name.trim()) {
       errors.name = "Vui lòng điền vào mục này!";
     }
 
@@ -40,7 +40,7 @@ const FormCustomer = (props) => {
       errors.email = "Email không hợp lệ!";
     }
 
-    if (!inputs.email || !inputs.email.trim()) {
+    if (!inputs.email.trim()) {
       errors.email = "Vui lòng điền vào mục này!";
     }
 
@@ -48,7 +48,7 @@ const FormCustomer = (props) => {
       errors.password = "Mật khẩu không được ít hơn 8 kí tự!";
     }
 
-    if ((!inputs.password || !inputs.password.trim()) && !id) {
+    if (!inputs.password.trim() && !id) {
       errors.password = "Vui lòng điền vào mục này!";
     }
 
@@ -56,7 +56,7 @@ const FormCustomer = (props) => {
       errors.phone = "Số điện thoại không hợp lệ!"
     }
 
-    if (!inputs.phone || !inputs.phone.trim()) {
+    if (!inputs.phone.trim()) {
       errors.phone = "Vui lòng điền vào mục này!";
     }
 
@@ -87,10 +87,10 @@ const FormCustomer = (props) => {
     <form className="form-default" onSubmit={(e) => submitFrom(e)}>
       <Grid container>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={12} sm={4} className="form-default__control">
+          <Grid item xs={12} sm={4} className="form-default__label">
             <label>Họ và tên</label>
           </Grid>
-          <Grid item xs={12} sm={6} className="form-default__input-group">
+          <Grid item xs={12} sm={6} className="form-default__content">
             <input
               type="text"
               className="input-default form-default__input"
@@ -102,10 +102,10 @@ const FormCustomer = (props) => {
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={12} sm={4} className="form-default__control">
+          <Grid item xs={12} sm={4} className="form-default__label">
             <label>Email</label>
           </Grid>
-          <Grid item xs={12} sm={6} className="form-default__input-group">
+          <Grid item xs={12} sm={6} className="form-default__content">
             <input
               type="text"
               name="email"
@@ -118,11 +118,12 @@ const FormCustomer = (props) => {
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={12} sm={4} className="form-default__control">
+          <Grid item xs={12} sm={4} className="form-default__label">
             <label>Mật khẩu</label>
           </Grid>
-          <Grid item xs={12} sm={6} className="form-default__input-group">
+          <Grid item xs={12} sm={6} className="form-default__content">
             <input
+              autoComplete="off"
               type="password"
               className="input-default form-default__input"
               name="password"
@@ -133,10 +134,10 @@ const FormCustomer = (props) => {
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={12} sm={4} className="form-default__control">
+          <Grid item xs={12} sm={4} className="form-default__label">
             <label>Số điện thoại</label>
           </Grid>
-          <Grid item xs={12} sm={6} className="form-default__input-group">
+          <Grid item xs={12} sm={6} className="form-default__content">
             <input
               type="text"
               className="input-default form-default__input"
@@ -148,10 +149,10 @@ const FormCustomer = (props) => {
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={12} sm={4} className="form-default__control">
+          <Grid item xs={12} sm={4} className="form-default__label">
             <label>Giới tính</label>
           </Grid>
-          <Grid item xs={12} sm={6} className="form-default__input-group">
+          <Grid item xs={12} sm={6} className="form-default__content">
             <RadioGroup
               row
               name="gender"
@@ -166,10 +167,10 @@ const FormCustomer = (props) => {
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={12} sm={4} className="form-default__control">
+          <Grid item xs={12} sm={4} className="form-default__label">
             <label>Ngày sinh</label>
           </Grid>
-          <Grid item xs={12} sm={6} className="form-default__input-group">
+          <Grid item xs={12} sm={6} className="form-default__content">
             <LocalizationProvider dateAdapter={AdapterMoment}>
               <DatePicker
                 className="form-default__date"
@@ -187,10 +188,10 @@ const FormCustomer = (props) => {
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={4} className="form-default__control">
+          <Grid item xs={4} className="form-default__label">
             <label>Kích hoạt</label>
           </Grid>
-          <Grid item xs={6} className="form-default__input-group">
+          <Grid item xs={6} className="form-default__content">
             <Switch
               name="isActive"
               className="form-default__input"

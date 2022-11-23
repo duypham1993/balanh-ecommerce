@@ -40,11 +40,11 @@ const FormAdmin = (props) => {
     const formatEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     const formatPassword = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,}$/;
 
-    if (!inputs.lastName || !inputs.lastName.trim()) {
+    if (!inputs.lastName.trim()) {
       errors.lastName = "Vui lòng điền vào mục này!";
     }
 
-    if (!inputs.firstName || !inputs.firstName.trim()) {
+    if (!inputs.firstName.trim()) {
       errors.firstName = "Vui lòng điền vào mục này!";
     }
 
@@ -52,7 +52,7 @@ const FormAdmin = (props) => {
       errors.email = "Email không hợp lệ!";
     }
 
-    if (!inputs.email || !inputs.email.trim()) {
+    if (!inputs.email.trim()) {
       errors.email = "Vui lòng điền vào mục này!";
     }
 
@@ -60,7 +60,7 @@ const FormAdmin = (props) => {
       errors.password = "Mật khẩu không hợp lệ!";
     }
 
-    if ((!inputs.password || !inputs.password.trim()) && !id) {
+    if (!inputs.password.trim() && !id) {
       errors.password = "Vui lòng điền vào mục này!";
     }
 
@@ -85,10 +85,10 @@ const FormAdmin = (props) => {
     <form className="form-default" onSubmit={(e) => submitFrom(e)}>
       <Grid container>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={12} sm={4} className="form-default__control">
+          <Grid item xs={12} sm={4} className="form-default__label">
             <label>Họ và tên đệm</label>
           </Grid>
-          <Grid item xs={12} sm={6} className="form-default__input-group">
+          <Grid item xs={12} sm={6} className="form-default__content">
             <input
               type="text"
               className="input-default form-default__input"
@@ -100,10 +100,10 @@ const FormAdmin = (props) => {
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={12} sm={4} className="form-default__control">
+          <Grid item xs={12} sm={4} className="form-default__label">
             <label>Tên</label>
           </Grid>
-          <Grid item xs={12} sm={6} className="form-default__input-group">
+          <Grid item xs={12} sm={6} className="form-default__content">
             <input
               type="text"
               className="input-default form-default__input"
@@ -116,10 +116,10 @@ const FormAdmin = (props) => {
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={12} sm={4} className="form-default__control">
+          <Grid item xs={12} sm={4} className="form-default__label">
             <label>Email</label>
           </Grid>
-          <Grid item xs={12} sm={6} className="form-default__input-group">
+          <Grid item xs={12} sm={6} className="form-default__content">
             <input
               type="text"
               name="email"
@@ -132,11 +132,12 @@ const FormAdmin = (props) => {
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={12} sm={4} className="form-default__control">
+          <Grid item xs={12} sm={4} className="form-default__label">
             <label>Mật khẩu</label>
           </Grid>
-          <Grid item xs={12} sm={6} className="form-default__input-group">
+          <Grid item xs={12} sm={6} className="form-default__content">
             <input
+              autoComplete="off"
               type="password"
               className="input-default form-default__input"
               name="password"
@@ -147,10 +148,10 @@ const FormAdmin = (props) => {
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={12} sm={4} className="form-default__control">
+          <Grid item xs={12} sm={4} className="form-default__label">
             <label>Chức vụ</label>
           </Grid>
-          <Grid item xs={12} sm={6} className="form-default__input-group">
+          <Grid item xs={12} sm={6} className="form-default__content">
             <Autocomplete
               className="form-default__autocomplete"
               options={role}
@@ -166,10 +167,10 @@ const FormAdmin = (props) => {
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={4} className="form-default__control">
+          <Grid item xs={4} className="form-default__label">
             <label>Hiển thị</label>
           </Grid>
-          <Grid item xs={6} className="form-default__input-group">
+          <Grid item xs={6} className="form-default__content">
             <Switch
               name="isActive"
               className="form-default__input"

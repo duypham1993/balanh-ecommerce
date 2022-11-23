@@ -146,7 +146,7 @@ const ProductList = () => {
         <ErrorFetching /> :
         <>
           <div className="flex-r-c">
-            <Link to='/add-product' className='btn-default'>Sản phẩm mới</Link>
+            <Link to='/products/create' className='btn-default'>Sản phẩm mới</Link>
           </div>
           <div className="wrapper_data-grid productList"  >
             <DataGrid

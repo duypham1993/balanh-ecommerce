@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectData, selectStatusSubmit } from "../../../redux/selectors";
 import SubmitAlert from "../../../components/SubmitAlert/SubmitAlert";
@@ -10,7 +10,9 @@ const UpdateAddress = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
   const statusSubmit = useSelector(selectStatusSubmit("deliveryInfo"));
-  const currentAddress = useSelector(selectData("deliveryInfo", "currentAdrress"));
+  const currentAddress = useSelector(selectData("deliveryInfo", "currentAddress"));
+  const cityRef = useRef("");
+  const districtRef = useRef("");
 
   const [inputs, setInputs] = useState({
     email: "",
@@ -54,17 +56,23 @@ const UpdateAddress = () => {
 
   // clear children item if change value
   useEffect(() => {
-    setAddress({ ...address, district: "" });
-  }, [address.city]);
+    setAddress({ ...address, district: "", wards: "" });
+  }, [cityRef.current]);
   useEffect(() => {
     setAddress({ ...address, wards: "" });
-  }, [address.district]);
+  }, [districtRef.current]);
 
   const handleOnChange = (e) => {
     setInputs({ ...inputs, [e.target.name]: e.target.value });
   };
 
   const handleAutocomplete = (name, value) => {
+    if (name === "city") {
+      cityRef.current = address.city;
+    }
+    if (name === "district") {
+      districtRef.current = address.district;
+    }
     setAddress({
       ...address, [name]: value
     })

@@ -4,7 +4,7 @@ import { cityData } from "../../data/city";
 import { useNavigate } from "react-router-dom";
 
 const FormDeliveryInfo = (props) => {
-  const { inputs, address, handleAutocomplete, handleStreet, handleOnChange, handleOnSubmit, id } = props;
+  const { listEmail, inputs, address, handleAutocomplete, handleStreet, handleOnChange, handleOnSubmit, id } = props;
   const navigate = useNavigate();
   const [formErrors, setFormErrors] = useState({});
   const city = cityData.map(item => item.name);
@@ -44,27 +44,27 @@ const FormDeliveryInfo = (props) => {
       errors.email = "Email không hợp lệ!";
     }
 
-    if (!inputs.inputs.email || !inputs.inputs.email.trim()) {
+    if (!inputs.inputs.email.trim()) {
       errors.email = "Vui lòng điền vào mục này!";
     }
 
-    if (!inputs.inputs.name || !inputs.inputs.name.trim()) {
+    if (!inputs.inputs.name.trim()) {
       errors.name = "Vui lòng điền vào mục này!";
     }
 
-    if (!inputs.address.city || !inputs.address.city.trim()) {
+    if (!inputs.address.city.trim()) {
       errors.city = "Vui lòng chọn mục này!";
     }
 
-    if (!inputs.address.district || !inputs.address.district.trim()) {
+    if (!inputs.address.district.trim()) {
       errors.district = "Vui lòng chọn mục này!";
     }
 
-    if (!inputs.address.wards || !inputs.address.wards.trim()) {
+    if (!inputs.address.wards.trim()) {
       errors.wards = "Vui lòng chọn mục này!";
     }
 
-    if (!inputs.address.street || !inputs.address.street.trim()) {
+    if (!inputs.address.street.trim()) {
       errors.street = "Vui lòng chọn mục này!";
     }
 
@@ -72,7 +72,7 @@ const FormDeliveryInfo = (props) => {
       errors.phone = "Số điện thoại không hợp lệ!"
     }
 
-    if (!inputs.inputs.phone || !inputs.inputs.phone.trim()) {
+    if (!inputs.inputs.phone.trim()) {
       errors.phone = "Vui lòng điền vào mục này!";
     }
 
@@ -94,38 +94,38 @@ const FormDeliveryInfo = (props) => {
     <form className="form-default" onSubmit={(e) => submitFrom(e)}>
       <Grid container>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={12} sm={4} className="form-default__control">
+          <Grid item xs={12} sm={4} className="form-default__label">
             <label>Email khách hàng</label>
           </Grid>
-          <Grid item xs={12} sm={6} className="form-default__input-group">
-            {id ?
-              <input
+          <Grid item xs={12} sm={6} className="form-default__content">
+            {!id ?
+              <Autocomplete
                 disabled
+                className="form-default__autocomplete"
+                options={listEmail}
+                value={inputs.email}
+                isOptionEqualToValue={(option, value) =>
+                  option.id === value.id
+                }
+                onChange={(e, value) => handleChangeAddress("email", value)}
+                renderInput={(params) => <TextField {...params}
+                />}
+              /> :
+              <input
                 type="text"
                 className="input-default form-default__input"
                 name="email"
                 value={inputs.email}
-                onChange={e => handleChangeInputs(e)}
-              /> :
-              <>
-                <input
-                  type="text"
-                  className="input-default form-default__input"
-                  name="email"
-                  value={inputs.email}
-                  onChange={e => handleChangeInputs(e)}
-                />
-                <p className={formErrors.email ? "form-default__error show" : "form-default__error"}>{formErrors.email}</p>
-              </>
+                disabled
+              />
             }
-
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={12} sm={4} className="form-default__control">
+          <Grid item xs={12} sm={4} className="form-default__label">
             <label>Họ tên người nhận</label>
           </Grid>
-          <Grid item xs={12} sm={6} className="form-default__input-group">
+          <Grid item xs={12} sm={6} className="form-default__content">
             <input
               type="text"
               className="input-default form-default__input"
@@ -137,10 +137,10 @@ const FormDeliveryInfo = (props) => {
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={12} sm={4} className="form-default__control">
+          <Grid item xs={12} sm={4} className="form-default__label">
             <label>Tỉnh/Thành phố</label>
           </Grid>
-          <Grid item xs={12} sm={6} className="form-default__input-group">
+          <Grid item xs={12} sm={6} className="form-default__content">
             <Autocomplete
               className="form-default__autocomplete"
               id="city"
@@ -157,10 +157,10 @@ const FormDeliveryInfo = (props) => {
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={12} sm={4} className="form-default__control">
+          <Grid item xs={12} sm={4} className="form-default__label">
             <label>Quận/Huyện</label>
           </Grid>
-          <Grid item xs={12} sm={6} className="form-default__input-group">
+          <Grid item xs={12} sm={6} className="form-default__content">
             {arrDistrict ?
               <Autocomplete
                 className="form-default__autocomplete"
@@ -190,10 +190,10 @@ const FormDeliveryInfo = (props) => {
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={12} sm={4} className="form-default__control">
+          <Grid item xs={12} sm={4} className="form-default__label">
             <label>Phường/Xã</label>
           </Grid>
-          <Grid item xs={12} sm={6} className="form-default__input-group">
+          <Grid item xs={12} sm={6} className="form-default__content">
             {arrWards ?
               <Autocomplete
                 className="form-default__autocomplete"
@@ -223,10 +223,10 @@ const FormDeliveryInfo = (props) => {
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={12} sm={4} className="form-default__control">
+          <Grid item xs={12} sm={4} className="form-default__label">
             <label>Địa chỉ</label>
           </Grid>
-          <Grid item xs={12} sm={6} className="form-default__input-group">
+          <Grid item xs={12} sm={6} className="form-default__content">
             <input
               type="text"
               name="street"
@@ -238,10 +238,10 @@ const FormDeliveryInfo = (props) => {
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={12} sm={4} className="form-default__control">
+          <Grid item xs={12} sm={4} className="form-default__label">
             <label>Số điện thoại</label>
           </Grid>
-          <Grid item xs={12} sm={6} className="form-default__input-group">
+          <Grid item xs={12} sm={6} className="form-default__content">
             <input
               type="text"
               className="input-default form-default__input"
@@ -253,10 +253,10 @@ const FormDeliveryInfo = (props) => {
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={12} sm={4} className="form-default__control">
+          <Grid item xs={12} sm={4} className="form-default__label">
             <label>Ghi chú</label>
           </Grid>
-          <Grid item xs={12} sm={6} className="form-default__input-group">
+          <Grid item xs={12} sm={6} className="form-default__content">
             <textarea
               type="text"
               className="input-default form-default__input"

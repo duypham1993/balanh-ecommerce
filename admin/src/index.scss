@@ -149,7 +149,7 @@ body {
       padding      : 0 15px;
     }
 
-    &__control {
+    &__label {
       text-align : left;
       padding-top: 10px !important;
 
@@ -160,12 +160,16 @@ body {
 
     }
 
-    &__input-group {
+    &__content {
       padding-top   : 7px !important;
       padding-bottom: 20px;
       position      : relative;
       display       : flex;
       flex-direction: column;
+
+      &--row {
+        flex-direction: row;
+      }
 
       .form-default {
         &__autocomplete {
@@ -256,6 +260,18 @@ body {
       }
     }
 
+    &__text {
+      padding-top: 7px;
+    }
+
+    &__change {
+      border         : none;
+      background     : none;
+      color          : var(--green);
+      text-decoration: underline;
+      cursor         : pointer;
+    }
+
     &__bot-nav {
       border-top: 1px solid var(--border-gray-1);
       background: var(--bg-bot-form);
@@ -293,12 +309,12 @@ body {
         margin-bottom: 20px;
       }
 
-      &__control {
+      &__label {
         text-align : right;
         padding-top: 24px !important;
       }
 
-      &__input-group {
+      &__content {
         padding-top: 24px !important;
       }
     }
@@ -308,7 +324,7 @@ body {
 @media screen and (min-width:1200px) {
   .form-default {
     .form-default {
-      &__input-group {
+      &__content {
         .form-default {
 
           &__autocomplete,

@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { selectStatusSubmit } from "../../../redux/selectors";
+import { selectData, selectStatusSubmit } from "../../../redux/selectors";
 import SubmitAlert from "../../../components/SubmitAlert/SubmitAlert";
 import { addAddress, resetStatusSubmit } from "../../../redux/slice/deliverySlice";
 import FormDeliveryInfo from "../../../components/FormDeliveryInfo/FormDeliveryInfo";
+import { getCustomers } from "../../../redux/slice/customerSlice";
 
 const CreateAddress = () => {
   const dispatch = useDispatch();
   const statusSubmit = useSelector(selectStatusSubmit("deliveryInfo"));
+  const customers = useSelector(selectData("customer", "customers"));
+  const listEmail = customers.map(item => item.email);
   const [inputs, setInputs] = useState({
     email: "",
     name: "",
@@ -26,6 +29,7 @@ const CreateAddress = () => {
   }
 
   useEffect(() => {
+    dispatch(getCustomers());
     dispatch(resetStatusSubmit());
   }, [])
 
@@ -60,9 +64,13 @@ const CreateAddress = () => {
   };
 
   const handleAutocomplete = (name, value) => {
-    setAddress({
-      ...address, [name]: value
-    })
+    if (name === "email") {
+      setInputs({ ...inputs, ["email"]: value })
+    } else {
+      setAddress({
+        ...address, [name]: value
+      })
+    }
   }
 
   const handleStreet = (e) => {
@@ -79,6 +87,7 @@ const CreateAddress = () => {
   return (
     <div className="add-supplier">
       <FormDeliveryInfo
+        listEmail={listEmail}
         inputs={inputs}
         address={address}
         handleAutocomplete={handleAutocomplete}

@@ -84,7 +84,7 @@ const Account = () => {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <MenuItem>
-          <Link to="/profile">
+          <Link to="/profile" className="flex-bw-center link-default">
             <Avatar /> Profile
           </Link>
         </MenuItem>

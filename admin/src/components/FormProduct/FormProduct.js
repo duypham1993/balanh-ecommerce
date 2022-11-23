@@ -75,15 +75,15 @@ const FormProduct = (props) => {
       errors.sku = "Mã không hợp lệ!";
     }
 
-    if (!inputs.sku || !inputs.sku.trim()) {
+    if (!inputs.sku.trim()) {
       errors.sku = "Vui lòng điền vào mục này!";
     }
 
-    if (!inputs.name || !inputs.name.trim()) {
+    if (!inputs.name.trim()) {
       errors.name = "Vui lòng điền vào mục này!";
     }
 
-    if (!inputs.desc || !inputs.desc.trim()) {
+    if (!inputs.desc.trim()) {
       errors.desc = "Vui lòng điền vào mục này!";
     }
 
@@ -99,15 +99,15 @@ const FormProduct = (props) => {
       errors.categories = "Vui lòng chọn mục này!";
     }
 
-    if (!inputs.origin || !inputs.origin.trim()) {
+    if (!inputs.origin.trim()) {
       errors.origin = "Vui lòng điền vào mục này!";
     }
 
-    if (!inputs.supplier || !inputs.supplier.trim()) {
+    if (!inputs.supplier.trim()) {
       errors.supplier = "Vui lòng điền vào mục này!";
     }
 
-    if (!inputs.packing || !inputs.packing.trim()) {
+    if (!inputs.packing.trim()) {
       errors.packing = "Vui lòng điền vào mục này!";
     }
 

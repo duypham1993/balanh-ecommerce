@@ -49,7 +49,7 @@ const FormSupplier = (props) => {
       errors.sku = "Mã không hợp lệ!";
     }
 
-    if (!inputs.inputs.sku || !inputs.inputs.sku.trim()) {
+    if (!inputs.inputs.sku.trim()) {
       errors.sku = "Vui lòng điền vào mục này!";
     }
 
@@ -57,27 +57,27 @@ const FormSupplier = (props) => {
       errors.email = "Email không hợp lệ!";
     }
 
-    if (!inputs.inputs.email || !inputs.inputs.email.trim()) {
+    if (!inputs.inputs.email.trim()) {
       errors.email = "Vui lòng điền vào mục này!";
     }
 
-    if (!inputs.inputs.name || !inputs.inputs.name.trim()) {
+    if (!inputs.inputs.name.trim()) {
       errors.name = "Vui lòng điền vào mục này!";
     }
 
-    if (!inputs.address.city || !inputs.address.city.trim()) {
+    if (!inputs.address.city.trim()) {
       errors.city = "Vui lòng chọn mục này!";
     }
 
-    if (!inputs.address.district || !inputs.address.district.trim()) {
+    if (!inputs.address.district.trim()) {
       errors.district = "Vui lòng chọn mục này!";
     }
 
-    if (!inputs.address.wards || !inputs.address.wards.trim()) {
+    if (!inputs.address.wards.trim()) {
       errors.wards = "Vui lòng chọn mục này!";
     }
 
-    if (!inputs.address.street || !inputs.address.street.trim()) {
+    if (!inputs.address.street.trim()) {
       errors.street = "Vui lòng chọn mục này!";
     }
 
@@ -85,7 +85,7 @@ const FormSupplier = (props) => {
       errors.phone = "Số điện thoại không hợp lệ!"
     }
 
-    if (!inputs.inputs.phone || !inputs.inputs.phone.trim()) {
+    if (!inputs.inputs.phone.trim()) {
       errors.phone = "Vui lòng điền vào mục này!";
     }
 
@@ -108,10 +108,10 @@ const FormSupplier = (props) => {
     <form className="form-default" onSubmit={(e) => submitFrom(e)}>
       <Grid container>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={12} sm={4} className="form-default__control">
+          <Grid item xs={12} sm={4} className="form-default__label">
             <label>Tên nhà cung cấp</label>
           </Grid>
-          <Grid item xs={12} sm={6} className="form-default__input-group">
+          <Grid item xs={12} sm={6} className="form-default__content">
             <input
               type="text"
               className="input-default form-default__input"
@@ -123,10 +123,10 @@ const FormSupplier = (props) => {
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={12} sm={4} className="form-default__control">
+          <Grid item xs={12} sm={4} className="form-default__label">
             <label>Mã tham chiếu</label>
           </Grid>
-          <Grid item xs={12} sm={6} className="form-default__input-group">
+          <Grid item xs={12} sm={6} className="form-default__content">
             <input
               type="text"
               className="input-default form-default__input"
@@ -138,10 +138,10 @@ const FormSupplier = (props) => {
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={12} sm={4} className="form-default__control">
+          <Grid item xs={12} sm={4} className="form-default__label">
             <label>Email</label>
           </Grid>
-          <Grid item xs={12} sm={6} className="form-default__input-group">
+          <Grid item xs={12} sm={6} className="form-default__content">
             <input
               type="text"
               name="email"
@@ -154,10 +154,10 @@ const FormSupplier = (props) => {
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={12} sm={4} className="form-default__control">
+          <Grid item xs={12} sm={4} className="form-default__label">
             <label>Tỉnh/Thành phố</label>
           </Grid>
-          <Grid item xs={12} sm={6} className="form-default__input-group">
+          <Grid item xs={12} sm={6} className="form-default__content">
             <Autocomplete
               className="form-default__autocomplete"
               id="city"
@@ -174,10 +174,10 @@ const FormSupplier = (props) => {
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={12} sm={4} className="form-default__control">
+          <Grid item xs={12} sm={4} className="form-default__label">
             <label>Quận/Huyện</label>
           </Grid>
-          <Grid item xs={12} sm={6} className="form-default__input-group">
+          <Grid item xs={12} sm={6} className="form-default__content">
             {arrDistrict ?
               <Autocomplete
                 className="form-default__autocomplete"
@@ -207,10 +207,10 @@ const FormSupplier = (props) => {
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={12} sm={4} className="form-default__control">
+          <Grid item xs={12} sm={4} className="form-default__label">
             <label>Phường/Xã</label>
           </Grid>
-          <Grid item xs={12} sm={6} className="form-default__input-group">
+          <Grid item xs={12} sm={6} className="form-default__content">
             {arrWards ?
               <Autocomplete
                 className="form-default__autocomplete"
@@ -240,10 +240,10 @@ const FormSupplier = (props) => {
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={12} sm={4} className="form-default__control">
+          <Grid item xs={12} sm={4} className="form-default__label">
             <label>Địa chỉ</label>
           </Grid>
-          <Grid item xs={12} sm={6} className="form-default__input-group">
+          <Grid item xs={12} sm={6} className="form-default__content">
             <input
               type="text"
               name="street"
@@ -255,10 +255,10 @@ const FormSupplier = (props) => {
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={12} sm={4} className="form-default__control">
+          <Grid item xs={12} sm={4} className="form-default__label">
             <label>Số điện thoại</label>
           </Grid>
-          <Grid item xs={12} sm={6} className="form-default__input-group">
+          <Grid item xs={12} sm={6} className="form-default__content">
             <input
               type="text"
               className="input-default form-default__input"
@@ -270,10 +270,10 @@ const FormSupplier = (props) => {
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
-          <Grid item xs={4} className="form-default__control">
+          <Grid item xs={4} className="form-default__label">
             <label>Hiển thị</label>
           </Grid>
-          <Grid item xs={6} className="form-default__input-group">
+          <Grid item xs={6} className="form-default__content">
             <Switch
               name="isActive"
               className="form-default__input"
