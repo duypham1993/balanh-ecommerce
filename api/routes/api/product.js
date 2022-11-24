@@ -1,6 +1,6 @@
 import express from "express";
 import { verifyToken, verifyTokenRoleAdmin } from "../../middleware/verifyToken";
-import { createProduct, getAllProducts, getCurrentProduct, updateProduct, deleteProduct } from "../../controllers/productController";
+import { createProduct, getAllProducts, getCurrentProduct, updateProduct, updateStock, deleteProduct } from "../../controllers/productController";
 
 const router = express.Router();
 
@@ -15,6 +15,9 @@ router.get("/", verifyToken, getAllProducts);
 
 // UPDATE
 router.put("/:id", verifyTokenRoleAdmin, updateProduct);
+
+// UPDATE STOCK
+router.put("/stock/:id", verifyToken, updateStock);
 
 // DELETE
 router.delete("/delete/:id", verifyTokenRoleAdmin, deleteProduct);

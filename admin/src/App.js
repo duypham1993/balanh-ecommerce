@@ -29,6 +29,7 @@ import CreateAddress from './pages/DeliveryInfo/CreateAddress/CreateAddress';
 import UpdateAddress from './pages/DeliveryInfo/UpdateAddress/UpdateAddress';
 import Profile from './pages/Profile/Profile';
 import ProtectRoute from './components/ProtectRoute/ProtectRoute';
+import Stock from './pages/Stock/Stock';
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
           <Route path="categories/create" element={<CreateCategory />} />
           <Route path="categories/:id"
             element={<UpdateCategory />} />
+          <Route path='stock' element={<Stock />} />
           <Route path='origin' element={<Origin />} />
           <Route path='suppliers' element={<Suppliers />} />
           <Route path='suppliers/create' element={<CreateSupplier />} />

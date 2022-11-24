@@ -29,6 +29,15 @@ export const updateProduct = createAsyncThunk('product/update', async (update, {
   }
 });
 
+export const updateStock = createAsyncThunk('product/update/stock', async (update, { rejectWithValue }) => {
+  try {
+    const res = await axiosPrivate.put(`product/stock/${update.id}`, update.qtyInt);
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
+})
+
 export const deleteProduct = createAsyncThunk('product/delete', async (id, { rejectWithValue }) => {
   try {
     const res = await axiosPrivate.delete(`product/delete/${id}`);
@@ -104,6 +113,21 @@ const productSlice = createSlice({
       ] = action.payload;
     })
     builders.addCase(updateProduct.rejected, (state, action) => {
+      state.statusSubmit = "rejected";
+      state.error = action.payload;
+    })
+
+    // update stock 
+    builders.addCase(updateStock.pending, (state, action) => {
+      state.statusSubmit = "pending";
+    })
+    builders.addCase(updateStock.fulfilled, (state, action) => {
+      state.statusSubmit = "fulfilled";
+      state.products[
+        state.products.findIndex((item) => item._id === action.payload._id)
+      ].qty = action.payload.qty;
+    })
+    builders.addCase(updateStock.rejected, (state, action) => {
       state.statusSubmit = "rejected";
       state.error = action.payload;
     })

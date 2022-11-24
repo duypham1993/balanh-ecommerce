@@ -119,6 +119,10 @@ export default function Sidebar() {
         {
           title: 'Danh mục sản phẩm',
           link: "/categories"
+        },
+        {
+          title: 'Kho hàng',
+          link: "/stock"
         }
       ]
     },

@@ -13,6 +13,7 @@ const CustomBreadcrumb = () => {
     '/products/create': 'Tạo sản phẩm',
     '/categories': 'Danh mục sản phẩm',
     '/categories/create': 'Tạo danh mục sản phẩm',
+    '/stock': 'Kho hàng',
     '/origin': 'Xuất xứ',
     '/suppliers': 'Nhà cung cấp',
     '/suppliers/create': 'Tạo nhà cung cấp',

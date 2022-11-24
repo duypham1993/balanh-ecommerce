@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema(
@@ -7,12 +8,12 @@ const productSchema = new mongoose.Schema(
     sku: { type: String, required: true, unique: true },
     costPrice: { type: Number, required: true },
     price: { type: Number, required: true },
-    categories: { type: Array },
-    origin: { type: String, required: true },
-    supplier: { type: String, required: true },
+    categories: [{ type: ObjectId, required: true }],
+    origin: { type: ObjectId, required: true },
+    supplier: { type: ObjectId, required: true },
     qty: { type: Number, default: 0 },
     packing: { type: String, required: true },
-    imgs: { type: Array },
+    imgs: [String],
     isActive: { type: Boolean, default: false }
   },
   { timestamps: true }
