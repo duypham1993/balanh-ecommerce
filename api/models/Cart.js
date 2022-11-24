@@ -1,12 +1,13 @@
+import { ObjectId } from "mongodb";
 import mongoose from "mongoose";
 
 const cartSchema = new mongoose.Schema(
   {
-    customerID: { type: String, required: true },
+    customerID: { type: ObjectId, required: true },
     products: [
       {
-        productID: { type: String },
-        qty: { type: Number, default: 1 }
+        productID: { type: ObjectId, required: true },
+        qty: { type: Number, default: 1, required: true }
       }
     ]
   },

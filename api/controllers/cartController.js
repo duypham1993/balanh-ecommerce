@@ -2,8 +2,8 @@ import Cart from "../models/Cart";
 
 // CREATE
 const createCart = async (req, res) => {
-  const cart = new Cart(req.body);
   try {
+    const cart = new Cart(req.body);
     const saveCart = await cart.save();
     res.status(200).json(saveCart);
   } catch (err) {
@@ -11,20 +11,20 @@ const createCart = async (req, res) => {
   }
 };
 
-// GET
+// GET CURRENT CART
 const getCurrentCart = async (req, res) => {
-  const cart = await Cart.findById(req.params.id);
   try {
+    const cart = await Cart.findById(req.params.id);
     res.status(201).json(cart._doc);
   } catch (err) {
     res.status(501).json(err);
   }
 };
 
-// GETALL
+// GET ALL
 const getAllCart = async (req, res) => {
-  const carts = await Cart.find({});
   try {
+    const carts = await Cart.find({});
     res.status(201).json(carts);
   } catch (err) {
     res.status(500).json(err);
@@ -33,6 +33,7 @@ const getAllCart = async (req, res) => {
 
 // UPDATE
 const updateCart = async (req, res) => {
+  let error = {};
   try {
     const updateCart = await Cart.findByIdAndUpdate(
       req.body.id,
@@ -40,18 +41,21 @@ const updateCart = async (req, res) => {
       { new: true }
     )
     res.status(200).json(updateCart);
-  } catch (err) {
-    res.status(500).json(err);
+  } catch {
+    error.other = "Cập nhật giỏ hàng thất bại!"
+    res.status(500).json(error);
   }
 };
 
 // DELETE
 const deleteCart = async (req, res) => {
+  let error = {};
   try {
-    await Cart.findByIdAndDelete(req.body.id);
-    res.status(200).json("Xoá thành công!");
-  } catch (err) {
-    res.status(500).json(err);
+    await Cart.findByIdAndDelete(req.params.id);
+    res.status(200).json(req.params.id);
+  } catch {
+    error.other = "Xoá giỏ hàng thất bại!"
+    res.status(500).json(error);
   }
 };
 
