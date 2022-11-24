@@ -27,7 +27,7 @@ const CreateCategory = () => {
 
   useEffect(() => {
     dispatch(getCategories());
-    dispatch(resetStatusSubmit());
+    return () => dispatch(resetStatusSubmit());
   }, [])
 
   // set default root category as parent category

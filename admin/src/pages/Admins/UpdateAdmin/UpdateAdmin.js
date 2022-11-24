@@ -29,7 +29,7 @@ const UpdateAdmin = () => {
 
   useEffect(() => {
     dispatch(getCurrentAdmin(id));
-    dispatch(resetStatusSubmit());
+    return () => dispatch(resetStatusSubmit());
   }, []);
 
   useEffect(() => {

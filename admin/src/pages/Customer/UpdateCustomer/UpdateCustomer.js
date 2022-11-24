@@ -31,7 +31,7 @@ const UpdateCustomer = () => {
 
   useEffect(() => {
     dispatch(getCurrentCustomer(id));
-    dispatch(resetStatusSubmit());
+    return () => dispatch(resetStatusSubmit());
   }, []);
 
   useEffect(() => {

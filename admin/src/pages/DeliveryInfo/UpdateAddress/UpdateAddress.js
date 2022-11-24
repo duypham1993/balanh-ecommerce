@@ -33,7 +33,7 @@ const UpdateAddress = () => {
 
   useEffect(() => {
     dispatch(getCurrentAddress(id));
-    dispatch(resetStatusSubmit());
+    return () => dispatch(resetStatusSubmit());
   }, []);
 
   useEffect(() => {

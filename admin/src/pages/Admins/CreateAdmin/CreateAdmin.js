@@ -24,7 +24,7 @@ const CreateAdmin = () => {
   }
 
   useEffect(() => {
-    dispatch(resetStatusSubmit());
+    return () => dispatch(resetStatusSubmit());
   }, [])
 
   useEffect(() => {

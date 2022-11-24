@@ -7,6 +7,9 @@ import { selectData, selectStatusSubmit } from "../../../redux/selectors";
 import { useParams } from "react-router-dom";
 import SubmitAlert from "../../../components/SubmitAlert/SubmitAlert";
 import ErrorFetching from "../../../components/ErrorFetching/ErrorFetching";
+import { getCategories } from "../../../redux/slice/categorySlice";
+import { getSuppliers } from "../../../redux/slice/supplierSlice";
+import { getOrigin } from "../../../redux/slice/originSlice";
 
 const UpdateProduct = () => {
   const dispatch = useDispatch();
@@ -36,11 +39,20 @@ const UpdateProduct = () => {
   const mess = {
     success: "Cập nhật sản phẩm thành công!",
     error: errorApi.other
-  }
+  };
+  const origin = useSelector(selectData("origin", "origin"));
+  const suppliers = useSelector(selectData("supplier", "suppliers"));
 
   useEffect(() => {
-    dispatch(getCurrentProduct(id));
-    dispatch(resetStatusSubmit());
+    const fetchMulti = async () => {
+      await dispatch(getCurrentProduct(id));
+      await dispatch(getCategories());
+      await dispatch(getSuppliers());
+      await dispatch(getOrigin());
+    }
+
+    fetchMulti();
+    return () => dispatch(resetStatusSubmit());
   }, []);
 
   useEffect(() => {
@@ -52,8 +64,8 @@ const UpdateProduct = () => {
         costPrice: currentProduct.costPrice,
         price: currentProduct.price,
         categories: currentProduct.categories,
-        origin: currentProduct.origin,
-        supplier: currentProduct.supplier,
+        origin: currentProduct.origin.name,
+        supplier: currentProduct.supplier.name,
         qty: currentProduct.qty,
         packing: currentProduct.packing,
         imgs: currentProduct.imgs,
@@ -103,9 +115,14 @@ const UpdateProduct = () => {
   const handleOnSubmit = async () => {
     const imgsLocal = await Promise.all(file.map((item) => uploadImage(item)));
     await Promise.all(arrDelImg.map(item => delImgFireBase(item)));
+    const productOrigin = origin?.filter(item => item.name === inputs.origin)[0];
+    const productSupplier = suppliers?.filter(item => item.name === inputs.supplier)[0];
     const imgs = [...inputs.imgs, ...imgsLocal];
+
     const updatedProduct = {
       ...inputs,
+      origin: productOrigin._id,
+      supplier: productSupplier._id,
       qty: parseInt(inputs.qty),
       costPrice: parseInt(inputs.costPrice),
       price: parseInt(inputs.price),

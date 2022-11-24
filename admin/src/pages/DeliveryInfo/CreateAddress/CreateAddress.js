@@ -30,7 +30,7 @@ const CreateAddress = () => {
 
   useEffect(() => {
     dispatch(getCustomers());
-    dispatch(resetStatusSubmit());
+    return () => dispatch(resetStatusSubmit());
   }, [])
 
   // clear inputs after add supplier success

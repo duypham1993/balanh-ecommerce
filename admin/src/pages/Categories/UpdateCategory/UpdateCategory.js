@@ -33,7 +33,7 @@ const UpdateCategory = () => {
 
   useEffect(() => {
     dispatch(getCategories());
-    dispatch(resetStatusSubmit());
+    return () => dispatch(resetStatusSubmit());
   }, []);
 
   useEffect(() => {

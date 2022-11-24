@@ -26,7 +26,7 @@ const Suppliers = () => {
 
   useEffect(() => {
     dispatch(getSuppliers());
-    dispatch(resetStatusSubmit());
+    return () => dispatch(resetStatusSubmit());
   }, []);
 
   const selectedSuppliers = suppliers && [...suppliers.filter(item => selectionModel.includes(item._id))];

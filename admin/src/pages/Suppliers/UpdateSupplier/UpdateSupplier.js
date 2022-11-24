@@ -39,7 +39,7 @@ const UpdateSupplier = () => {
 
   useEffect(() => {
     dispatch(getCurrnetSupplier(id));
-    dispatch(resetStatusSubmit());
+    return () => dispatch(resetStatusSubmit());
   }, [])
 
   useEffect(() => {

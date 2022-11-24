@@ -8,9 +8,6 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import HighlightOffTwoToneIcon from '@mui/icons-material/HighlightOffTwoTone';
-import { getCategories } from "../../redux/slice/categorySlice";
-import { getSuppliers } from "../../redux/slice/supplierSlice";
-import { getOrigin } from "../../redux/slice/originSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { selectArrOrigin, selectArrSuppliers, selectData, selectObjectData } from "../../redux/selectors";
 import CustomTreeItem from "./CustomTreeItem/CustomTreeItem";
@@ -47,19 +44,11 @@ const FormProduct = (props) => {
   const [valueTabs, setValueTabs] = useState(0);
   const objectCategories = useSelector(selectObjectData);
   const arrOrigin = useSelector(selectArrOrigin);
-  const arrSuplliers = useSelector(selectArrSuppliers);
+  const arrSuppliers = useSelector(selectArrSuppliers);
   const [formErrors, setFormErrors] = useState({});
   const errorApi = useSelector(selectData("product", "error"));
 
   useEffect(() => {
-    // get categories, suppliers, origin for select menu
-    dispatch(getCategories());
-    dispatch(getSuppliers());
-    dispatch(getOrigin());
-  }, [])
-
-  useEffect(() => {
-    // set categories of product
     renderTree(objectCategories)
   }, [inputs.categories])
 
@@ -126,6 +115,7 @@ const FormProduct = (props) => {
   }
 
   const renderTree = (nodes) => {
+    // set checked for categories
     let check = false;
     for (let i = 0; i < inputs.categories.length; i++) {
       if (inputs.categories[i] === nodes._id) {
@@ -237,7 +227,7 @@ const FormProduct = (props) => {
                       className="form-product__autocomplete"
                       value={inputs.supplier}
                       onChange={(e, value) => handleAutoComplete("supplier", value)}
-                      options={arrSuplliers}
+                      options={arrSuppliers}
                       isOptionEqualToValue={(option, value) =>
                         option.id === value.id
                       }

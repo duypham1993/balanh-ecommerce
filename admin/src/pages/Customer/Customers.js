@@ -23,7 +23,7 @@ const Custommer = () => {
 
   useEffect(() => {
     dispatch(getCustomers());
-    dispatch(resetStatusSubmit());
+    return () => dispatch(resetStatusSubmit());
   }, []);
 
   const selectedCustomerS = customers && [...customers.filter(item => selectionModel.includes(item._id))];

@@ -21,7 +21,7 @@ const AddressList = () => {
 
   useEffect(() => {
     dispatch(getAddresssList());
-    dispatch(resetStatusSubmit());
+    return () => dispatch(resetStatusSubmit());
   }, []);
 
   const selectedAddressList = addressList && [...addressList.filter(item => selectionModel.includes(item._id))];

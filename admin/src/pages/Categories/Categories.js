@@ -27,7 +27,7 @@ const Categories = () => {
 
   useEffect(() => {
     dispatch(getCategories());
-    dispatch(resetStatusSubmit());
+    return () => dispatch(resetStatusSubmit());
   }, []);
 
   const selectedCategories = [...categoriesWithoutRoot.filter(item => selectionModel.includes(item._id))];

@@ -5,6 +5,9 @@ import { addProduct, resetStatusSubmit } from "../../../redux/slice/productSlice
 import { uploadImage } from "../../../services/uploadFirebase";
 import { selectData, selectStatusSubmit } from "../../../redux/selectors";
 import SubmitAlert from "../../../components/SubmitAlert/SubmitAlert";
+import { getCategories } from "../../../redux/slice/categorySlice";
+import { getSuppliers } from "../../../redux/slice/supplierSlice";
+import { getOrigin } from "../../../redux/slice/originSlice";
 
 const AddProduct = () => {
   const dispatch = useDispatch();
@@ -29,11 +32,20 @@ const AddProduct = () => {
   const mess = {
     success: "Tạo sản phẩm thành công!",
     error: errorApi.other
-  }
+  };
+  const origin = useSelector(selectData("origin", "origin"));
+  const suppliers = useSelector(selectData("supplier", "suppliers"));
 
   useEffect(() => {
-    dispatch(resetStatusSubmit());
-  }, []);
+    const fetchMulti = async () => {
+      await dispatch(getCategories());
+      await dispatch(getSuppliers());
+      await dispatch(getOrigin());
+    }
+    fetchMulti();
+
+    return () => dispatch(resetStatusSubmit());
+  }, [])
 
   // clear inputs after add product success
   useEffect(() => {
@@ -89,8 +101,13 @@ const AddProduct = () => {
 
   const handleOnSubmit = async () => {
     const imgs = await Promise.all(file.map((item) => uploadImage(item)));
+    const productOrigin = origin?.filter(item => item.name === inputs.origin)[0];
+    const productSupplier = suppliers?.filter(item => item.name === inputs.supplier)[0];
+
     const newProduct = {
       ...inputs,
+      origin: productOrigin._id,
+      supplier: productSupplier._id,
       qty: parseInt(inputs.qty),
       costPrice: parseInt(inputs.costPrice),
       price: parseInt(inputs.price),

@@ -26,7 +26,7 @@ const Admins = () => {
 
   useEffect(() => {
     dispatch(getAdmins());
-    dispatch(resetStatusSubmit());
+    return () => dispatch(resetStatusSubmit());
   }, []);
 
   const selectedAdmins = admins && [...admins.filter(item => selectionModel.includes(item._id))];

@@ -27,7 +27,7 @@ const CreateSupplier = () => {
   }
 
   useEffect(() => {
-    dispatch(resetStatusSubmit());
+    return () => dispatch(resetStatusSubmit());
   }, [])
 
   // clear inputs after add supplier success

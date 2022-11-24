@@ -11,25 +11,24 @@ import CustomDialog from "../../components/CustomDialog/CustomDialog";
 import SubmitAlert from '../../components/SubmitAlert/SubmitAlert';
 import ErrorFetching from '../../components/ErrorFetching/ErrorFetching';
 
-
 const ProductList = () => {
   const [pageSize, setPageSize] = useState(50);
   const dispatch = useDispatch();
   const products = useSelector(selectData("product", 'products'));
   const [selectionModel, setSelectionModel] = useState([]);
   const statusSubmit = useSelector(selectStatusSubmit("product"));
-  const statusFetching = useSelector(selectData("product", "isFetching"))
-  const errorApi = useSelector(selectData("product", "error"))
+  const statusFetching = useSelector(selectData("product", "isFetching"));
+  const errorApi = useSelector(selectData("product", "error"));
   const mess = {
     success: "Xoá sản phẩm thành công!",
     error: errorApi.other
-  }
+  };
 
   useEffect(() => {
     dispatch(getProducts());
-    dispatch(resetStatusSubmit());
+    return () => dispatch(resetStatusSubmit());
   }, []);
-
+  console.log(statusSubmit)
   const selectedProducts = [...products.filter(item => selectionModel.includes(item._id))];
 
   const handleDelete = (item) => {
@@ -79,6 +78,13 @@ const ProductList = () => {
       headerClassName: "wrapper_data-grid__header",
       minWidth: 150,
       flex: 1,
+      renderCell: (item) => {
+        // get info categories of product
+        const categories = [...item.row.categories].reverse();
+        const lastIndex = categories?.length - 1;
+        return categories?.map((category, index) => index === lastIndex ? category.name : `${category.name}, `
+        );
+      }
     },
     {
       field: "costPrice",

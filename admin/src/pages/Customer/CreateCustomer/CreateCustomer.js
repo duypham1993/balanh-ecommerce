@@ -24,7 +24,7 @@ const CreateCustomer = () => {
   }
 
   useEffect(() => {
-    dispatch(resetStatusSubmit());
+    return () => dispatch(resetStatusSubmit());
   }, [])
 
   useEffect(() => {
