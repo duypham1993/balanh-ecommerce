@@ -1,0 +1,39 @@
+.product {
+  &__wrapper-form {
+    overflow   : hidden;
+    white-space: nowrap;
+    width      : 158px;
+
+    &:hover {
+      .product {
+        &__form {
+          transform: translateX(0);
+        }
+
+        &__submit {
+          span {
+            opacity: 0;
+          }
+        }
+      }
+    }
+  }
+
+  &__form {
+    transition: 0.3s;
+    transform : translateX(0);
+  }
+
+  &__sold-out {
+    line-height: 39px;
+    cursor     : not-allowed;
+  }
+}
+
+@media (min-width: 1200px) {
+  .product {
+    &__form {
+      transform: translateX(-117px);
+    }
+  }
+}

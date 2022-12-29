@@ -1,0 +1,44 @@
+.location-guest {
+  padding: 5px 0;
+  .location {
+    > span {  
+      font-size: 14px;
+      color: #ed143d;
+      i {
+        padding-right: 2px;
+      }  
+    }
+    .location {
+      &__icon {
+        font-size: 16px;
+      }
+      &__choose {
+        display: inline-block;
+        margin-left: 5px;
+      }
+      &__button {
+        background: #fff;
+        border: 1px solid var(--green);
+        color: var(--green);
+        border-radius: 4px;
+        padding: 6px 8px;
+        font-size: 12px;
+        line-height: 1.35;
+        font-weight: 500;
+        &:focus {
+          box-shadow: none !important;
+        }
+      }      
+    }
+  }
+  .guest {
+    text-align: right;
+    font-weight: 600;
+  }        
+}
+
+.location-modal {
+  .modal-title {
+    font-size: 16px;
+  }
+}

@@ -1,0 +1,9 @@
+.delivery-address {
+  &__modal {
+    .modal-body {
+      padding-top: 0;
+      max-height : 400px;
+      overflow   : auto;
+    }
+  }
+}

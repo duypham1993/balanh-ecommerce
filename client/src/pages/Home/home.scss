@@ -1,0 +1,23 @@
+.blog {
+  overflow: hidden;
+
+  &__title {
+    position: relative;
+    z-index : 2;
+  }
+
+  &__icon {
+    display         : flex;
+    align-items     : center;
+    justify-content : center;
+    width           : 60px;
+    height          : 60px;
+    background-color: var(--bg-404-page);
+    border-radius   : 100%;
+    position        : absolute;
+    top             : -30px;
+    left            : 50%;
+    transform       : translateX(-50%);
+    z-index         : 1;
+  }
+}

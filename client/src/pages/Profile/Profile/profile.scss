@@ -1,0 +1,35 @@
+.profile-page {
+  &__menu-item {
+    transition: all 0.3s;
+
+    &.active {
+      background-color: var(--green);
+      color           : var(--white) !important;
+    }
+
+    &:hover {
+      background-color: var(--green);
+      color           : var(--white) !important;
+    }
+  }
+
+  &__password {
+    padding-right: 60px !important;
+  }
+
+  &__changePW {
+    font-size  : 0.9rem;
+    line-height: 51px;
+    transition : all 0.3s;
+    cursor     : pointer;
+
+    label {
+      cursor: pointer;
+    }
+  }
+
+  .spinner {
+    height: 18px;
+    width : 18px;
+  }
+}

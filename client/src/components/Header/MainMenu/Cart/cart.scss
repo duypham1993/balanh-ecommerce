@@ -1,0 +1,48 @@
+.cart {
+  margin-top: 1rem;
+  text-align: right;
+
+  .cart {
+    &__count {
+      position   : absolute;
+      font-size  : 11px;
+      line-height: 16px;
+      left       : 27px;
+      top        : -4px;
+      background : #35c9b1;
+      color      : var(--white);
+      padding    : 0 5px;
+    }
+
+  }
+
+  .cart-dropdown {
+    padding: 1.5rem;
+    width  : 340px;
+
+    &.show {
+      transform-origin: top center;
+      animation       : growDown 300ms ease-in-out forwards;
+    }
+
+    .cart-dropdown {
+
+      &__remove {
+        border : 1px solid var(--text-gray-1);
+        padding: 1px;
+        cursor : pointer;
+      }
+    }
+  }
+}
+
+@media (max-width: 767.98px) {
+  .cart {
+    margin-top: 0;
+
+    .dropdown {
+      position: static;
+    }
+  }
+
+}

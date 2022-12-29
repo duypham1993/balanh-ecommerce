@@ -1,0 +1,11 @@
+.menu-mobile {
+  .nav-link {
+    &.active {
+      border-bottom: 2px solid var(--text-gray-1) !important;
+    }
+  }
+
+  .rotate90 {
+    transform: rotate(-90deg);
+  }
+}

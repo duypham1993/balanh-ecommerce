@@ -1,0 +1,56 @@
+.qty {
+
+  &__btn,
+  &__input {
+    border     : none;
+    color      : var(--text-qty);
+    font-weight: 300;
+    height     : 32px;
+    width      : 32px;
+    line-height: 32px;
+    padding    : 0;
+    text-align : center;
+  }
+
+  &__btn {
+    background     : var(--bg-btn-qty);
+    transition     : 0.3s;
+    display        : flex;
+    justify-content: center;
+    align-items    : center;
+
+    &:hover {
+      background: var(--green);
+      color     : var(--white);
+    }
+  }
+
+  &__input {
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+    }
+
+    &[type=number] {
+      -moz-appearance: textfield;
+    }
+
+    &:focus-visible {
+      outline: 0;
+    }
+  }
+}
+
+@media screen and (min-width: 576px) {
+  .qty {
+
+    &__btn,
+    &__qty,
+    &__input {
+      height     : 39px;
+      width      : 39px;
+      line-height: 39px;
+    }
+  }
+}

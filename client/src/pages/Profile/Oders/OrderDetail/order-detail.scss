@@ -1,0 +1,22 @@
+.order-detail {
+  .order-detail {
+    &__step {
+      &::after {
+        height          : 100%;
+        width           : 1px;
+        background-color: var(--border-gray-1);
+        position        : absolute;
+        top             : 50%;
+        left            : 50%;
+        transform       : translate(-50%, 0);
+        content         : "";
+      }
+
+    }
+
+    &__step-icon {
+      color    : var(--border-gray-1);
+      font-size: 0.85rem;
+    }
+  }
+}

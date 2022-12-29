@@ -1,0 +1,50 @@
+.login {
+  .show.dropdown {
+    .login__toggle {
+      color: var(--yellow-1);
+    }
+  }
+
+  .custom-button {
+
+    &__face-login,
+    &__google-login {
+      text-transform: uppercase;
+      color         : var(--white);
+      font-size     : 12px;
+      transition    : all 0.3s;
+
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+
+    &__face-login {
+      background-image: linear-gradient(#6b88c6, #5872aa);
+    }
+
+    &__google-login {
+      background: #ff2b25;
+    }
+  }
+
+}
+
+.login-modal {
+  .login-modal {
+    &__register {
+      color  : red;
+      margin : 0;
+      border : 1px solid var(--green);
+      display: block;
+
+      &:hover {
+        color: var(--green);
+      }
+    }
+  }
+
+  .modal-content {
+    border-radius: 0;
+  }
+}

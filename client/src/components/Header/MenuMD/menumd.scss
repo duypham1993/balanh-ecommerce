@@ -1,0 +1,64 @@
+.menu-md {
+  background: var(--green);
+
+  .menu-md {
+    &__list {
+      display   : flex;
+      list-style: none;
+      padding   : 0;
+      margin    : 0;
+
+      &--sub {
+        padding         : 0.8rem 0;
+        position        : absolute;
+        top             : 100%;
+        left            : 0;
+        z-index         : 99;
+        min-width       : 165px;
+        display         : none;
+        box-shadow      : 0 0 3px var(--text-gray-1);
+        animation       : growDown 300ms ease-in-out forwards;
+        transform-origin: top center;
+        background      : var(--white);
+
+        .menu-md__link {
+          color  : var(--text-gray-1);
+          padding: 0.5rem 1rem;
+
+          &:hover {
+            color: var(--green);
+          }
+        }
+      }
+    }
+
+    &__item {
+      position    : relative;
+      margin-right: 5px;
+
+      &:hover {
+        .menu-md {
+          &__list--sub {
+            display: block !important;
+          }
+        }
+      }
+    }
+
+    &__link {
+      text-decoration: none;
+      display        : flex;
+      align-items    : center;
+      width          : 100%;
+      padding        : 10px;
+      color          : var(--white);
+      text-transform : uppercase;
+      font-size      : 12px;
+      transition     : 0.3s;
+
+      &:hover {
+        color: var(--yellow-1);
+      }
+    }
+  }
+}

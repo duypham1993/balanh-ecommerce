@@ -1,0 +1,80 @@
+.filter {
+  max-width: 300px;
+
+  .filter {
+    &__btn {
+      border    : none;
+      background: var(--green);
+      color     : var(--white);
+      padding   : 0;
+
+      span {
+        font-size: 0.8rem;
+      }
+    }
+
+    &__icon {
+      background: #5da04b;
+      width     : 32px;
+      height    : 32px;
+    }
+
+    &__title {
+      font-size     : 11px;
+      border-bottom : 1px solid #dbdbdb;
+      padding-bottom: 10px;
+      margin-bottom : 10px;
+      text-transform: uppercase;
+      color         : var(--text-gray-1);
+      position      : relative;
+
+      &::after {
+        background: var(--green);
+        content   : "";
+        width     : 50px;
+        height    : 3px;
+        bottom    : 0;
+        left      : 0;
+        position  : absolute;
+      }
+    }
+
+    &__item-numbers {
+      cursor       : pointer;
+      position     : absolute;
+      display      : inline-block;
+      height       : 15px;
+      font-size    : 10px;
+      border       : 1px solid #ccc;
+      color        : var(--text-gray-2);
+      border-radius: 2px;
+      min-width    : 15px;
+      text-align   : center;
+      top          : -3px;
+      right        : -20px;
+    }
+  }
+}
+
+
+@media (min-width: 768px) {
+  .filter {
+    max-width: 100%;
+
+    .filter {
+      &__btn {
+        span {
+          font-size: 1rem;
+        }
+      }
+    }
+
+    &__content {
+      .offcanvas-header {
+        .btn-close {
+          display: none;
+        }
+      }
+    }
+  }
+}

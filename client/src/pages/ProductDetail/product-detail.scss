@@ -1,0 +1,37 @@
+.product-detail {
+
+  .container {
+    max-width     : 1170px;
+    padding-top   : 10px;
+    padding-bottom: 10px;
+  }
+
+  .spinner {
+    height: 20px;
+    width : 20px;
+  }
+
+  .qty {
+    margin-bottom: 20px;
+
+    &__btn,
+    &__input {
+      border    : 1px solid var(--border-gray-1);
+      background: none;
+      padding   : 0;
+    }
+
+    &__btn {
+      &:hover {
+        color: var(--green);
+      }
+    }
+
+    &__input {
+      width       : 74px;
+      text-align  : center;
+      border-right: none;
+      border-left : none;
+    }
+  }
+}

@@ -1,0 +1,48 @@
+.search-box {
+  .dropdown-toggle {
+    &::after {
+      display: none;
+    }
+  }
+
+  .dropdown-item {
+    &:active {
+      background: var(--white);
+    }
+  }
+
+  .search-box {
+    &__input {
+      border       : none;
+      border-bottom: 2px solid #000;
+      width        : 100%;
+      font-size    : 12px;
+      font-weight  : 700;
+      line-height  : 38px;
+      padding-right: 33px;
+      font-style   : italic;
+
+      &:hover,
+      &:focus,
+      &:focus-visible {
+        color  : var(--green);
+        outline: none !important;
+      }
+
+      &::placeholder {
+        color: var(--green);
+      }
+
+    }
+
+    &__submit {
+      position   : absolute;
+      border     : none;
+      background : none;
+      right      : 0;
+      top        : 0;
+      line-height: 40px;
+      height     : 40px;
+    }
+  }
+}

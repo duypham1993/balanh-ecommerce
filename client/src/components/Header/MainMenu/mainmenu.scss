@@ -1,0 +1,13 @@
+@media (max-width: 767.98px) {
+  .main-menu {
+    &__logo {
+      img {
+        max-width: 145px;
+      }
+    }
+
+    .search {
+      order: 99
+    }
+  }
+}
