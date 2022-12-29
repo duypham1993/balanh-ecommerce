@@ -1,22 +1,27 @@
 import express from "express";
-import { verifyToken, verifyTokenAndAuthorization } from "../../middleware/verifyToken";
-import { createCart, getAllCart, getCurrentCart, updateCart, deleteCart } from "../../controllers/cartController";
+import { verifyTokenAdmin, verifyTokenRoleAdmin, verifyTokenClient } from "../../middleware/verifyToken";
+import { addToCart, getAllCart, getUserCart, updateCart, removeProductCart, deleteCart } from "../../controllers/cartController";
 
 const router = express.Router();
 
-// CREATE
-router.post("/create", verifyTokenAndAuthorization, createCart);
-
-// GET
-router.get("/:id", verifyTokenAndAuthorization, getCurrentCart);
-
 // GETALL
-router.get("/all-cart", verifyToken, getAllCart);
+router.get("/", verifyTokenAdmin, getAllCart);
+
+
+// CLIENT
+// GET
+router.get("/:id", verifyTokenClient, getUserCart);
+
+// UPDATE/ADD PRODUCT TO CART
+router.post("/add", verifyTokenClient, addToCart);
+
+// UPDATE/REMOVE PRODUCT CART 
+router.put("/remove", verifyTokenClient, removeProductCart);
 
 // UPDATE
-router.put("/update", verifyTokenAndAuthorization, updateCart);
+router.put("/", verifyTokenClient, updateCart);
 
 // DELETE
-router.delete("/delete", verifyTokenAndAuthorization, deleteCart);
+router.delete("/:id", verifyTokenClient, deleteCart)
 
 module.exports = router;

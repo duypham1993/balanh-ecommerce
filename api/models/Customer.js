@@ -5,11 +5,11 @@ const customerSchema = new mongoose.Schema(
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    gender: { type: String, required: true },
-    phone: { type: String, required: true },
+    gender: { type: String },
+    phone: { type: String },
     dateOfBirth: { type: String },
     isActive: { type: Boolean, default: false },
-    refreshToken: { type: Array }
+    refreshToken: [String]
   },
   { timestamps: true }
 )

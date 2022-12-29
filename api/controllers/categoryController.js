@@ -61,14 +61,14 @@ const getAllCategories = async (req, res) => {
 // UPDATE
 const updateCategory = async (req, res) => {
   let error = {};
-  const checkSlug = await Category.find({ slug: req.body.slug, _id: { $ne: req.params.id } });
+  const checkSlug = await Category.find({ slug: req.body.slug, _id: { $ne: req.body._id } });
   if (checkSlug && checkSlug.length) {
     error.slug = "Đường dẫn đã tồn tại!";
     res.status(500).json(error);
   } else {
     try {
       const category = await Category.findByIdAndUpdate(
-        req.params.id,
+        req.body._id,
         { $set: req.body },
         { new: true }
       )

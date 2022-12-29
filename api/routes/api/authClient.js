@@ -1,5 +1,5 @@
 import express from "express";
-import { registerClient, loginClient } from "../../controllers/authClientController";
+import { registerClient, loginClient, logoutClient } from "../../controllers/authClientController";
 
 const router = express.Router();
 
@@ -11,5 +11,8 @@ router.post("/register", registerClient);
 
 // Login
 router.post("/login", loginClient);
+
+// Logout
+router.delete("/logout", logoutClient);
 
 module.exports = router;

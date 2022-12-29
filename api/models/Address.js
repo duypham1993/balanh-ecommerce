@@ -1,9 +1,9 @@
 import { ObjectId } from "mongodb";
 import mongoose from "mongoose";
 
-const deliveryInfoSchema = new mongoose.Schema(
+const addressSchema = new mongoose.Schema(
   {
-    customerId: { type: ObjectId, required: true },
+    customerID: { type: ObjectId, required: true },
     name: { type: String, required: true },
     address: {
       city: { type: String, required: true },
@@ -12,8 +12,9 @@ const deliveryInfoSchema = new mongoose.Schema(
       street: { type: String, required: true }
     },
     phone: { type: String, required: true },
-    other: { type: String }
+    note: { type: String },
+    isDefault: { type: Boolean, default: false }
   },
   { timestamps: true }
 )
-module.exports = mongoose.model("DeliveryInfo", deliveryInfoSchema);
+module.exports = mongoose.model("Address", addressSchema);

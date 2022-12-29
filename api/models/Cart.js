@@ -3,11 +3,11 @@ import mongoose from "mongoose";
 
 const cartSchema = new mongoose.Schema(
   {
-    customerID: { type: ObjectId, required: true },
+    customerID: { type: ObjectId, required: true, unique: true },
     products: [
       {
-        productID: { type: ObjectId, required: true },
-        qty: { type: Number, default: 1, required: true }
+        _id: { type: ObjectId },
+        qty: { type: Number, default: 1 }
       }
     ]
   },

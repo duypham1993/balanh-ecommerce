@@ -1,25 +1,32 @@
 import express from "express";
-import { verifyToken, verifyTokenAndAuthorization } from "../../middleware/verifyToken";
-import { createOrder, getAllOrders, getUserOrders, getMonthyIncome, updateOrder, deleteOrder } from "../../controllers/orderController";
+import { verifyTokenAdmin, verifyTokenRoleAdmin, verifyTokenClient } from "../../middleware/verifyToken";
+import { createOrder, getAllOrders, getUserOrders, updateOrder, deleteOrder, getCurrentOrder } from "../../controllers/orderController";
 
 const router = express.Router();
 
 //CREATE
-router.post("/", verifyTokenAndAuthorization, createOrder);
+router.post("/", verifyTokenRoleAdmin, createOrder);
 
 //GET USER ORDERS
-router.get("/find/:userId", verifyTokenAndAuthorization, getUserOrders);
+router.get("/find/:userId", verifyTokenAdmin, getUserOrders);
 
 // //GET ALL
-router.get("/", verifyToken, getAllOrders);
-
-// GET MONTHLY INCOME
-router.get("/income", verifyToken, getMonthyIncome);
+router.get("/", verifyTokenAdmin, getAllOrders);
 
 //UPDATE
-router.put("/:id", verifyTokenAndAuthorization, updateOrder);
+router.put("/:id", verifyTokenRoleAdmin, updateOrder);
 
 //DELETE
-router.delete("/:id", verifyTokenAndAuthorization, deleteOrder);
+router.delete("/:id", verifyTokenRoleAdmin, deleteOrder);
+
+// CLIENT
+//CREATE
+router.post("/client", verifyTokenClient, createOrder);
+
+//GET USER ORDERS
+router.get("/client/:userId", verifyTokenClient, getUserOrders);
+
+//GET USER ORDERS
+router.get("/client/:userId/:id", verifyTokenClient, getCurrentOrder);
 
 module.exports = router;

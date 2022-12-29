@@ -1,25 +1,35 @@
 import express from "express";
-import { verifyToken, verifyTokenRoleAdmin } from "../../middleware/verifyToken";
-import { createProduct, getAllProducts, getCurrentProduct, updateProduct, updateStock, deleteProduct } from "../../controllers/productController";
+import { verifyTokenAdmin, verifyTokenRoleAdmin } from "../../middleware/verifyToken";
+import { createProduct, getAllProducts, getProductOfCategory, getCurrentProduct, updateProduct, updateStock, deleteProduct, getCurrentProductClient, getProductsForSearch } from "../../controllers/productController";
 
 const router = express.Router();
 
 // CREATE
-router.post("/create", verifyTokenRoleAdmin, createProduct);
+router.post("/", verifyTokenRoleAdmin, createProduct);
 
 // GET CURRENT PRODUCT
-router.get("/:id", verifyToken, getCurrentProduct);
+router.get("/:id", verifyTokenAdmin, getCurrentProduct);
 
 // GET ALL
-router.get("/", verifyToken, getAllProducts);
+router.get("/", verifyTokenAdmin, getAllProducts);
 
 // UPDATE
-router.put("/:id", verifyTokenRoleAdmin, updateProduct);
+router.put("/", verifyTokenRoleAdmin, updateProduct);
 
 // UPDATE STOCK
-router.put("/stock/:id", verifyToken, updateStock);
+router.put("/stock/", verifyTokenAdmin, updateStock);
 
 // DELETE
-router.delete("/delete/:id", verifyTokenRoleAdmin, deleteProduct);
+router.delete("/:id", verifyTokenRoleAdmin, deleteProduct);
+
+// CLIENT
+// GET PRODUCT OF CATEGORY
+router.get("/category/:id", getProductOfCategory);
+
+// GET CURRENT PRODUCT
+router.get("/client/detail/:id", getCurrentProductClient);
+
+// GET PRODUCTS FOR SEARCH
+router.get("/client/search", getProductsForSearch);
 
 module.exports = router;

@@ -1,19 +1,23 @@
 import express from "express";
-import { verifyToken, verifyTokenRoleAdmin } from "../../middleware/verifyToken";
+import { verifyTokenAdmin, verifyTokenRoleAdmin } from "../../middleware/verifyToken";
 import { createCategory, getAllCategories, updateCategory, deleteCategory } from "../../controllers/categoryController";
 
 const router = express.Router();
 
 // CREATE
-router.post("/create", verifyTokenRoleAdmin, createCategory);
+router.post("/", verifyTokenRoleAdmin, createCategory);
 
 // GET ALL
-router.get("/", verifyToken, getAllCategories);
+router.get("/", verifyTokenAdmin, getAllCategories);
 
 // UPDATE
-router.put("/:id", verifyTokenRoleAdmin, updateCategory);
+router.put("/", verifyTokenRoleAdmin, updateCategory);
 
 // DELETE
-router.delete("/delete/:id", verifyTokenRoleAdmin, deleteCategory);
+router.delete("/:id", verifyTokenRoleAdmin, deleteCategory);
+
+// CLIENT
+// GET ALL
+router.get("/client", getAllCategories);
 
 module.exports = router;

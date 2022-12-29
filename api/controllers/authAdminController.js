@@ -36,7 +36,7 @@ const loginAdmin = async (req, res) => {
         role: user.role
       },
       process.env.JWT_KEY,
-      { expiresIn: "5s" }
+      { expiresIn: "15m" }
     );
 
     if (req.body.rememberMe) {
@@ -49,17 +49,17 @@ const loginAdmin = async (req, res) => {
         process.env.REFRESH_TOKEN_KEY
       );
 
-      let newRefreshTokenArr = !cookies?.jwt ? user.refreshToken : user.refreshToken.filter(item => item !== cookies.jwt);
+      let newRefreshTokenArr = !cookies?.jwtAdmin ? user.refreshToken : user.refreshToken.filter(item => item !== cookies.jwtAdmin);
 
-      if (cookies?.jwt) {
-        const refreshToken = cookies.jwt;
+      if (cookies?.jwtAdmin) {
+        const refreshToken = cookies.jwtAdmin;
         const foundToken = await Admin.findOne({ refreshToken }).exec();
 
         if (!foundToken) {
           newRefreshTokenArr = [];
         }
 
-        res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
+        res.clearCookie('jwtAdmin', { httpOnly: true, sameSite: 'None', secure: true });
       }
 
       // Save refreshToken with current user
@@ -67,10 +67,10 @@ const loginAdmin = async (req, res) => {
       await user.save();
 
       // Creates Secure Cookie with refresh accessToken
-      res.cookie('jwt', newRefreshToken, { httpOnly: true, sameSite: 'None', secure: true, maxAge: 24 * 60 * 60 * 1000 })
+      res.cookie('jwtAdmin', newRefreshToken, { httpOnly: true, sameSite: 'None', secure: true, maxAge: 24 * 60 * 60 * 1000 })
     } else {
-      if (cookies?.jwt) {
-        res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
+      if (cookies?.jwtAdmin) {
+        res.clearCookie('jwtAdmin', { httpOnly: true, sameSite: 'None', secure: true });
       }
     }
 
@@ -94,19 +94,19 @@ const logoutAdmin = async (req, res) => {
   let error = {};
   try {
     const cookies = req.cookies;
-    if (!cookies?.jwt) return res.sendStatus(204);
-    const refreshToken = cookies.jwt;
+    if (!cookies?.jwtAdmin) return res.sendStatus(204);
+    const refreshToken = cookies.jwtAdmin;
 
     const user = await Admin.findOne({ refreshToken: refreshToken }).exec();
 
     if (!user) {
-      res.clearCookie('jwt', { httpOnly: true, secure: true, sameSite: 'None' })
+      res.clearCookie('jwtAdmin', { httpOnly: true, secure: true, sameSite: 'None' })
       return res.sendStatus(204);
     }
 
     user.refreshToken = user.refreshToken.filter(item => item !== refreshToken);
     user.save();
-    res.clearCookie('jwt', { httpOnly: true, secure: true, sameSite: "None" });
+    res.clearCookie('jwtAdmin', { httpOnly: true, secure: true, sameSite: "None" });
     return res.sendStatus(204);
   } catch {
     error.other = "Đăng xuất thất bại!"

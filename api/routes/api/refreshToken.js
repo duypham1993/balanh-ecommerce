@@ -1,8 +1,10 @@
 import express from "express";
-import { refreshToken } from "../../controllers/refreshTokenController";
+import { refreshTokenAdmin, refreshTokenClient } from "../../controllers/refreshTokenController";
 
 const router = express.Router();
 
-router.get("/", refreshToken);
+router.get("/", refreshTokenAdmin);
+
+router.get("/client", refreshTokenClient);
 
 module.exports = router;

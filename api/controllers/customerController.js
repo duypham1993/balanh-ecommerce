@@ -51,7 +51,7 @@ const getCurrentCustomer = async (req, res) => {
 // UPDATE
 const updateCustomer = async (req, res) => {
   let error = {};
-  const checkEmail = Customer.find({ email: req.body.email, _id: { $ne: req.params.id } });
+  const checkEmail = Customer.find({ email: req.body.email, _id: { $ne: req.body._id } });
   if (checkEmail && checkEmail.length) {
     error.email = "Email đã được đăng kí!";
     res.status(500).json(error);
@@ -61,13 +61,13 @@ const updateCustomer = async (req, res) => {
       if (req.body.password) {
         req.body.password = CryptoJS.AES.encrypt(req.body.password, process.env.PASS_KEY).toString();
         updateUser = await Customer.findByIdAndUpdate(
-          req.params.id,
+          req.body._id,
           { $set: req.body },
           { new: true }
         );
       } else {
         updateUser = await Customer.findByIdAndUpdate(
-          req.params.id,
+          req.body._id,
           {
             $set: {
               name: req.body.name,
@@ -90,6 +90,49 @@ const updateCustomer = async (req, res) => {
   }
 };
 
+const updateUser = async (req, res) => {
+  let error = {};
+  try {
+    if (req.body.currentPassword) {
+      const user = await Customer.findById(req.body._id);
+      const currentPassword = user.password;
+      const decryptPass = CryptoJS.AES.decrypt(currentPassword, process.env.PASS_KEY).toString(CryptoJS.enc.Utf8);
+
+      if (decryptPass !== req.body.currentPassword) {
+        error.password = "Mật khẩu không đúng!";
+        return res.status(500).json(error);
+      }
+
+      req.body.password = CryptoJS.AES.encrypt(req.body.password, process.env.PASS_KEY).toString();
+      await Customer.findByIdAndUpdate(
+        req.body._id,
+        { $set: req.body },
+        { new: true }
+      );
+    } else {
+      await Customer.findByIdAndUpdate(
+        req.body._id,
+        {
+          $set: {
+            name: req.body.name,
+            phone: req.body.phone,
+            gender: req.body.gender,
+            dateOfBirth: req.body.dateOfBirth,
+          }
+        },
+        { new: true }
+      );
+    }
+
+    const updateUser = await Customer.findById(req.body._id, "name dateOfBirth phone email gender")
+
+    res.status(200).json(updateUser);
+  } catch {
+    error.other = "Cập nhật tài khoản thất bại!"
+    res.status(500).json(error);
+  }
+}
+
 // DELETE
 const deleteCustomer = async (req, res) => {
   let error = {}
@@ -107,5 +150,6 @@ module.exports = {
   getAllCustomers,
   getCurrentCustomer,
   updateCustomer,
-  deleteCustomer
+  deleteCustomer,
+  updateUser
 };

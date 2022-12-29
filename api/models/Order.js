@@ -3,17 +3,22 @@ import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema(
   {
+    codeOrder: { type: String, required: true, unique: true },
     customerID: { type: ObjectId, required: true },
     products: [
       {
-        productID: { type: ObjectId, required: true },
+        _id: { type: ObjectId, required: true },
+        name: { type: String, required: true },
         qty: { type: Number, default: 1, required: true },
         costPrice: { type: Number, required: true },
         price: { type: Number, required: true },
+        packing: { type: String, required: true }
       }
     ],
+    shippingFee: { type: Number, required: true },
     amount: { type: Number, required: true },
     address: {
+      _id: { type: ObjectId, required: true },
       name: { type: String, required: true },
       address: {
         city: { type: String, required: true },
@@ -22,9 +27,12 @@ const orderSchema = new mongoose.Schema(
         street: { type: String, required: true }
       },
       phone: { type: String, required: true },
-      other: { type: String }
+      note: { type: String }
     },
-    status: { type: String, default: "Đơn hàng đã đặt" },
+    status: [{
+      title: { type: String },
+      time: { type: Date }
+    }],
     note: { type: String }
   },
   { timestamps: true }

@@ -27,7 +27,7 @@ const getAllOrigins = async (req, res) => {
 const updateOrigin = async (req, res) => {
   try {
     const updateOrigin = await Origin.findByIdAndUpdate(
-      req.params.id,
+      req.body._id,
       { $set: req.body },
       { new: true }
     );

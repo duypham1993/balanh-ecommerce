@@ -1,7 +1,7 @@
 import CryptoJS from "crypto-js";
 import Admin from "../models/Admin";
 
-// CREAT
+// CREATE ADMIN ACCOUNT
 const createAdmin = async (req, res) => {
   let error = {};
   const checkEmail = await Admin.find({ email: req.body.email });
@@ -27,7 +27,7 @@ const createAdmin = async (req, res) => {
   }
 };
 
-// GET ALL 
+// GET ALL ACCOUNT
 const getAllAdmin = async (req, res) => {
   try {
     const user = await Admin.find({}, '_id email firstName lastName role isActive');
@@ -37,7 +37,7 @@ const getAllAdmin = async (req, res) => {
   }
 };
 
-// GET CURRENT ADMIN 
+// GET CURRENT ACCOUNT 
 const getCurrentAdmin = async (req, res) => {
   try {
     const user = await Admin.findById(req.params.id, '_id email firstName lastName role isActive');
@@ -47,10 +47,10 @@ const getCurrentAdmin = async (req, res) => {
   }
 };
 
-// UPDATE
+// UPDATE ACCOUNT
 const updateAdmin = async (req, res) => {
   let error = {};
-  const checkEmail = await Admin.find({ email: req.body.email, _id: { $ne: req.params.id } });
+  const checkEmail = await Admin.find({ email: req.body.email, _id: { $ne: req.body._id } });
   if (checkEmail.length) {
     error.email = "Email đã tồn tại!";
     res.status(500).json(error);
@@ -60,13 +60,22 @@ const updateAdmin = async (req, res) => {
       if (req.body.password) {
         req.body.password = CryptoJS.AES.encrypt(req.body.password, process.env.PASS_KEY).toString();
         updateUser = await Admin.findByIdAndUpdate(
-          req.params.id,
-          { $set: req.body },
+          req.body._id,
+          {
+            $set: {
+              firstName: req.body.firstName,
+              lastName: req.body.lastName,
+              email: req.body.email,
+              password: req.body.password,
+              role: req.body.role,
+              isActive: req.body.isActive
+            }
+          },
           { new: true }
         );
       } else {
         updateUser = await Admin.findByIdAndUpdate(
-          req.params.id,
+          req.body._id,
           {
             $set: {
               firstName: req.body.firstName,
@@ -95,13 +104,13 @@ const updateByCurrentUser = async (req, res) => {
     let updateUser = {};
 
     if (statusChangePW) {
-      const user = await Admin.findById(req.params.id);
+      const user = await Admin.findById(req.body._id);
       const password = CryptoJS.AES.decrypt(user.password, process.env.PASS_KEY).toString(CryptoJS.enc.Utf8);
 
       if (req.body.password === password) {
         const encryptPW = CryptoJS.AES.encrypt(req.body.newPW, process.env.PASS_KEY).toString();
         updateUser = await Admin.findByIdAndUpdate(
-          req.params.id,
+          req.body._id,
           {
             $set: {
               firstName: req.body.firstName,
@@ -118,7 +127,7 @@ const updateByCurrentUser = async (req, res) => {
 
     } else {
       updateUser = await Admin.findByIdAndUpdate(
-        req.params.id,
+        req.body._id,
         {
           $set: {
             firstName: req.body.firstName,
@@ -143,7 +152,7 @@ const updateByCurrentUser = async (req, res) => {
   }
 };
 
-// DELETE
+// DELETE ACCOUNT
 const deleteAdmin = async (req, res) => {
   let error = {};
   try {
