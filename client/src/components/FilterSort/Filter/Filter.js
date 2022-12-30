@@ -55,9 +55,9 @@ export const FilterBody = ({ filters, filter, handleOnChangeFilter, clearFilter 
                         type="radio"
                         id={index}
                         name="origin"
-                        value={item.name}
+                        value={item._id}
                         className="cursor-pointer"
-                        checked={item.name === filter}
+                        checked={item._id === filter}
                         onChange={(e) => handleOnChangeFilter(e)}
                       />
                       <label htmlFor={index} className="ms-1 position-relative cursor-pointer">

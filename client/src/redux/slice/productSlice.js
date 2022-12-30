@@ -1,18 +1,18 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axiosPrivate from "../../shared/axios/requestMethod";
+import { publictRequest } from "../../shared/axios/requestMethod";
 
-// export const getAllProducts = createAsyncThunk("product/fetchAll", async (a, { rejectWithValue }) => {
-//   try {
-//     const res = await axiosPrivate.get('product/client');
-//     return res.data;
-//   } catch (error) {
-//     return rejectWithValue(error.response.data);
-//   }
-// });
+export const getFilterProduct = createAsyncThunk('product/filter', async (query, { rejectWithValue }) => {
+  try {
+    const res = await publictRequest.get(`product/client/filters?${query}`);
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
+})
 
 export const getProductsOfCategory = createAsyncThunk('product/category', async (params, { rejectWithValue }) => {
   try {
-    const res = await axiosPrivate.get(`product/category/${params.id}?${params.url}`);
+    const res = await publictRequest.get(`product/category/${params.id}?${params.url}`);
     return res.data;
   } catch (error) {
     return rejectWithValue({ status: error.response.status, data: error.response.data });
@@ -21,7 +21,7 @@ export const getProductsOfCategory = createAsyncThunk('product/category', async 
 
 export const getCurrentProduct = createAsyncThunk('product/current', async (id, { rejectWithValue }) => {
   try {
-    const res = await axiosPrivate.get(`product/client/detail/${id}`);
+    const res = await publictRequest.get(`product/client/detail/${id}`);
     return res.data;
   } catch (error) {
     return rejectWithValue({ status: error.response.status, data: error.response.data });
@@ -30,7 +30,7 @@ export const getCurrentProduct = createAsyncThunk('product/current', async (id, 
 
 export const getProductsForSearchBox = createAsyncThunk('product/searchbox', async (params, { rejectWithValue }) => {
   try {
-    const res = await axiosPrivate.get(`product/client/search?${params}`);
+    const res = await publictRequest.get(`product/client/quickSearch?${params}`);
     return res.data;
   } catch (error) {
     return rejectWithValue(error.response.data);
@@ -39,7 +39,7 @@ export const getProductsForSearchBox = createAsyncThunk('product/searchbox', asy
 
 export const getProductsForSearchPage = createAsyncThunk('product/searchpage', async (params, { rejectWithValue }) => {
   try {
-    const res = await axiosPrivate.get(`product/client/search?${params}`);
+    const res = await publictRequest.get(`product/client/search?${params}`);
     return res.data;
   } catch (error) {
     return rejectWithValue(error.response.data);

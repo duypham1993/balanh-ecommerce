@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import axiosPrivate from "../../shared/axios/requestMethod"
+import { publictRequest } from "../../shared/axios/requestMethod"
 
 export const getCategories = createAsyncThunk("category/fetchAll", async (a, { rejectWithValue }) => {
   try {
-    const res = await axiosPrivate.get("category/client");
+    const res = await publictRequest.get("category/client");
     return res.data;
   } catch (error) {
     return rejectWithValue(error.response.data);

@@ -6,7 +6,7 @@ import CustomPagination from "../../components/Pagination/CustomPagination";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import Loading from "../../components/Loading/Loading";
-import { getProductsForSearchPage } from "../../redux/slice/productSlice";
+import { getFilterProduct, getProductsForSearchPage } from "../../redux/slice/productSlice";
 import { useSearchParams } from "react-router-dom";
 import notFound from "../../assets/imgs/search-not-found.png";
 
@@ -26,6 +26,14 @@ const SearchPage = () => {
   const [filters, setFilters] = useState([]);
 
   useEffect(() => {
+    dispatch(getFilterProduct(`query=${queryParam}`))
+      .unwrap()
+      .then((result) => {
+        setFilters(result);
+      })
+  }, [queryParam]);
+
+  useEffect(() => {
     if (!currentPage) {
       searchParams.set('page', 1);
       setSearchParams(searchParams);
@@ -36,32 +44,34 @@ const SearchPage = () => {
       .then((result) => {
         setSearchResult(result.products);
         setPages(result.pages);
-        setFilters(result.filters);
       })
   }, [queryParam, currentPage, filter, sort]);
+
+  const handleChangePage = (index) => {
+    searchParams.set("page", index);
+    setSearchParams(searchParams);
+  };
 
   const handleOnChangeSort = (e) => {
     setSort(e.target.value);
     searchParams.set('sort', e.target.value);
     setSearchParams(searchParams);
+    handleChangePage(1);
   };
 
   const handleOnChangeFilter = (e) => {
     setFilter(e.target.value);
     searchParams.set('filter', e.target.value);
     setSearchParams(searchParams);
+    handleChangePage(1);
   };
 
   const clearFilter = () => {
     setFilter("");
     searchParams.delete('filter');
     setSearchParams(searchParams);
+    handleChangePage(1);
   };
-
-  const handleChangePage = (index) => {
-    searchParams.set("page", index);
-    setSearchParams(searchParams);
-  }
 
   return (
     <>

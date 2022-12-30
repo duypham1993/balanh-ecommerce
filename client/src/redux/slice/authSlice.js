@@ -4,7 +4,7 @@ import axiosPrivate, { publictRequest } from "../../shared/axios/requestMethod";
 
 export const register = createAsyncThunk("register", async (user, { rejectWithValue }) => {
   try {
-    const res = await axiosPrivate.post('authClient/register', user);
+    const res = await publictRequest.post('authClient/register', user);
     return res.data;
   } catch (error) {
     return rejectWithValue(error.response.data)

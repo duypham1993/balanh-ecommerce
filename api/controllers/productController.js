@@ -117,11 +117,54 @@ const getProductOfCategory = async (req, res) => {
   let error;
   try {
     const perPage = 40;
-    const products = await Product
-      .find({ categories: req.params.id, isActive: true }, "_id name sku desc price origin imgs packing qty")
-      .skip((perPage * req.query.page) - perPage)
-      .limit(perPage);
+    const query = req.query.filter ?
+      {
+        categories: req.params.id,
+        isActive: true,
+        origin: req.query.filter
+      } :
+      {
+        categories: req.params.id,
+        isActive: true
+      }
 
+    let products;
+    switch (req.query.sort) {
+      case "nameAZ":
+        products = await Product
+          .find(query, "_id name sku desc price origin imgs packing qty")
+          .sort({ "name": 1 })
+          .skip((perPage * req.query.page) - perPage)
+          .limit(perPage);;
+        break;
+      case "nameZA":
+        products = await Product
+          .find(query, "_id name sku desc price origin imgs packing qty")
+          .sort({ "name": -1 })
+          .skip((perPage * req.query.page) - perPage)
+          .limit(perPage);;
+        break;
+      case "priceLowToHigh":
+        products = await Product
+          .find(query, "_id name sku desc price origin imgs packing qty")
+          .sort({ "price": 1 })
+          .skip((perPage * req.query.page) - perPage)
+          .limit(perPage);;
+        break;
+      case "priceHighToLow":
+        products = await Product
+          .find(query, "_id name sku desc price origin imgs packing qty")
+          .sort({ "price": -1 })
+          .skip((perPage * req.query.page) - perPage)
+          .limit(perPage);;
+        break;
+      default:
+        products = await Product
+          .find(query, "_id name sku desc price origin imgs packing qty")
+          .skip((perPage * req.query.page) - perPage)
+          .limit(perPage);;
+        break;
+    };
     const pages = Math.ceil(products.length / perPage);
 
     // UPDATE INFO ORIGIN FOR PRODUCTS
@@ -133,45 +176,7 @@ const getProductOfCategory = async (req, res) => {
       return updateInfo
     })) : [];
 
-    // GET FILTER LIST
-    const filters = Object.values(updateInfoProducts?.reduce((obj, product) => {
-      if (!obj[product.origin._id]) {
-        obj[product.origin._id] = { _id: product.origin._id, name: product.origin.name, count: 1 };
-      } else {
-        obj[product.origin._id].count++;
-      }
-      return obj
-    }, {}));
-
-    // FILTER PRODUCTS
-    const filterdProducts = req.query.filter ? updateInfoProducts?.filter(product => product.origin.name === req.query.filter) : updateInfoProducts;
-
-    if (!filterdProducts.length) {
-      error = "Page not found";
-      return res.status(404).json(error);
-    }
-
-    // SORT PRODUCTS
-    let productListSort;
-    switch (req.query.sort) {
-      case "nameAZ":
-        productListSort = filterdProducts.slice().sort((a, b) => a.name.localeCompare(b.name));
-        break;
-      case "nameZA":
-        productListSort = filterdProducts.slice().sort((a, b) => b.name.localeCompare(a.name));
-        break;
-      case "priceLowToHigh":
-        productListSort = filterdProducts.slice().sort((a, b) => a.price - b.price);
-        break;
-      case "priceHighToLow":
-        productListSort = filterdProducts.slice().sort((a, b) => b.price - a.price);
-        break;
-      default:
-        productListSort = filterdProducts;
-        break;
-    };
-
-    return res.status(201).json({ products: productListSort, pages: pages, filters: filters });
+    return res.status(201).json({ products: updateInfoProducts, pages: pages });
   } catch {
     error = "Not found";
     return res.status(404).json(error);
@@ -196,30 +201,59 @@ const getCurrentProductClient = async (req, res) => {
   }
 };
 
-// SEARCH PRODUCT
+// FULL SEARCH PRODUCT
 const getProductsForSearch = async (req, res) => {
-  let errors = {};
-  const perPage = 40;
-
+  let error;
   try {
-    const query = {
-      name: { $regex: req.query.query, $options: "i" },
-      isActive: true,
+    const perPage = 40;
+    const query = req.query.filter ?
+      {
+        name: { $regex: req.query.query, $options: "i" },
+        isActive: true,
+        origin: req.query.filter
+      } :
+      {
+        name: { $regex: req.query.query, $options: "i" },
+        isActive: true,
+      }
+
+    let products;
+    switch (req.query.sort) {
+      case "nameAZ":
+        products = await Product
+          .find(query, "_id name sku desc price origin imgs packing qty")
+          .sort({ "name": 1 })
+          .skip((perPage * req.query.page) - perPage)
+          .limit(perPage);;
+        break;
+      case "nameZA":
+        products = await Product
+          .find(query, "_id name sku desc price origin imgs packing qty")
+          .sort({ "name": -1 })
+          .skip((perPage * req.query.page) - perPage)
+          .limit(perPage);;
+        break;
+      case "priceLowToHigh":
+        products = await Product
+          .find(query, "_id name sku desc price origin imgs packing qty")
+          .sort({ "price": 1 })
+          .skip((perPage * req.query.page) - perPage)
+          .limit(perPage);;
+        break;
+      case "priceHighToLow":
+        products = await Product
+          .find(query, "_id name sku desc price origin imgs packing qty")
+          .sort({ "price": -1 })
+          .skip((perPage * req.query.page) - perPage)
+          .limit(perPage);;
+        break;
+      default:
+        products = await Product
+          .find(query, "_id name sku desc price origin imgs packing qty")
+          .skip((perPage * req.query.page) - perPage)
+          .limit(perPage);;
+        break;
     };
-
-    // GET PRODUCTS WITH REGEX 
-    const products = req.query.page ?
-      // FULL SEARCH FOR SEARCH PAGE
-      await Product
-        .find(query, "_id name sku desc price origin imgs packing")
-        .skip((perPage * req.query.page) - perPage)
-        .limit(perPage) :
-
-      // QUICK SEARCH FOR SEARCH BOX
-      await Product
-        .find(query, "_id name sku desc price origin imgs packing")
-        .limit(10);
-
     const pages = Math.ceil(products.length / perPage);
 
     // UPDATE INFO ORIGIN FOR PRODUCTS
@@ -231,44 +265,65 @@ const getProductsForSearch = async (req, res) => {
       return updateInfo
     })) : [];
 
+    return res.status(201).json({ products: updateInfoProducts, pages: pages });
+  } catch {
+    error = "Not found";
+    return res.status(404).json(error);
+  }
+};
+
+// QUICK SEARCH PRODUCT 
+const getProductForQuickSearch = async (req, res) => {
+  try {
+    const query = {
+      name: { $regex: req.query.query, $options: "i" },
+      isActive: true,
+    };
+    const products = await Product.find(query, "_id name sku desc price origin imgs packing qty");
+    return res.status(201).json(products);
+  } catch (error) {
+    return res.status(404).json("Not found");
+  }
+}
+
+const getFilterProduct = async (req, res) => {
+  try {
+    let query;
+    if (req.query.id) {
+      query = {
+        categories: req.query.id,
+        isActive: true
+      }
+    } else if (req.query.query) {
+      query = {
+        name: { $regex: req.query.query, $options: "i" },
+        isActive: true
+      }
+    } else {
+      return res.status(500).json("Not found");
+    }
+
+    const arrOrigin = await Product.find(query, "origin");
+
+    const updateInfoOrigin = arrOrigin?.length ? await Promise.all(arrOrigin.map(async (item) => await Origin.findById(item.origin, "_id name")
+    )) : [];
+
     // GET FILTER LIST
-    const filters = Object.values(updateInfoProducts?.reduce((obj, product) => {
-      if (!obj[product.origin._id]) {
-        obj[product.origin._id] = { _id: product.origin._id, name: product.origin.name, count: 1 };
+    const filters = Object.values(updateInfoOrigin?.reduce((obj, origin) => {
+      if (!obj[origin._id]) {
+        obj[origin._id] = { _id: origin._id, name: origin.name, count: 1 };
       } else {
-        obj[product.origin._id].count++;
+        obj[origin._id].count++;
       }
       return obj
     }, {}));
 
-    // FILTER PRODUCTS
-    const filterdProducts = req.query.filter ? updateInfoProducts?.filter(product => product.origin._id == req.query.filter) : updateInfoProducts;
-
-    // SORT PRODUCTS
-    let productListSort;
-    switch (req.query.sort) {
-      case "nameAZ":
-        productListSort = filterdProducts.slice().sort((a, b) => a.name.localeCompare(b.name));
-        break;
-      case "nameZA":
-        productListSort = filterdProducts.slice().sort((a, b) => b.name.localeCompare(a.name));
-        break;
-      case "priceLowToHigh":
-        productListSort = filterdProducts.slice().sort((a, b) => a.price - b.price);
-        break;
-      case "priceHighToLow":
-        productListSort = filterdProducts.slice().sort((a, b) => b.price - a.price);
-        break;
-      default:
-        productListSort = filterdProducts;
-        break;
-    };
-
-    return res.status(201).json({ products: productListSort, pages: pages, filters: filters });
-  } catch {
-
+    return res.status(201).json(filters);
+  } catch (error) {
+    return res.status(500).json(error);
   }
-};
+
+}
 
 module.exports = {
   createProduct,
@@ -279,5 +334,7 @@ module.exports = {
   deleteProduct,
   getCurrentProductClient,
   getProductOfCategory,
-  getProductsForSearch
+  getProductsForSearch,
+  getProductForQuickSearch,
+  getFilterProduct
 };

@@ -7,7 +7,7 @@ import CustomPagination from "../../components/Pagination/CustomPagination";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getProductsOfCategory } from "../../redux/slice/productSlice";
+import { getFilterProduct, getProductsOfCategory } from "../../redux/slice/productSlice";
 import Loading from "../../components/Loading/Loading";
 
 const Products = () => {
@@ -17,7 +17,6 @@ const Products = () => {
   const categories = useSelector(state => state.category.categories);
   const { slug } = useParams();
   const currentCategory = categories?.filter(category => category.slug === slug)[0];
-  console.log(categories)
   const { isLoading } = useSelector(state => state.product);
   const [products, setProducts] = useState([]);
   const [filters, setFilters] = useState([]);
@@ -28,24 +27,39 @@ const Products = () => {
   const currentPage = searchParams.get('page');
   const [filter, setFilter] = useState(filterParam ? filterParam : "");
   const [sort, setSort] = useState(sortParam ? sortParam : "default");
+  const handleChangePage = (index) => {
+    searchParams.set("page", index);
+    setSearchParams(searchParams);
+  };
 
   const handleOnChangeSort = (e) => {
     setSort(e.target.value);
     searchParams.set('sort', e.target.value);
     setSearchParams(searchParams);
+    handleChangePage(1);
   };
 
   const handleOnChangeFilter = (e) => {
     setFilter(e.target.value);
     searchParams.set('filter', e.target.value);
     setSearchParams(searchParams);
+    handleChangePage(1);
   };
 
   const clearFilter = () => {
     setFilter("");
     searchParams.delete('filter');
     setSearchParams(searchParams);
+    handleChangePage(1);
   };
+
+  useEffect(() => {
+    currentCategory && dispatch(getFilterProduct(`id=${currentCategory._id}`))
+      .unwrap()
+      .then(result => {
+        setFilters(result);
+      })
+  }, [currentCategory]);
 
   useEffect(() => {
     // if current category not found in categories, redirect to page-not-found
@@ -59,7 +73,6 @@ const Products = () => {
           .unwrap()
           .then((result) => {
             setProducts(result.products);
-            setFilters(result.filters);
             setPages(result.pages);
           })
           .catch((error) => {
@@ -68,11 +81,10 @@ const Products = () => {
             }
           })
       } else {
-        console.log("2")
         navigate("/page-not-found", { replace: true });
       }
     }
-  }, [categories, currentCategory, currentPage, filter, sort]);
+  }, [currentCategory, currentPage, filter, sort]);
 
   return (
     <div className="category">
@@ -112,9 +124,10 @@ const Products = () => {
                   })}
                 </Row>
                 <CustomPagination
-                  currentPage={currentPage}
+                  currentPage={parseInt(currentPage)}
                   totalProducts={products.length}
                   pages={pages}
+                  handleChangePage={handleChangePage}
                 />
               </>
             }

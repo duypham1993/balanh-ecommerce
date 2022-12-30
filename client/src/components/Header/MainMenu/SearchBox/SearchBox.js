@@ -25,7 +25,7 @@ const Search = () => {
       dispatch(getProductsForSearchBox(`query=${query}`))
         .unwrap()
         .then((result) => {
-          setSearchResult(result.products);
+          setSearchResult(result);
         }) :
       setSearchResult([]);
   }, [query], 500);
