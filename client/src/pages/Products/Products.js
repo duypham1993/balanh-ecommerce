@@ -24,9 +24,10 @@ const Products = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const filterParam = searchParams.get('filter');
   const sortParam = searchParams.get('sort');
-  const currentPage = searchParams.get('page');
+  const currentPage = searchParams.get('page') || 1;
   const [filter, setFilter] = useState(filterParam ? filterParam : "");
   const [sort, setSort] = useState(sortParam ? sortParam : "default");
+
   const handleChangePage = (index) => {
     searchParams.set("page", index);
     setSearchParams(searchParams);
@@ -65,10 +66,6 @@ const Products = () => {
     // if current category not found in categories, redirect to page-not-found
     if (categories.length) {
       if (currentCategory) {
-        if (!currentPage) {
-          searchParams.set('page', 1);
-          setSearchParams(searchParams);
-        }
         dispatch(getProductsOfCategory({ id: currentCategory._id, url: searchParams.toString() }))
           .unwrap()
           .then((result) => {

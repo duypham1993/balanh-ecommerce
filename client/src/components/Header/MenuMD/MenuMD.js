@@ -17,14 +17,12 @@ const MenuMD = () => {
     <nav className="menu-md">
       <Container fluid="lg">
         <ul className="menu-md__list">
-          {treeCategories.map((item, index) => {
-            return (
-              <MenuItemMd
-                item={item}
-                key={index}
-              />
-            );
-          })}
+          {treeCategories.map((item, index) => (
+            <MenuItemMd
+              item={item}
+              key={index}
+            />
+          ))}
         </ul>
       </Container>
     </nav >

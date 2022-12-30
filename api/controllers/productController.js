@@ -116,7 +116,8 @@ const deleteProduct = async (req, res) => {
 const getProductOfCategory = async (req, res) => {
   let error;
   try {
-    const perPage = 40;
+    const perPage = req.query.limit || 40;
+    const currentPage = req.query.page || 1;
     const query = req.query.filter ?
       {
         categories: req.params.id,
@@ -134,38 +135,40 @@ const getProductOfCategory = async (req, res) => {
         products = await Product
           .find(query, "_id name sku desc price origin imgs packing qty")
           .sort({ "name": 1 })
-          .skip((perPage * req.query.page) - perPage)
+          .skip((perPage * currentPage) - perPage)
           .limit(perPage);;
         break;
       case "nameZA":
         products = await Product
           .find(query, "_id name sku desc price origin imgs packing qty")
           .sort({ "name": -1 })
-          .skip((perPage * req.query.page) - perPage)
+          .skip((perPage * currentPage) - perPage)
           .limit(perPage);;
         break;
       case "priceLowToHigh":
         products = await Product
           .find(query, "_id name sku desc price origin imgs packing qty")
           .sort({ "price": 1 })
-          .skip((perPage * req.query.page) - perPage)
+          .skip((perPage * currentPage) - perPage)
           .limit(perPage);;
         break;
       case "priceHighToLow":
         products = await Product
           .find(query, "_id name sku desc price origin imgs packing qty")
           .sort({ "price": -1 })
-          .skip((perPage * req.query.page) - perPage)
+          .skip((perPage * currentPage) - perPage)
           .limit(perPage);;
         break;
       default:
         products = await Product
           .find(query, "_id name sku desc price origin imgs packing qty")
-          .skip((perPage * req.query.page) - perPage)
+          .skip((perPage * currentPage) - perPage)
           .limit(perPage);;
         break;
     };
     const pages = Math.ceil(products.length / perPage);
+
+    if (!products.length) return res.status(404).json("Not found");
 
     // UPDATE INFO ORIGIN FOR PRODUCTS
     const updateInfoProducts = products?.length ? await Promise.all(products.map(async (product) => {
@@ -205,7 +208,8 @@ const getCurrentProductClient = async (req, res) => {
 const getProductsForSearch = async (req, res) => {
   let error;
   try {
-    const perPage = 40;
+    const perPage = req.query.limit || 40;
+    const currentPage = req.query.page || 1;
     const query = req.query.filter ?
       {
         name: { $regex: req.query.query, $options: "i" },
@@ -223,34 +227,34 @@ const getProductsForSearch = async (req, res) => {
         products = await Product
           .find(query, "_id name sku desc price origin imgs packing qty")
           .sort({ "name": 1 })
-          .skip((perPage * req.query.page) - perPage)
+          .skip((perPage * currentPage) - perPage)
           .limit(perPage);;
         break;
       case "nameZA":
         products = await Product
           .find(query, "_id name sku desc price origin imgs packing qty")
           .sort({ "name": -1 })
-          .skip((perPage * req.query.page) - perPage)
+          .skip((perPage * currentPage) - perPage)
           .limit(perPage);;
         break;
       case "priceLowToHigh":
         products = await Product
           .find(query, "_id name sku desc price origin imgs packing qty")
           .sort({ "price": 1 })
-          .skip((perPage * req.query.page) - perPage)
+          .skip((perPage * currentPage) - perPage)
           .limit(perPage);;
         break;
       case "priceHighToLow":
         products = await Product
           .find(query, "_id name sku desc price origin imgs packing qty")
           .sort({ "price": -1 })
-          .skip((perPage * req.query.page) - perPage)
+          .skip((perPage * currentPage) - perPage)
           .limit(perPage);;
         break;
       default:
         products = await Product
           .find(query, "_id name sku desc price origin imgs packing qty")
-          .skip((perPage * req.query.page) - perPage)
+          .skip((perPage * currentPage) - perPage)
           .limit(perPage);;
         break;
     };

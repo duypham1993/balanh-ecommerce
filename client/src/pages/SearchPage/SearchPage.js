@@ -17,7 +17,7 @@ const SearchPage = () => {
   const queryParam = searchParams.get('query');
   const filterParam = searchParams.get('filter');
   const sortParam = searchParams.get('sort');
-  const currentPage = searchParams.get('page');
+  const currentPage = searchParams.get('page') || 1;
   const { isLoading } = useSelector(state => state.product);
   const [searchResult, setSearchResult] = useState([]);
   const [pages, setPages] = useState(1);
@@ -34,11 +34,6 @@ const SearchPage = () => {
   }, [queryParam]);
 
   useEffect(() => {
-    if (!currentPage) {
-      searchParams.set('page', 1);
-      setSearchParams(searchParams);
-    };
-
     dispatch(getProductsForSearchPage(searchParams.toString()))
       .unwrap()
       .then((result) => {
