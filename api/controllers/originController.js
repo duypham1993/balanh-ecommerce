@@ -2,14 +2,23 @@ import Origin from "../models/Origin";
 
 // CREATE
 const createOrigin = async (req, res) => {
-  const origin = new Origin({
-    name: req.body.name,
-  });
+  let error = {};
+  const checkOrigin = await Origin.findOne({ name: req.body.name });
+
+  if (checkOrigin) {
+    error.name = "Địa chỉ đã tồn tại!";
+    return res.status(500).json(error);
+  }
+
   try {
+    const origin = new Origin({
+      name: req.body.name,
+    });
     const saveOrigin = await origin.save();
-    res.status(200).json(saveOrigin);
-  } catch (err) {
-    res.status(500).json(err);
+    return res.status(200).json(saveOrigin);
+  } catch {
+    error.other = "Tạo địa chỉ thất bại!"
+    return res.status(500).json(error);
   }
 };
 
@@ -17,9 +26,9 @@ const createOrigin = async (req, res) => {
 const getAllOrigins = async (req, res) => {
   const origin = await Origin.find();
   try {
-    res.status(200).json(origin);
+    return res.status(200).json(origin);
   } catch (err) {
-    res.status(500).json(err);
+    return res.status(500).json(err);
   }
 };
 
@@ -27,13 +36,17 @@ const getAllOrigins = async (req, res) => {
 const updateOrigin = async (req, res) => {
   try {
     const updateOrigin = await Origin.findByIdAndUpdate(
-      req.body._id,
-      { $set: req.body },
+      req.params.id,
+      {
+        $set: {
+          name: req.body.name
+        }
+      },
       { new: true }
     );
-    res.status(200).json(updateOrigin);
+    return res.status(200).json(updateOrigin);
   } catch (err) {
-    res.status(500).json(err);
+    return res.status(500).json(err);
   }
 };
 
@@ -41,9 +54,9 @@ const updateOrigin = async (req, res) => {
 const deleteOrigin = async (req, res) => {
   try {
     await Origin.findByIdAndDelete(req.params.id);
-    res.status(200).json(req.params.id);
+    return res.status(200).json(req.params.id);
   } catch (err) {
-    res.status(500).json(err);
+    return res.status(500).json(err);
   }
 };
 

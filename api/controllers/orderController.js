@@ -1,7 +1,7 @@
 import Order from "../models/Order";
 import Product from "../models/Product";
 import { nanoid } from 'nanoid';
-
+import { updateInfoOrder } from "../utils/updateInfoOrder";
 
 //CREATE
 const createOrder = async (req, res) => {
@@ -80,19 +80,21 @@ const getUserOrders = async (req, res) => {
 const getCurrentOrder = async (req, res) => {
   let error;
   try {
-    const order = await Order.findOne({ _id: req.params.id, customerID: req.params.userId });
-    res.status(200).json(order);
+    const order = [await Order.findById(req.params.id)];
+    const [updateInfo] = await updateInfoOrder(order);
+    res.status(200).json(updateInfo);
   } catch {
     error = "Page not found";
     res.status(404).json(error);
   }
 };
 
-// //GET ALL
+//GET ALL
 const getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find();
-    res.status(200).json(orders);
+    const updateInfoOrders = await updateInfoOrder(orders);
+    res.status(200).json(updateInfoOrders);
   } catch (err) {
     res.status(500).json(err);
   }
@@ -100,11 +102,17 @@ const getAllOrders = async (req, res) => {
 
 //UPDATE
 const updateOrder = async (req, res) => {
+  console.log(req.body.status)
   try {
     const updatedOrder = await Order.findByIdAndUpdate(
       req.params.id,
       {
-        $set: req.body,
+        $push: {
+          status: {
+            title: req.body.status,
+            time: new Date()
+          }
+        },
       },
       { new: true }
     );

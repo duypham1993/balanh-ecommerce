@@ -15,7 +15,7 @@ router.get("/", verifyTokenAdmin, getAllAddresss);
 router.get("/:id", verifyTokenRoleAdmin, getCurrentAddress);
 
 // UPDATE
-router.put("/", verifyTokenRoleAdmin, updateAddress);
+router.put("/:id", verifyTokenRoleAdmin, updateAddress);
 
 // DELETE
 router.delete("/:id", verifyTokenRoleAdmin, deleteAddress);
@@ -29,7 +29,7 @@ router.post("/client/", verifyTokenClient, createAddress);
 router.get("/client/:id", verifyTokenClient, getUserAddress);
 
 //  UPDATE
-router.put("/client/", verifyTokenClient, updateAddress);
+router.put("/client/:id", verifyTokenClient, updateAddress);
 
 // DELETE
 router.delete("/client/:id", verifyTokenClient, deleteAddress);

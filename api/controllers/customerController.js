@@ -51,7 +51,7 @@ const getCurrentCustomer = async (req, res) => {
 // UPDATE
 const updateCustomer = async (req, res) => {
   let error = {};
-  const checkEmail = Customer.find({ email: req.body.email, _id: { $ne: req.body._id } });
+  const checkEmail = Customer.find({ email: req.body.email, _id: { $ne: req.params.id } });
   if (checkEmail && checkEmail.length) {
     error.email = "Email đã được đăng kí!";
     res.status(500).json(error);
@@ -61,13 +61,13 @@ const updateCustomer = async (req, res) => {
       if (req.body.password) {
         req.body.password = CryptoJS.AES.encrypt(req.body.password, process.env.PASS_KEY).toString();
         updateUser = await Customer.findByIdAndUpdate(
-          req.body._id,
+          req.params.id,
           { $set: req.body },
           { new: true }
         );
       } else {
         updateUser = await Customer.findByIdAndUpdate(
-          req.body._id,
+          req.params.id,
           {
             $set: {
               name: req.body.name,

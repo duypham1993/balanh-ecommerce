@@ -63,14 +63,14 @@ const getAllProducts = async (req, res) => {
 // UPDATE
 const updateProduct = async (req, res) => {
   let error = {};
-  const checkSku = await Product.find({ sku: req.body.sku, _id: { $ne: req.body._id } });
+  const checkSku = await Product.find({ sku: req.body.sku, _id: { $ne: req.params.id } });
   if (checkSku && checkSku.length) {
     error.sku = "Mã tham chiếu đã tồn tại!";
     res.status(500).json(error);
   } else {
     try {
       const product = await Product.findByIdAndUpdate(
-        req.body._id,
+        req.params.id,
         {
           $set: req.body
         },
@@ -167,8 +167,6 @@ const getProductOfCategory = async (req, res) => {
         break;
     };
     const pages = Math.ceil(products.length / perPage);
-
-    if (!products.length) return res.status(404).json("Not found");
 
     // UPDATE INFO ORIGIN FOR PRODUCTS
     const updateInfoProducts = products?.length ? await Promise.all(products.map(async (product) => {

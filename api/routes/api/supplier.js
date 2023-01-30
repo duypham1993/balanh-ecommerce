@@ -14,7 +14,7 @@ router.get("/", verifyTokenAdmin, getAllSuppliers);
 router.get("/:id", verifyTokenRoleAdmin, getCurrentSupplier);
 
 // UPDATE
-router.put("/", verifyTokenRoleAdmin, updateSupplier);
+router.put("/:id", verifyTokenRoleAdmin, updateSupplier);
 
 // DELETE
 router.delete("/:id", verifyTokenRoleAdmin, deleteSupplier);

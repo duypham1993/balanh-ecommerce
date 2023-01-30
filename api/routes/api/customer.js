@@ -14,7 +14,7 @@ router.get("/", verifyTokenAdmin, getAllCustomers);
 router.get("/:id", verifyTokenRoleAdmin, getCurrentCustomer);
 
 // UPDATE
-router.put("/", verifyTokenRoleAdmin, updateCustomer);
+router.put("/:id", verifyTokenRoleAdmin, updateCustomer);
 
 // DELETE
 router.delete("/:id", verifyTokenRoleAdmin, deleteCustomer);

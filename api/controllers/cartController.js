@@ -15,7 +15,7 @@ const getAllCart = async (req, res) => {
 // GET USER CART
 const getUserCart = async (req, res) => {
   let error = {};
-  const cart = await Cart.findOne({ customerId: req.params.id });
+  const cart = await Cart.findOne({ customerID: req.params.id });
   // If user has cart - reponse cart else create and reponse cart
   if (cart) {
     try {
@@ -44,6 +44,7 @@ const getUserCart = async (req, res) => {
 const addToCart = async (req, res) => {
   let error = {};
   try {
+    console.log(req.body);
     const filter = {
       customerID: req.body.customerID,
       "products._id": req.body.product._id
@@ -65,8 +66,6 @@ const addToCart = async (req, res) => {
       const product = await Product.findById(req.body.product._id, "name price packing imgs");
       res.status(200).json({ ...product._doc, qty: req.body.product.qty });
     }
-
-
   } catch {
     error.other = "Cập nhật giỏ hàng thất bại!"
     res.status(500).json(error);

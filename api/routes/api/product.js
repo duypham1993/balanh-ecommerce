@@ -14,7 +14,7 @@ router.get("/:id", verifyTokenAdmin, getCurrentProduct);
 router.get("/", verifyTokenAdmin, getAllProducts);
 
 // UPDATE
-router.put("/", verifyTokenRoleAdmin, updateProduct);
+router.put("/:id", verifyTokenRoleAdmin, updateProduct);
 
 // UPDATE STOCK
 router.put("/stock/", verifyTokenAdmin, updateStock);

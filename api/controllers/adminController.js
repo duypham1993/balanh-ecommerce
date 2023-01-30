@@ -21,7 +21,7 @@ const createAdmin = async (req, res) => {
       const saveUser = await newUser.save();
       res.status(201).json(saveUser);
     } catch {
-      error.other = "Tạo quản trị viên thất bại!"
+      error.other = "Tạo tài khoản thất bại!"
       res.status(501).json(error);
     }
   }
@@ -43,14 +43,14 @@ const getCurrentAdmin = async (req, res) => {
     const user = await Admin.findById(req.params.id, '_id email firstName lastName role isActive');
     res.status(200).json(user);
   } catch (error) {
-    res.status(500).json(error)
+    res.status(404).json("Page not found");
   }
 };
 
 // UPDATE ACCOUNT
 const updateAdmin = async (req, res) => {
   let error = {};
-  const checkEmail = await Admin.find({ email: req.body.email, _id: { $ne: req.body._id } });
+  const checkEmail = await Admin.find({ email: req.body.email, _id: { $ne: req.params.id } });
   if (checkEmail.length) {
     error.email = "Email đã tồn tại!";
     res.status(500).json(error);
@@ -60,7 +60,7 @@ const updateAdmin = async (req, res) => {
       if (req.body.password) {
         req.body.password = CryptoJS.AES.encrypt(req.body.password, process.env.PASS_KEY).toString();
         updateUser = await Admin.findByIdAndUpdate(
-          req.body._id,
+          req.params.id,
           {
             $set: {
               firstName: req.body.firstName,
@@ -75,7 +75,7 @@ const updateAdmin = async (req, res) => {
         );
       } else {
         updateUser = await Admin.findByIdAndUpdate(
-          req.body._id,
+          req.params.id,
           {
             $set: {
               firstName: req.body.firstName,

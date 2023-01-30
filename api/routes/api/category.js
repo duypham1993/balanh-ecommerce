@@ -1,6 +1,6 @@
 import express from "express";
 import { verifyTokenAdmin, verifyTokenRoleAdmin } from "../../middleware/verifyToken";
-import { createCategory, getAllCategories, updateCategory, deleteCategory } from "../../controllers/categoryController";
+import { createCategory, getAllCategories, updateCategory, deleteCategory, checkSlug } from "../../controllers/categoryController";
 
 const router = express.Router();
 
@@ -11,10 +11,13 @@ router.post("/", verifyTokenRoleAdmin, createCategory);
 router.get("/", verifyTokenAdmin, getAllCategories);
 
 // UPDATE
-router.put("/", verifyTokenRoleAdmin, updateCategory);
+router.put("/:id", verifyTokenRoleAdmin, updateCategory);
 
 // DELETE
 router.delete("/:id", verifyTokenRoleAdmin, deleteCategory);
+
+// CHECK SLUG 
+router.post("/check", verifyTokenRoleAdmin, checkSlug);
 
 // CLIENT
 // GET ALL

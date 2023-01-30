@@ -7,7 +7,7 @@ const customerSchema = new mongoose.Schema(
     password: { type: String, required: true },
     gender: { type: String },
     phone: { type: String },
-    dateOfBirth: { type: String },
+    dateOfBirth: { type: Date },
     isActive: { type: Boolean, default: false },
     refreshToken: [String]
   },

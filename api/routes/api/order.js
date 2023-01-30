@@ -10,8 +10,11 @@ router.post("/", verifyTokenRoleAdmin, createOrder);
 //GET USER ORDERS
 router.get("/find/:userId", verifyTokenAdmin, getUserOrders);
 
-// //GET ALL
+//GET ALL
 router.get("/", verifyTokenAdmin, getAllOrders);
+
+//GET CURRENT ORDER
+router.get("/:id", verifyTokenRoleAdmin, getCurrentOrder);
 
 //UPDATE
 router.put("/:id", verifyTokenRoleAdmin, updateOrder);
@@ -26,7 +29,7 @@ router.post("/client", verifyTokenClient, createOrder);
 //GET USER ORDERS
 router.get("/client/:userId", verifyTokenClient, getUserOrders);
 
-//GET USER ORDERS
-router.get("/client/:userId/:id", verifyTokenClient, getCurrentOrder);
+//GET CURRENT ORDER
+router.get("/client/current/:id", verifyTokenClient, getCurrentOrder);
 
 module.exports = router;

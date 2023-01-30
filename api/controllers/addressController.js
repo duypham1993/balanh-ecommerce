@@ -11,6 +11,7 @@ const createAddress = async (req, res) => {
 
       // If customer already has shipping address and new address is default, set all old address is not default
       if (req.body.isDefault) {
+        console.log(req.body)
         await Address.findOneAndUpdate(
           { customerID: req.body.customerID, isDefault: true },
           { $set: { isDefault: false } },
@@ -59,24 +60,25 @@ const getCurrentAddress = async (req, res) => {
     const currentAddress = await Address.findById(req.params.id);
     const { email } = await Customer.findById(currentAddress.customerID, "email");
     const updateInfoAddress = { ...currentAddress._doc, email: email };
-    res.status(200).json(updateInfoAddress);
+    return res.status(200).json(updateInfoAddress);
   } catch (err) {
-    res.status(500).json(err);
+    return res.status(500).json(err);
   }
 };
 
 // UPDATE ADDRESS
 const updateAddress = async (req, res) => {
   try {
+    console.log(req.body)
     if (req.body.isDefault) {
-      await Address.findOneAndUpdate(
+      await Address.updateMany(
         { customerID: req.body.customerID, isDefault: true },
         { $set: { isDefault: false } },
         { new: true }
       )
     }
     const updateAddress = await Address.findByIdAndUpdate(
-      req.body._id,
+      req.params.id,
       {
         $set: req.body
       },

@@ -10,11 +10,11 @@ router.post("/", verifyTokenRoleAdmin, createAdmin);
 // GET ALL 
 router.get("/", verifyTokenAdmin, getAllAdmin);
 
-// GET CURRENT ADMIN 
+// GET CURRENT ADMIN
 router.get("/:id", verifyTokenRoleAdmin, getCurrentAdmin);
 
 // UPDATE
-router.put("/", verifyTokenRoleAdmin, updateAdmin);
+router.put("/:id", verifyTokenRoleAdmin, updateAdmin);
 
 // UPDATE BY CURRENT USER 
 router.put("/user/", verifyTokenAdmin, updateByCurrentUser);
