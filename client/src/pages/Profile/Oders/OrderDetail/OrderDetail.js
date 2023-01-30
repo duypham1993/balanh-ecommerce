@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { getCurrentOrder } from "../../../../redux/slice/orderSlice";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { getLocalCurrentUser } from "../../../../utils/localStorage";
 import moment from "moment";
 import CircleIcon from '@mui/icons-material/Circle';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
@@ -15,17 +14,16 @@ const OrderDetail = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
-  const { _id } = getLocalCurrentUser();
   const { currentOrder, isLoading } = useSelector(state => state.order);
   const arrTitle = ["STT", "Sản phẩm", "Số lượng", "Đơn giá", "Tiền hàng"]
 
   useEffect(() => {
-    dispatch(getCurrentOrder({ orderId: id, userId: _id }))
+    dispatch(getCurrentOrder(id))
       .unwrap()
       .catch((error) => {
         error.status === 404 && navigate("/page-not-found", { replace: true })
       })
-  }, []);
+  }, [id]);
 
   return (
     <>
@@ -63,21 +61,9 @@ const OrderDetail = () => {
                   </div>
                 </Col>
                 <Col md={8}>
-                  <div className="d-flex">
-                    <div className="me-2 py-1 position-relative order-detail__step">
-                      <CircleIcon className="order-detail__step-icon" />
-                    </div>
-                    <div className="me-2 py-1">
-                      03:26 21-12-2022
-                    </div>
-                    <div className="py-1">
-                      Đặt hàng thành công
-                    </div>
-                  </div>
-                  {currentOrder.status.reverse().map((status, index) => (
-
+                  {[...currentOrder.status].reverse().map((status, index, arr) => (
                     <div key={index} className="d-flex">
-                      <div className="me-2 py-1">
+                      <div className={index + 1 === arr.length ? "me-2 py-1" : "me-2 py-1 position-relative order-detail__step"}>
                         <CircleIcon className="order-detail__step-icon" />
                       </div>
                       <div className="me-2 py-1">

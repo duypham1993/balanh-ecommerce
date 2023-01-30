@@ -3,7 +3,7 @@ import axiosPrivate from "../../shared/axios/requestMethod";
 
 export const getUserOrders = createAsyncThunk("order/getall", async (userId, { rejectWithValue }) => {
   try {
-    const res = await axiosPrivate.get(`/order/client/${userId}`)
+    const res = await axiosPrivate.get(`/order/client/${userId}`);
     return res.data;
   } catch (error) {
     return rejectWithValue(error.response.data);
@@ -12,7 +12,7 @@ export const getUserOrders = createAsyncThunk("order/getall", async (userId, { r
 
 export const getCurrentOrder = createAsyncThunk("order/getCurrent", async (id, { rejectWithValue }) => {
   try {
-    const res = await axiosPrivate.get(`/order/client/${id.userId}/${id.orderId}`);
+    const res = await axiosPrivate.get(`/order/client/current/${id}`);
     return res.data;
   } catch (error) {
     return rejectWithValue({ data: error.response.data, status: error.response.status });

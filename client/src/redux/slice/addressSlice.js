@@ -22,9 +22,9 @@ export const createAddress = createAsyncThunk('address/create', async (deliveryA
 });
 
 // UPDATE ADDRESS
-export const updateAddress = createAsyncThunk('address/update', async (deliveryAddress, { rejectWithValue }) => {
+export const updateAddress = createAsyncThunk('address/update', async ({ id, updatedAddress }, { rejectWithValue }) => {
   try {
-    const res = await axiosPrivate.put("/address/client", deliveryAddress);
+    const res = await axiosPrivate.put(`/address/client/${id}`, updatedAddress);
     return res.data;
   } catch (error) {
     return rejectWithValue(error.response.data);

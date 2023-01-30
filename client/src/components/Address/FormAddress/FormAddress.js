@@ -5,7 +5,7 @@ import { Form, Spinner } from 'react-bootstrap';
 import { getLocalCurrentUser } from '../../../utils/localStorage';
 import { useSelector } from 'react-redux';
 
-const FormAddress = ({ inputs, address, handleOnChange, handleAddress, handleOnSubmit, id, checkDefault }) => {
+const FormAddress = ({ inputs, address, handleOnChange, handleAddress, handleOnSubmit, checkDefault }) => {
   const { isSubmitting } = useSelector(state => state.address);
   const city = cityData.map(item => item.name);
   const district = cityData.find(item => item.name === address.city[0]);
@@ -69,36 +69,18 @@ const FormAddress = ({ inputs, address, handleOnChange, handleAddress, handleOnS
 
   const submitForm = (e) => {
     e.preventDefault();
-    let deliveryAddress;
-    if (id) {
-      deliveryAddress = {
-        _id: id,
-        customerID: customerID,
-        name: inputs.name,
-        address: {
-          city: address.city[0],
-          district: address.district[0],
-          wards: address.wards[0],
-          street: inputs.street
-        },
-        phone: inputs.phone,
-        note: inputs.note,
-        isDefault: inputs.isDefault
-      };
-    } else {
-      deliveryAddress = {
-        customerID: customerID,
-        name: inputs.name,
-        address: {
-          city: address.city[0],
-          district: address.district[0],
-          wards: address.wards[0],
-          street: inputs.street
-        },
-        phone: inputs.phone,
-        note: inputs.note,
-        isDefault: inputs.isDefault
-      };
+    const deliveryAddress = {
+      customerID: customerID,
+      name: inputs.name,
+      address: {
+        city: address.city[0],
+        district: address.district[0],
+        wards: address.wards[0],
+        street: inputs.street
+      },
+      phone: inputs.phone,
+      note: inputs.note,
+      isDefault: inputs.isDefault
     }
 
     setFormErrors(validateForm(deliveryAddress));

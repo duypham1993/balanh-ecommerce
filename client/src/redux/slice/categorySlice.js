@@ -25,8 +25,8 @@ const categorySlice = createSlice({
     })
     builder.addCase(getCategories.fulfilled, (state, action) => {
       state.isLoading = false;
-      state.categories = action.payload[0];
-      state.treeCategories = action.payload[1]?.children;
+      state.categories = action.payload.categories;
+      state.treeCategories = action.payload.treeCategories.children;
     })
     builder.addCase(getCategories.rejected, (state, aciton) => {
       state.isLoading = false;

@@ -9,6 +9,7 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getFilterProduct, getProductsOfCategory } from "../../redux/slice/productSlice";
 import Loading from "../../components/Loading/Loading";
+import notFound from "../../assets/imgs/search-not-found.png";
 
 const Products = () => {
   const dispatch = useDispatch();
@@ -84,54 +85,69 @@ const Products = () => {
   }, [currentCategory, currentPage, filter, sort]);
 
   return (
-    <div className="category">
-      {currentCategory &&
-        <Banner
-          name={currentCategory.name}
-          desc={currentCategory.desc}
-          img={currentCategory.img}
-        />
-      }
-      <FilterSort
-        sort={sort}
-        handleOnChangeSort={handleOnChangeSort}
-      />
-      <Container fluid="lg">
-        <Row className="justify-content-end align-items-start position-relative">
-          <FilterBody
-            filters={filters}
-            filter={filter}
-            handleOnChangeFilter={handleOnChangeFilter}
-            clearFilter={clearFilter}
+    <>
+      {products?.length > 0 ?
+        <div className="category">
+          {currentCategory &&
+            <Banner
+              name={currentCategory.name}
+              desc={currentCategory.desc}
+              img={currentCategory.img}
+            />
+          }
+          <FilterSort
+            sort={sort}
+            handleOnChangeSort={handleOnChangeSort}
           />
-          <Col xs={12} md={9} className={expandState ? "custom-collapse" : "custom-collapse fix-width"}>
-            {isLoading ?
-              <div style={{ minHeight: '400px' }}>
-                <Loading />
+          <Container fluid="lg">
+            <Row className="justify-content-end align-items-start position-relative">
+              <FilterBody
+                filters={filters}
+                filter={filter}
+                handleOnChangeFilter={handleOnChangeFilter}
+                clearFilter={clearFilter}
+              />
+              <Col xs={12} md={9} className={expandState ? "custom-collapse" : "custom-collapse fix-width"}>
+                {isLoading ?
+                  <div style={{ minHeight: '400px' }}>
+                    <Loading />
+                  </div>
+                  :
+                  <>
+                    <Row>
+                      {products.map((product, index) => {
+                        return (
+                          <Col xs={6} md={4} xl={3} className={expandState ? "p-0" : "p-0 item__fix-width"} key={index}>
+                            <Product product={product} />
+                          </Col>
+                        )
+                      })}
+                    </Row>
+                    <CustomPagination
+                      currentPage={parseInt(currentPage)}
+                      totalProducts={products.length}
+                      pages={pages}
+                      handleChangePage={handleChangePage}
+                    />
+                  </>
+                }
+              </Col>
+            </Row>
+          </Container>
+        </div> : !isLoading &&
+        <div className="my-2 my-md-3" >
+          <Container fluid="lg">
+            <div className="bg-white text-center py-3 py-md-4">
+              <div className="col-4 col-md-2 d-inline-block">
+                <img src={notFound} alt="Not found" className="w-100" />
               </div>
-              :
-              <>
-                <Row>
-                  {products.map((product, index) => {
-                    return (
-                      <Col xs={6} md={4} xl={3} className={expandState ? "p-0" : "p-0 item__fix-width"} key={index}>
-                        <Product product={product} />
-                      </Col>
-                    )
-                  })}
-                </Row>
-                <CustomPagination
-                  currentPage={parseInt(currentPage)}
-                  totalProducts={products.length}
-                  pages={pages}
-                  handleChangePage={handleChangePage}
-                />
-              </>
-            }
-          </Col>
-        </Row>
-      </Container>
-    </div>
+              <h4 className="fw-bold">Không tìm thấy sản phẩm</h4>
+            </div>
+          </Container>
+        </div>
+      }
+    </>
+
   )
 };
 

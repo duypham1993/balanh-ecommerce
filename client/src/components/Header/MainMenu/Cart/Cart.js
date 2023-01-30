@@ -22,7 +22,7 @@ const Cart = () => {
 
   useEffect(() => {
     localUser && dispatch(getCart(localUser._id));
-  }, [currentUser]);
+  }, []);
 
   return (
     <div className="cart">

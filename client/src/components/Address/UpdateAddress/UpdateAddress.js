@@ -80,7 +80,7 @@ const UpdateAddress = ({ deliveryAddress, isOrderPage }) => {
   };
 
   const handleOnSubmit = (address) => {
-    dispatch(updateAddress(address))
+    dispatch(updateAddress({ id: deliveryAddress._id, updatedAddress: address }))
       .unwrap()
       .then(() => {
         setShow(false);
@@ -110,7 +110,6 @@ const UpdateAddress = ({ deliveryAddress, isOrderPage }) => {
           <Modal.Title>Cập nhật địa chỉ</Modal.Title>
         </Modal.Header>
         <FormAddress
-          id={deliveryAddress._id}
           inputs={inputs}
           address={address}
           handleOnChange={handleOnChange}
