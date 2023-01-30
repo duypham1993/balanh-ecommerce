@@ -2,7 +2,7 @@ import axios from "axios";
 import { refreshToken } from "../../utils/refreshToken";
 import { clearLocalStorage, getLocalAccessToken } from "../../utils/localStorage";
 
-const BASE_URL = process.env.REACT_APP_URL_API;
+const BASE_URL = "https://api-balanh-ecommerce.vercel.app/api";
 
 export const publictRequest = axios.create({
   baseURL: BASE_URL,
