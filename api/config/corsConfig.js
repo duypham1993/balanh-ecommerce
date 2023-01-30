@@ -1,6 +1,8 @@
 const whitelist = [
-  'http://localhost:3000/',
-  'http://localhost:5001/'
+  'http://localhost:3000',
+  'http://localhost:5001',
+  'https://balanh-ecommerce-m86o.vercel.app',
+  'https://admin-balanh-ecommerce.vercel.app'
 ]
 
 const corsOptions = {
