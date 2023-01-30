@@ -11,7 +11,6 @@ const createAddress = async (req, res) => {
 
       // If customer already has shipping address and new address is default, set all old address is not default
       if (req.body.isDefault) {
-        console.log(req.body)
         await Address.findOneAndUpdate(
           { customerID: req.body.customerID, isDefault: true },
           { $set: { isDefault: false } },
@@ -69,7 +68,6 @@ const getCurrentAddress = async (req, res) => {
 // UPDATE ADDRESS
 const updateAddress = async (req, res) => {
   try {
-    console.log(req.body)
     if (req.body.isDefault) {
       await Address.updateMany(
         { customerID: req.body.customerID, isDefault: true },

@@ -18,7 +18,6 @@ const UpdateAddress = () => {
     dispatch(getCurrentAddress(id));
   }, [id]);
 
-  console.log(currentAddress)
   const formAddress = useFormik({
     initialValues: {
       email: currentAddress.email || "",

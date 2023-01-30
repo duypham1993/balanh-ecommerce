@@ -44,7 +44,6 @@ const getUserCart = async (req, res) => {
 const addToCart = async (req, res) => {
   let error = {};
   try {
-    console.log(req.body);
     const filter = {
       customerID: req.body.customerID,
       "products._id": req.body.product._id

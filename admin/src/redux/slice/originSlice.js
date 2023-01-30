@@ -63,7 +63,6 @@ const originSlice = createSlice({
 
     // add origin
     builders.addCase(addOrigin.fulfilled, (state, action) => {
-      console.log(action)
       state.origin.push(action.payload);
     })
 

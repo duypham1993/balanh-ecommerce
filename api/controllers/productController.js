@@ -194,7 +194,6 @@ const getCurrentProductClient = async (req, res) => {
       ...product._doc,
       origin: origin,
     };
-    console.log(updateProduct)
     return res.status(201).json(updateProduct);
   } catch {
     error = "Page not found"

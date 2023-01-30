@@ -102,7 +102,6 @@ const getAllOrders = async (req, res) => {
 
 //UPDATE
 const updateOrder = async (req, res) => {
-  console.log(req.body.status)
   try {
     const updatedOrder = await Order.findByIdAndUpdate(
       req.params.id,
