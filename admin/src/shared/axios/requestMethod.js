@@ -7,7 +7,9 @@ const BASE_URL = "https://api-balanh-ecommerce.vercel.app/api";
 export const publictRequest = axios.create({
   baseURL: BASE_URL,
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
   },
   withCredentials: true
 });
@@ -15,7 +17,9 @@ export const publictRequest = axios.create({
 const axiosPrivate = axios.create({
   baseURL: BASE_URL,
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
   },
   withCredentials: true
 });
