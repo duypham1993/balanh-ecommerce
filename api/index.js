@@ -18,3 +18,5 @@ app.use(require("./routes/index"));
 app.listen(port, () => {
   console.log("Port is: ", port);
 });
+
+module.exports = app;
