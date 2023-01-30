@@ -2,10 +2,9 @@
   "name": "balanh-api",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon --exec babel-node server.js"
+    "start": "nodemon --exec babel-node index.js"
   },
   "author": "Duy Pham",
   "license": "ISC",
