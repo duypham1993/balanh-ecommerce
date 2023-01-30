@@ -1,40 +1,42 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectCategoriesWithoutRoot, selectData, selectStatusSubmit } from "../../redux/selectors";
-import { deleteCategory, getCategories, resetStatusSubmit } from "../../redux/slice/categorySlice";
+import { selectCategoriesWithoutRoot } from "../../redux/selectors";
+import { deleteCategory, getCategories } from "../../redux/slice/categorySlice";
 import CustomDialog from "../../components/CustomDialog/CustomDialog";
 import { DataGrid } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
-import { delImgFireBase } from "../../services/uploadFirebase";
+import { delImgFireBase } from "../../utils/uploadFirebase";
 import SubmitAlert from '../../components/SubmitAlert/SubmitAlert';
-import ErrorFetching from '../../components/ErrorFetching/ErrorFetching';
+import { DELETE_CATEGORY_SUCCESS } from '../../shared/constants';
+import Loading from '../../components/Loading/Loading';
 
 const Categories = () => {
   const dispatch = useDispatch();
   const [pageSize, setPageSize] = useState(50);
   const [selectionModel, setSelectionModel] = useState([]);
   const categoriesWithoutRoot = useSelector(selectCategoriesWithoutRoot);
-  const statusSubmit = useSelector(selectStatusSubmit("category"));
-  const statusFetching = useSelector(selectData("category", "isFetching"));
-  const errorApi = useSelector(selectData("category", "error"))
-  const mess = {
-    success: "Xoá danh mục thành công!",
-    error: errorApi.other
-  }
+  const { isLoading } = useSelector(state => state.category);
+  const [mess, setMess] = useState({});
 
   useEffect(() => {
     dispatch(getCategories());
-    return () => dispatch(resetStatusSubmit());
   }, []);
 
   const selectedCategories = [...categoriesWithoutRoot.filter(item => selectionModel.includes(item._id))];
 
-  const handleDelete = async (item) => {
-    await dispatch(deleteCategory(item._id));
-    delImgFireBase(item.img);
+  const handleDelete = (item) => {
+    dispatch(deleteCategory(item._id))
+      .unwrap()
+      .then(() => {
+        setMess({ success: DELETE_CATEGORY_SUCCESS });
+        delImgFireBase(item.img);
+      })
+      .catch((error) => {
+        setMess({ error: error.other });
+      })
   };
 
   const columns = [
@@ -104,7 +106,7 @@ const Categories = () => {
         return (
           <>
             <Link to={"/categories/" + item.row._id} className="link-default">
-              <button className="flex-bw-center btn-default btn-default--edit text-small">
+              <button className="flex-bw-center btn-df btn-df--edit text-small">
                 <span>Update</span>
                 <EditIcon className="text-default" />
               </button>
@@ -118,11 +120,11 @@ const Categories = () => {
 
   return (
     <>
-      {statusFetching === "rejected" ?
-        <ErrorFetching /> :
+      {isLoading ?
+        <Loading /> :
         <>
           <div className="flex-r-c">
-            <Link to='/categories/create' className='btn-default'>Tạo danh mục mới</Link>
+            <Link to='/categories/create' className='btn-df'>Tạo danh mục mới</Link>
           </div>
           <div className="wrapper_data-grid categories">
             <DataGrid
@@ -143,7 +145,6 @@ const Categories = () => {
             />
           </div>
           <SubmitAlert
-            statusSubmit={statusSubmit}
             mess={mess}
           />
         </>

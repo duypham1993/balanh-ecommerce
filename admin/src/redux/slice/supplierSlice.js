@@ -6,23 +6,27 @@ export const getSuppliers = createAsyncThunk('supplier/fetchAll', async () => {
   return res.data;
 });
 
-export const getCurrnetSupplier = createAsyncThunk('supplier/getcurrent', async (id) => {
-  const res = await axiosPrivate.get(`/supplier/${id}`);
-  return res.data;
+export const getCurrentSupplier = createAsyncThunk('supplier/getcurrent', async (id, { rejectWithValue }) => {
+  try {
+    const res = await axiosPrivate.get(`/supplier/${id}`);
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
 })
 
 export const addSupplier = createAsyncThunk('supplier/add', async (supplier, { rejectWithValue }) => {
   try {
-    const res = await axiosPrivate.post("/supplier/create", supplier);
+    const res = await axiosPrivate.post("/supplier", supplier);
     return res.data;
   } catch (error) {
     return rejectWithValue(error.response.data);
   }
 });
 
-export const updateSupplier = createAsyncThunk('supplier/update', async (update, { rejectWithValue }) => {
+export const updateSupplier = createAsyncThunk('supplier/update', async ({ updateSupplier, _id }, { rejectWithValue }) => {
   try {
-    const res = await axiosPrivate.put(`supplier/${update.id}`, update.updatedSupplier);
+    const res = await axiosPrivate.put(`/supplier/${_id}`, updateSupplier);
     return res.data;
   } catch (error) {
     return rejectWithValue(error.response.data);
@@ -31,7 +35,7 @@ export const updateSupplier = createAsyncThunk('supplier/update', async (update,
 
 export const deleteSupplier = createAsyncThunk('supplier/delete', async (id, { rejectWithValue }) => {
   try {
-    const res = await axiosPrivate.delete(`supplier/delete/${id}`);
+    const res = await axiosPrivate.delete(`supplier/${id}`);
     return res.data;
   } catch (error) {
     return rejectWithValue(error.response.data);
@@ -43,85 +47,52 @@ const supplierSlice = createSlice({
   initialState: {
     suppliers: [],
     currentSupplier: {},
-    isFetching: "",
-    statusSubmit: "",
-    error: {}
+    isLoading: false,
   },
-  reducers: {
-    resetStatusSubmit: (state) => {
-      state.statusSubmit = "";
-    },
-    resetErrorSku: (state) => {
-      state.error.sku = "";
-    }
-  },
+  reducers: {},
   extraReducers: (builders) => {
     // fetch all suppliers
     builders.addCase(getSuppliers.pending, (state, action) => {
-      state.isFetching = "pending";
+      state.isLoading = true;
     })
     builders.addCase(getSuppliers.fulfilled, (state, action) => {
-      state.isFetching = "fulfilled";
+      state.isLoading = false;
       state.suppliers = action.payload;
     })
     builders.addCase(getSuppliers.rejected, (state, action) => {
-      state.isFetching = "rejected";
+      state.isLoading = false;
     })
 
     // fetch current supplier
-    builders.addCase(getCurrnetSupplier.pending, (state, action) => {
-      state.isFetching = "pending";
+    builders.addCase(getCurrentSupplier.pending, (state, action) => {
+      state.isLoading = true;
     })
-    builders.addCase(getCurrnetSupplier.fulfilled, (state, action) => {
-      state.isFetching = "fulfilled";
+    builders.addCase(getCurrentSupplier.fulfilled, (state, action) => {
+      state.isLoading = false;
       state.currentSupplier = action.payload;
     })
-    builders.addCase(getCurrnetSupplier.rejected, (state, action) => {
-      state.isFetching = "rejected";
+    builders.addCase(getCurrentSupplier.rejected, (state, action) => {
+      state.isLoading = false;
     })
 
     // add supplier
-    builders.addCase(addSupplier.pending, (state, action) => {
-      state.statusSubmit = "pending";
-    })
+
     builders.addCase(addSupplier.fulfilled, (state, action) => {
-      state.statusSubmit = "fulfilled";
       state.suppliers.push(action.payload);
-    })
-    builders.addCase(addSupplier.rejected, (state, action) => {
-      state.statusSubmit = "rejected";
-      state.error = action.payload;
     })
 
     // update supplier
-    builders.addCase(updateSupplier.pending, (state, action) => {
-      state.statusSubmit = "pending";
-    })
     builders.addCase(updateSupplier.fulfilled, (state, action) => {
-      state.statusSubmit = "fulfilled";
       state.suppliers[
         state.suppliers.findIndex((item) => item._id === action.payload._id)
       ] = action.payload;
     })
-    builders.addCase(updateSupplier.rejected, (state, action) => {
-      state.statusSubmit = "rejected";
-      state.error = action.payload;
-    })
 
     // delete supplier
-    builders.addCase(deleteSupplier.pending, (state, action) => {
-      state.statusSubmit = "pending";
-    })
     builders.addCase(deleteSupplier.fulfilled, (state, action) => {
-      state.statusSubmit = "fulfilled";
       state.suppliers = state.suppliers.filter(item => {
         return item._id !== action.payload;
       });
-    })
-
-    builders.addCase(deleteSupplier.rejected, (state, action) => {
-      state.statusSubmit = "rejected";
-      state.error = action.payload;
     })
   }
 

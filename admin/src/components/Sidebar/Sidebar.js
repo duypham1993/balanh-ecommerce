@@ -20,9 +20,6 @@ import Account from "../Account/Account";
 import HandshakeIcon from '@mui/icons-material/Handshake';
 import MenuItem from './MenuItem';
 
-
-
-
 const drawerWidth = 240;
 
 const openedMixin = (theme) => ({
@@ -89,14 +86,11 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
-
-
-
 export default function Sidebar() {
-  const [expanded, setExpanded] = useState(false);
-  const handleChange = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
-  };
+  // const [expanded, setExpanded] = useState(false);
+  // const handleChange = (panel) => (event, isExpanded) => {
+  //   setExpanded(isExpanded ? panel : false);
+  // };
   const menu1 = [
     {
       icon: <ShoppingBasketIcon />,
@@ -150,7 +144,7 @@ export default function Sidebar() {
         },
         {
           title: "Địa chỉ",
-          link: "/delivery-info",
+          link: "/addresses",
         },
       ]
     }

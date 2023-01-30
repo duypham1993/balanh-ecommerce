@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Grid, Switch, Button, RadioGroup } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import TreeView from '@mui/lab/TreeView';
@@ -6,66 +5,23 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import CustomTreeItem from "./CustomTreeItem/CustomTreeItem";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { selectData } from "../../redux/selectors";
-import { resetErrorSlug } from "../../redux/slice/categorySlice";
+import { useSelector } from "react-redux";
 
-const FormCategory = (props) => {
-  const { objectData, inputs, imgURL, handleOnSubmit, handleOnChange, handleFile, handleDelImg } = props;
-  const dispatch = useDispatch();
+const FormCategory = ({ formCategory }) => {
   const navigate = useNavigate();
-  const [formErrors, setFormErrors] = useState({});
-  const errorApi = useSelector(selectData("category", "error"));
-  const handleChange = (e) => {
-    const { value, name } = e.target;
-    handleOnChange(e);
+  const { treeCategories } = useSelector(state => state.category);
 
-    if (value) {
-      setFormErrors({
-        ...formErrors, [name]: "",
-      })
-    }
-  }
+  const imgURL = formCategory.values.imgFirebase ? formCategory.values.imgFirebase : formCategory.values.imgLocal ? URL.createObjectURL(formCategory.values.imgLocal) : null;
 
-  const validate = (inputs) => {
-    const errors = {};
-    const formatSlug = /^[a-z0-9]+(?:-[a-z0-9]+)*$/g;
-
-    if (!inputs.name.trim()) {
-      errors.name = "Vui lòng điền vào mục này!";
-    }
-
-    if (!inputs.desc.trim()) {
-      errors.desc = "Vui lòng điền vào mục này!";
-    }
-
-    if (!formatSlug.test(inputs.slug)) {
-      errors.slug = "Đường dẫn không hợp lệ!";
-    }
-
-    if (!inputs.slug.trim()) {
-      errors.slug = "Vui lòng điền vào mục này!";
-    }
-
-    if (!imgURL) {
-      errors.img = "Vui lòng upload ảnh bìa!";
-    }
-
-    return errors;
-  }
-
-  const submitFrom = (e) => {
-    e.preventDefault();
-    dispatch(resetErrorSlug());
-    setFormErrors(validate(inputs));
-    Object.keys(validate(inputs)).length === 0 && handleOnSubmit();
-  }
+  const handleDelImg = () => {
+    formCategory.setFieldValue('imgFirebase', '');
+    formCategory.setFieldValue('imgLocal', '');
+  };
 
   // back to categories
   const handleCancel = () => {
     return navigate("/categories");
   };
-
 
   const renderTree = (nodes) => (
     <CustomTreeItem
@@ -80,7 +36,7 @@ const FormCategory = (props) => {
     </CustomTreeItem>
   );
   return (
-    <form className="form-default" onSubmit={(e) => submitFrom(e)}>
+    <form className="form-default" onSubmit={formCategory.handleSubmit}>
       <Grid container>
         <Grid container item spacing={3} className="form-default__group">
           <Grid item xs={12} sm={4} className="form-default__label">
@@ -91,10 +47,11 @@ const FormCategory = (props) => {
               type="text"
               className={"input-default form-default__input"}
               name="name"
-              value={inputs.name}
-              onChange={e => handleChange(e)}
+              value={formCategory.values.name}
+              onChange={formCategory.handleChange}
+              onBlur={formCategory.handleBlur}
             />
-            <p className={formErrors.name ? "form-default__error show" : "form-default__error"}>{formErrors.name}</p>
+            <p className={formCategory.touched.name && formCategory.errors.name ? "form-default__error show" : "form-default__error"}>{formCategory.errors.name}</p>
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
@@ -106,10 +63,11 @@ const FormCategory = (props) => {
               type="text"
               className={"input-default form-default__input"}
               name="desc"
-              value={inputs.desc}
-              onChange={(e) => handleChange(e)}
+              value={formCategory.values.desc}
+              onChange={formCategory.handleChange}
+              onBlur={formCategory.handleBlur}
             />
-            <p className={formErrors.desc ? "form-default__error show" : "form-default__error"}>{formErrors.desc}</p>
+            <p className={formCategory.touched.desc && formCategory.errors.desc ? "form-default__error show" : "form-default__error"}>{formCategory.errors.desc}</p>
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
@@ -117,7 +75,7 @@ const FormCategory = (props) => {
             <label>Danh mục</label>
           </Grid>
           <Grid item xs={12} sm={6} className="form-default__content">
-            {inputs.parentId &&
+            {Object.keys(treeCategories).length ?
               <TreeView
                 aria-label="icon expansion"
                 defaultCollapseIcon={<ExpandMoreIcon />}
@@ -127,13 +85,15 @@ const FormCategory = (props) => {
               >
                 <RadioGroup
                   name="parentId"
-                  value={inputs.parentId}
-                  onChange={(e) => handleOnChange(e)}
+                  value={formCategory.values.parentId}
+                  onChange={formCategory.handleChange}
                 >
-                  {renderTree(objectData)}
+                  {renderTree(treeCategories)}
                 </RadioGroup>
-              </TreeView>
+              </TreeView> :
+              <></>
             }
+            <p className={formCategory.touched.parentId && formCategory.errors.parentId ? "form-default__error show" : "form-default__error"}>{formCategory.errors.parentId}</p>
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
@@ -155,13 +115,14 @@ const FormCategory = (props) => {
                   type="file"
                   accept="image/*"
                   className={"input-default form-default__input"}
-                  name="img"
-                  onChange={(e) => handleFile(e)}
+                  name="imgLocal"
+                  onChange={(e) => formCategory.setFieldValue('imgLocal', e.currentTarget.files[0])}
+                  onBlur={formCategory.handleBlur}
                 />
                 <p className="form-default__desc">Kích thước ảnh khuyến nghị 1200x400px</p>
-                <p className={formErrors.img ? "form-default__error show" : "form-default__error"}>{formErrors.img}</p>
               </>
             }
+            <p className={formCategory.touched.imgLocal && formCategory.errors.imgLocal ? "form-default__error show" : "form-default__error"}>{formCategory.errors.imgLocal}</p>
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
@@ -173,12 +134,13 @@ const FormCategory = (props) => {
               type="text"
               name="slug"
               className="input-default form-default__input"
-              value={inputs.slug}
-              onChange={(e) => handleChange(e)}
+              value={formCategory.values.slug}
+              onChange={formCategory.handleChange}
+              onBlur={formCategory.handleBlur}
               placeholder="duong-dan-1"
             />
             <p className="form-default__desc">Viết liền không dấu, chỉ chấp nhận chữ cái, số và dấu gạch ngang "-"</p>
-            <p className={formErrors.slug || errorApi.slug ? "form-default__error show" : "form-default__error"}>{formErrors.slug || errorApi.slug}</p>
+            <p className={formCategory.touched.slug && formCategory.errors.slug ? "form-default__error show" : "form-default__error"}>{formCategory.errors.slug}</p>
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
@@ -189,15 +151,19 @@ const FormCategory = (props) => {
             <Switch
               name="isActive"
               className="form-default__input"
-              checked={inputs.isActive}
-              onChange={(e) => handleOnChange(e)}
+              checked={formCategory.values.isActive}
+              onChange={formCategory.handleChange}
             />
           </Grid>
         </Grid>
       </Grid>
       <div className="flex-bw-center form-default__bot-nav">
-        <button className="btn-default btn-default--del" onClick={() => handleCancel()}>Quay lại</button>
-        <button className="btn-default" type="submit" >Lưu</button>
+        <button className="btn-df btn-df--del" onClick={() => handleCancel()}>Quay lại</button>
+        {formCategory.isSubmitting ?
+          <button className="btn-df cursor-disable" type="submit" disabled >Lưu</button> :
+          <button className="btn-df" type="submit" >Lưu</button>
+        }
+
       </div>
     </form >
   )

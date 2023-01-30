@@ -1,97 +1,44 @@
-import { useState } from "react";
-import { Grid, Autocomplete, TextField } from '@mui/material';
+import { Grid, Autocomplete, TextField, Switch } from '@mui/material';
 import { cityData } from "../../data/city";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getCustomers } from '../../redux/slice/customerSlice';
 
-const FormDeliveryInfo = (props) => {
-  const { listEmail, inputs, address, handleAutocomplete, handleStreet, handleOnChange, handleOnSubmit, id } = props;
+const FormAddress = ({ formAddress, id }) => {
   const navigate = useNavigate();
-  const [formErrors, setFormErrors] = useState({});
+  const dispatch = useDispatch();
   const city = cityData.map(item => item.name);
-  const district = cityData.find(item => item.name === address.city);
+  const district = cityData.find(item => item.name === formAddress.values.city);
   const arrDistrict = district && district.districts.map(item => item.name);
-  const wards = district && district.districts.find(item => item.name === address.district);
+  const wards = district && district.districts.find(item => item.name === formAddress.values.district);
   const arrWards = wards && wards.wards.map(item => item.name);
+  const { customers } = useSelector(state => state.customer);
+  const listEmail = customers?.map(customer => customer.email);
 
-  const handleChangeInputs = (e) => {
-    const { value, name } = e.target;
-    handleOnChange(e);
-    // remove error if target has value
-    if (value) {
-      setFormErrors({
-        ...formErrors, [name]: "",
-      })
+  useEffect(() => {
+    dispatch(getCustomers());
+  }, []);
+
+  const handleChangeAutocomplete = (name, value) => {
+    if (name === "city") {
+      formAddress.setFieldValue('district', '');
+      formAddress.setFieldValue('wards', '');
     }
-  }
-
-  const handleChangeAddress = (name, value) => {
-
-    handleAutocomplete(name, value)
-    // remove error if target has value
-    if (value) {
-      setFormErrors({
-        ...formErrors, [name]: "",
-      })
-    }
-  }
-
-  const validate = (inputs) => {
-    const errors = {};
-    const formatEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    const formatPhone = /^\d{10,12}$/;
-
-    if (!formatEmail.test(inputs.inputs.email)) {
-      errors.email = "Email không hợp lệ!";
+    if (name === "district") {
+      formAddress.setFieldValue('wards', '');
     }
 
-    if (!inputs.inputs.email.trim()) {
-      errors.email = "Vui lòng điền vào mục này!";
-    }
-
-    if (!inputs.inputs.name.trim()) {
-      errors.name = "Vui lòng điền vào mục này!";
-    }
-
-    if (!inputs.address.city.trim()) {
-      errors.city = "Vui lòng chọn mục này!";
-    }
-
-    if (!inputs.address.district.trim()) {
-      errors.district = "Vui lòng chọn mục này!";
-    }
-
-    if (!inputs.address.wards.trim()) {
-      errors.wards = "Vui lòng chọn mục này!";
-    }
-
-    if (!inputs.address.street.trim()) {
-      errors.street = "Vui lòng chọn mục này!";
-    }
-
-    if (!formatPhone.test(inputs.inputs.phone)) {
-      errors.phone = "Số điện thoại không hợp lệ!"
-    }
-
-    if (!inputs.inputs.phone.trim()) {
-      errors.phone = "Vui lòng điền vào mục này!";
-    }
-
-    return errors;
-  }
-
-  const submitFrom = (e) => {
-    e.preventDefault();
-    setFormErrors(validate({ inputs, address }));
-    Object.keys(validate({ inputs, address })).length === 0 && handleOnSubmit();
+    value ? formAddress.setFieldValue(name, value) : formAddress.setFieldValue(name, '');
   }
 
   // back to suppliers
   const handleCancel = () => {
-    return navigate("/customers/delivery-info/");
+    return navigate("/customers/addresses/");
   }
 
   return (
-    <form className="form-default" onSubmit={(e) => submitFrom(e)}>
+    <form className="form-default" onSubmit={formAddress.handleSubmit}>
       <Grid container>
         <Grid container item spacing={3} className="form-default__group">
           <Grid item xs={12} sm={4} className="form-default__label">
@@ -100,25 +47,29 @@ const FormDeliveryInfo = (props) => {
           <Grid item xs={12} sm={6} className="form-default__content">
             {!id ?
               <Autocomplete
-                disabled
                 className="form-default__autocomplete"
                 options={listEmail}
-                value={inputs.email}
+                value={formAddress.values.email}
                 isOptionEqualToValue={(option, value) =>
                   option.id === value.id
                 }
-                onChange={(e, value) => handleChangeAddress("email", value)}
-                renderInput={(params) => <TextField {...params}
-                />}
+                onChange={(e, value) => value ? formAddress.setFieldValue("email", value) : formAddress.setFieldValue("email", "")}
+                renderInput={(params) =>
+                  <TextField
+                    onBlur={formAddress.handleBlur}
+                    name="email"
+                    {...params}
+                  />}
               /> :
               <input
                 type="text"
                 className="input-default form-default__input"
                 name="email"
-                value={inputs.email}
+                value={formAddress.values.email}
                 disabled
               />
             }
+            <p className={formAddress.touched.email && formAddress.errors.email ? "form-default__error show" : "form-default__error"}>{formAddress.errors.email}</p>
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
@@ -130,10 +81,11 @@ const FormDeliveryInfo = (props) => {
               type="text"
               className="input-default form-default__input"
               name="name"
-              value={inputs.name}
-              onChange={(e) => handleChangeInputs(e)}
+              value={formAddress.values.name}
+              onChange={formAddress.handleChange}
+              onBlur={formAddress.handleBlur}
             />
-            <p className={formErrors.name ? "form-default__error show" : "form-default__error"}>{formErrors.name}</p>
+            <p className={formAddress.touched.name && formAddress.errors.name ? "form-default__error show" : "form-default__error"}>{formAddress.errors.name}</p>
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
@@ -145,15 +97,15 @@ const FormDeliveryInfo = (props) => {
               className="form-default__autocomplete"
               id="city"
               options={city}
-              value={address.city}
+              value={formAddress.values.city}
               isOptionEqualToValue={(option, value) =>
                 option.id === value.id
               }
-              onChange={(e, value) => handleChangeAddress("city", value)}
-              renderInput={(params) => <TextField {...params} name="city"
+              onChange={(e, value) => handleChangeAutocomplete("city", value)}
+              renderInput={(params) => <TextField {...params} name="city" onBlur={formAddress.handleBlur}
               />}
             />
-            <p className={formErrors.city ? "form-default__error show" : "form-default__error"}>{formErrors.city}</p>
+            <p className={formAddress.touched.city && formAddress.errors.city ? "form-default__error show" : "form-default__error"}>{formAddress.errors.city}</p>
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
@@ -165,28 +117,27 @@ const FormDeliveryInfo = (props) => {
               <Autocomplete
                 className="form-default__autocomplete"
                 options={arrDistrict}
-                value={address.district}
+                value={formAddress.values.district}
                 isOptionEqualToValue={(option, value) =>
                   option.id === value.id
                 }
-                onChange={(e, value) => handleChangeAddress("district", value)}
-                renderInput={(params) => <TextField {...params}
+                onChange={(e, value) => handleChangeAutocomplete('district', value)}
+                renderInput={(params) => <TextField {...params} name='district' onBlur={formAddress.handleBlur}
                 />}
               /> :
               <Autocomplete
                 className="form-default__autocomplete"
                 disabled
                 options={city}
-                value={address.district}
+                value={formAddress.values.district}
                 isOptionEqualToValue={(option, value) =>
                   option.id === value.id
                 }
-                onChange={(e, value) => handleChangeAddress("district", value)}
                 renderInput={(params) => <TextField {...params}
                 />}
               />
             }
-            <p className={formErrors.district ? "form-default__error show" : "form-default__error"}>{formErrors.district}</p>
+            <p className={formAddress.touched.district && formAddress.errors.district ? "form-default__error show" : "form-default__error"}>{formAddress.errors.district}</p>
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
@@ -198,28 +149,27 @@ const FormDeliveryInfo = (props) => {
               <Autocomplete
                 className="form-default__autocomplete"
                 options={arrWards}
-                value={address.wards}
+                value={formAddress.values.wards}
                 isOptionEqualToValue={(option, value) =>
                   option.id === value.id
                 }
-                onChange={(e, value) => handleChangeAddress("wards", value)}
-                renderInput={(params) => <TextField {...params}
+                onChange={(e, value) => handleChangeAutocomplete('wards', value)}
+                renderInput={(params) => <TextField name='wards' onBlur={formAddress.handleBlur} {...params}
                 />}
               /> :
               <Autocomplete
                 className="form-default__autocomplete"
                 options={city}
                 disabled
-                value={address.wards}
+                value={formAddress.values.wards}
                 isOptionEqualToValue={(option, value) =>
                   option.id === value.id
                 }
-                onChange={(e, value) => handleChangeAddress("wards", value)}
                 renderInput={(params) => <TextField {...params}
                 />}
               />
             }
-            <p className={formErrors.wards ? "form-default__error show" : "form-default__error"}>{formErrors.wards}</p>
+            <p className={formAddress.touched.wards && formAddress.errors.wards ? "form-default__error show" : "form-default__error"}>{formAddress.errors.wards}</p>
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
@@ -231,10 +181,11 @@ const FormDeliveryInfo = (props) => {
               type="text"
               name="street"
               className="input-default form-default__input"
-              value={address.street}
-              onChange={(e) => handleStreet(e)}
+              value={formAddress.values.street}
+              onChange={formAddress.handleChange}
+              onBlur={formAddress.handleBlur}
             />
-            <p className={formErrors.street ? "form-default__error show" : "form-default__error"}>{formErrors.street}</p>
+            <p className={formAddress.touched.street && formAddress.errors.street ? "form-default__error show" : "form-default__error"}>{formAddress.errors.street}</p>
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
@@ -246,10 +197,11 @@ const FormDeliveryInfo = (props) => {
               type="text"
               className="input-default form-default__input"
               name="phone"
-              value={inputs.phone}
-              onChange={(e) => handleChangeInputs(e)}
+              value={formAddress.values.phone}
+              onChange={formAddress.handleChange}
+              onBlur={formAddress.handleBlur}
             />
-            <p className={formErrors.phone ? "form-default__error show" : "form-default__error"}>{formErrors.phone}</p>
+            <p className={formAddress.touched.phone && formAddress.errors.phone ? "form-default__error show" : "form-default__error"}>{formAddress.errors.phone}</p>
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
@@ -260,19 +212,36 @@ const FormDeliveryInfo = (props) => {
             <textarea
               type="text"
               className="input-default form-default__input"
-              name="other"
-              value={inputs.other}
-              onChange={(e) => handleChangeInputs(e)}
+              name="note"
+              value={formAddress.values.other}
+              onChange={formAddress.handleChange}
+            />
+          </Grid>
+        </Grid>
+        <Grid container item spacing={3} className="form-default__group">
+          <Grid item xs={12} sm={4} className="form-default__label">
+            <label>Đặt làm địa chỉ mặc định</label>
+          </Grid>
+          <Grid item xs={12} sm={6} className="form-default__content">
+            <Switch
+              name="isDefault"
+              disabled={formAddress.values.checkDefault}
+              checked={formAddress.values.isDefault}
+              onChange={formAddress.handleChange}
             />
           </Grid>
         </Grid>
       </Grid>
       <div className="flex-bw-center form-default__bot-nav">
-        <p className="btn-default btn-default--del" onClick={() => handleCancel()}>Quay lại</p>
-        <button className="btn-default" type="submit" >Lưu</button>
+        <p className="btn-df btn-df--del" onClick={() => handleCancel()}>Quay lại</p>
+        {formAddress.isSubmitting ?
+          <button className="btn-df cursor-disable" type="submit" disabled>Lưu</button> :
+          <button className="btn-df" type="submit" >Lưu</button>
+        }
+
       </div>
     </form >
   )
 };
 
-export default FormDeliveryInfo;
+export default FormAddress;

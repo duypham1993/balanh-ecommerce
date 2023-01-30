@@ -2,29 +2,41 @@ import { createAsyncThunk, createSlice, current } from "@reduxjs/toolkit";
 import axiosPrivate from "../../shared/axios/requestMethod";
 
 export const getOrigin = createAsyncThunk(
-  "orgin/fetchAll", async () => {
-    const res = await axiosPrivate.get("/origin");
-    return res.data;
+  "orgin/fetchAll", async (_, { rejectWithValue }) => {
+    try {
+      const res = await axiosPrivate.get("/origin");
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.resonse.data);
+    }
   }
 )
 
 export const addOrigin = createAsyncThunk(
-  "orgin/add", async (origin) => {
-    const res = await axiosPrivate.post("/origin/create", origin);
-    return res.data;
+  "orgin/add", async (origin, { rejectWithValue }) => {
+    try {
+      const res = await axiosPrivate.post("/origin", origin);
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
   }
 )
 
 export const updateOrigin = createAsyncThunk(
-  "origin/update", async (update) => {
-    const res = await axiosPrivate.put(`/origin/${update.id}`, update.updatedOrigin);
-    return res.data;
+  "origin/update", async ({ updatedOrigin, id }, { rejectWithValue }) => {
+    try {
+      const res = await axiosPrivate.put(`/origin/${id}`, updatedOrigin);
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
   }
 )
 
 export const deleteOrigin = createAsyncThunk(
   "origin/delete", async (id) => {
-    const res = await axiosPrivate.delete(`origin/delete/${id}`);
+    const res = await axiosPrivate.delete(`/origin/${id}`);
     return res.data;
   }
 )
@@ -33,59 +45,38 @@ const originSlice = createSlice({
   name: "origin",
   initialState: {
     origin: [],
-    statusFetching: "",
-    statusSubmit: "",
+    isLoading: false,
   },
   reducers: {},
   extraReducers: (builders) => {
     // get all origin
     builders.addCase(getOrigin.pending, (state, action) => {
-      state.statusFetching = "pending";
+      state.isLoading = true;
     })
     builders.addCase(getOrigin.fulfilled, (state, action) => {
-      state.statusFetching = "fulfilled";
+      state.isLoading = false;
       state.origin = action.payload;
     })
     builders.addCase(getOrigin.rejected, (state, action) => {
-      state.statusFetching = "rejected";
+      state.isLoading = false;
     })
 
     // add origin
-    builders.addCase(addOrigin.pending, (state, action) => {
-      state.statusSubmit = "pending";
-    })
     builders.addCase(addOrigin.fulfilled, (state, action) => {
-      state.statusSubmit = "fulfilled";
+      console.log(action)
       state.origin.push(action.payload);
-    })
-    builders.addCase(addOrigin.rejected, (state, action) => {
-      state.statusSubmit = "rejected";
     })
 
     // update origin
-    builders.addCase(updateOrigin.pending, (state, action) => {
-      state.statusSubmit = "pending";
-    })
     builders.addCase(updateOrigin.fulfilled, (state, action) => {
-      state.statusSubmit = "fulfilled";
       state.origin[
         state.origin.findIndex((item) => item._id === action.payload._id)
       ] = action.payload;
     })
-    builders.addCase(updateOrigin.rejected, (state, action) => {
-      state.statusSubmit = "rejected";
-    })
 
     // delete origin
-    builders.addCase(deleteOrigin.pending, (state, action) => {
-      state.statusSubmit = "pending";
-    })
     builders.addCase(deleteOrigin.fulfilled, (state, action) => {
-      state.statusSubmit = "fulfilled";
       state.origin = state.origin.filter(item => item._id !== action.payload);
-    })
-    builders.addCase(deleteOrigin.rejected, (state, action) => {
-      state.statusSubmit = "rejected";
     })
   }
 })

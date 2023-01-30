@@ -1,4 +1,3 @@
-import "./custom-breadcrumb.scss";
 import { Link, useLocation } from "react-router-dom";
 import Typography from '@mui/material/Typography';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
@@ -17,10 +16,10 @@ const CustomBreadcrumb = () => {
     '/origin': 'Xuất xứ',
     '/suppliers': 'Nhà cung cấp',
     '/suppliers/create': 'Tạo nhà cung cấp',
-    '/customer': 'Khách hàng',
-    '/customer/create': 'Tạo tài khoản khách hàng',
-    '/delivery-info': 'Địa chỉ khách hàng',
-    '/delivery-info/create': 'Tạo địa chỉ khách hàng',
+    '/customers': 'Khách hàng',
+    '/customers/create': 'Tạo tài khoản khách hàng',
+    '/addresses': 'Địa chỉ khách hàng',
+    '/addresses/create': 'Tạo địa chỉ khách hàng',
     '/admins': 'Quản trị thành viên',
     '/admins/create': 'Tạo tài khoản quản trị',
   };

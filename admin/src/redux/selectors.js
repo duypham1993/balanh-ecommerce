@@ -1,17 +1,19 @@
 import { createSelector } from "@reduxjs/toolkit";
 
-export const selectData = (slice, data) => state => state[slice][data];
-export const selectStatusSubmit = slice => state => state[slice].statusSubmit;
-export const selectObjectData = state => state.category.objectData;
+const selectcCategories = state => state.category.categories;
 
-export const selectCategoriesWithoutRoot = createSelector(selectData("category", "categories"), (categories) => {
+const selectSuppliers = state => state.supplier.suppliers;
+
+const selectOrigin = state => state.origin.origin;
+
+export const selectCategoriesWithoutRoot = createSelector(selectcCategories, (categories) => {
   return categories.filter(item => item.parentId);
 });
 
-export const selectArrSuppliers = createSelector(selectData("supplier", "suppliers"), (suppliers) => {
+export const selectArrSuppliers = createSelector(selectSuppliers, (suppliers) => {
   return suppliers.map(item => item.name);
 });
 
-export const selectArrOrigin = createSelector(selectData("origin", "origin"), (origin) => {
+export const selectArrOrigin = createSelector(selectOrigin, (origin) => {
   return origin.map(item => item.name);
 });

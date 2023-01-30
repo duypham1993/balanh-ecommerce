@@ -1,4 +1,3 @@
-import "./account.scss";
 import { useState } from "react";
 import Tooltip from '@mui/material/Tooltip';
 import Avatar from '@mui/material/Avatar';
@@ -9,13 +8,11 @@ import Logout from '@mui/icons-material/Logout';
 import MenuItem from '@mui/material/MenuItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import { useDispatch } from "react-redux";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { logout } from "../../redux/slice/loginSlice";
+import { Link } from "react-router-dom";
+import { logout } from "../../redux/slice/authSlice";
 
 const Account = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const location = useLocation();
   const [anchorEl, setAnchorEl] = useState(null);
   const openAcc = Boolean(anchorEl);
 
@@ -26,11 +23,8 @@ const Account = () => {
     setAnchorEl(null);
   };
 
-  const handleLogOut = async () => {
-    await dispatch(logout());
-    navigate("/login", {
-      state: { from: location }, replace: true
-    });
+  const handleLogOut = () => {
+    dispatch(logout());
   }
   return (
     <>

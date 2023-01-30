@@ -1,27 +1,22 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectData, selectStatusSubmit } from "../../redux/selectors";
 import CustomDialog from "../../components/CustomDialog/CustomDialog";
 import { DataGrid } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
 import SubmitAlert from '../../components/SubmitAlert/SubmitAlert';
-import { deleteAddress, getAddresssList, resetStatusSubmit } from '../../redux/slice/deliverySlice';
+import { deleteAddress, getAddresssList } from '../../redux/slice/addressSlice';
+import Loading from '../../components/Loading/Loading';
 
 const AddressList = () => {
   const dispatch = useDispatch();
   const [pageSize, setPageSize] = useState(50);
   const [selectionModel, setSelectionModel] = useState([]);
-  const addressList = useSelector(selectData("deliveryInfo", "addressList"));
-  const statusSubmit = useSelector(selectStatusSubmit("supplier"));
-  const mess = {
-    success: "Xoá địa chỉ thành công!",
-    error: "Xoá địa chỉ thất bại!"
-  }
+  const { isLoading, addressList } = useSelector(state => state.address);
+  const [mess, setMess] = useState({});
 
   useEffect(() => {
     dispatch(getAddresssList());
-    return () => dispatch(resetStatusSubmit());
   }, []);
 
   const selectedAddressList = addressList && [...addressList.filter(item => selectionModel.includes(item._id))];
@@ -116,8 +111,8 @@ const AddressList = () => {
       renderCell: (item) => {
         return (
           <>
-            <Link to={"/delivery-info/" + item.row._id} className="link-default">
-              <button className="flex-bw-center btn-default btn-default--edit text-small">
+            <Link to={"/addresses/" + item.row._id} className="link-default">
+              <button className="flex-bw-center btn-df btn-df--edit text-small">
                 <span>Update</span>
                 <EditIcon className="text-default" />
               </button>
@@ -131,31 +126,35 @@ const AddressList = () => {
 
   return (
     <>
-      <div className="flex-r-c">
-        <Link to='/delivery-info/create' className='btn-default'>Tạo địa chỉ mới</Link>
-      </div>
-      <div className="wrapper_data-grid addressList">
-        <DataGrid
-          rows={addressList}
-          disableSelectionOnClick
-          columns={columns}
-          disableColumnMenu
-          getRowId={(row) => row._id}
-          checkboxSelection={true}
-          pageSize={pageSize}
-          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-          rowsPerPageOptions={[20, 50, 100]}
-          pagination
-          onSelectionModelChange={(newSelectionModel) => {
-            setSelectionModel(newSelectionModel);
-          }}
-          selectionModel={selectionModel}
-        />
-      </div>
-      <SubmitAlert
-        statusSubmit={statusSubmit}
-        mess={mess}
-      />
+      {isLoading ?
+        <Loading /> :
+        <>
+          <div className="flex-r-c">
+            <Link to='/addresses/create' className='btn-df'>Tạo địa chỉ mới</Link>
+          </div>
+          <div className="wrapper_data-grid addressList">
+            <DataGrid
+              rows={addressList}
+              disableSelectionOnClick
+              columns={columns}
+              disableColumnMenu
+              getRowId={(row) => row._id}
+              checkboxSelection={true}
+              pageSize={pageSize}
+              onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+              rowsPerPageOptions={[20, 50, 100]}
+              pagination
+              onSelectionModelChange={(newSelectionModel) => {
+                setSelectionModel(newSelectionModel);
+              }}
+              selectionModel={selectionModel}
+            />
+          </div>
+          <SubmitAlert
+            mess={mess}
+          />
+        </>
+      }
     </>
   )
 }

@@ -1,155 +1,102 @@
 import FormProduct from "../../../components/FormProduct/FormProduct";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getCurrentProduct, resetStatusSubmit, updateProduct } from "../../../redux/slice/productSlice";
-import { delImgFireBase, uploadImage } from "../../../services/uploadFirebase";
-import { selectData, selectStatusSubmit } from "../../../redux/selectors";
+import { getCurrentProduct, updateProduct } from "../../../redux/slice/productSlice";
+import { delImgFireBase, uploadImage } from "../../../utils/uploadFirebase";
 import { useParams } from "react-router-dom";
 import SubmitAlert from "../../../components/SubmitAlert/SubmitAlert";
-import ErrorFetching from "../../../components/ErrorFetching/ErrorFetching";
 import { getCategories } from "../../../redux/slice/categorySlice";
 import { getSuppliers } from "../../../redux/slice/supplierSlice";
 import { getOrigin } from "../../../redux/slice/originSlice";
+import { useFormik } from "formik";
+import { UPDATE_PRODUCT_SUCCESS, VALIDATE_FORM_PRODUCT } from "../../../shared/constants";
+import Loading from "../../../components/Loading/Loading";
 
 const UpdateProduct = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
-  const [inputs, setInputs] = useState({
-    name: "",
-    desc: "",
-    sku: "",
-    costPrice: 0,
-    price: 0,
-    categories: [],
-    origin: "",
-    supplier: "",
-    qty: 0,
-    packing: "",
-    imgs: [],
-    isActive: false
-  })
-  const [file, setFile] = useState([]);
-  const currentProduct = useSelector(selectData("product", "currentProduct"));
+  const [mess, setMess] = useState({});
   const [arrDelImg, setArrDelImg] = useState([]);
-  let imgURLsFirebase = inputs.imgs;
-  let imgURLsLocal = file.map(item => URL.createObjectURL(item));
-  const statusSubmit = useSelector(selectStatusSubmit("product"));
-  const statusFetching = useSelector(selectData("product", "idFetching"));
-  const errorApi = useSelector(selectData("product", "error"))
-  const mess = {
-    success: "Cập nhật sản phẩm thành công!",
-    error: errorApi.other
-  };
-  const origin = useSelector(selectData("origin", "origin"));
-  const suppliers = useSelector(selectData("supplier", "suppliers"));
+  const { isLoading, currentProduct } = useSelector(state => state.product);
+  const { origin } = useSelector(state => state.origin);
+  const { suppliers } = useSelector(state => state.supplier);
 
   useEffect(() => {
-    const fetchMulti = async () => {
+    (async () => {
       await dispatch(getCurrentProduct(id));
       await dispatch(getCategories());
       await dispatch(getSuppliers());
       await dispatch(getOrigin());
+    })();
+  }, [id]);
+
+  const formProduct = useFormik({
+    initialValues: {
+      name: currentProduct.name || "",
+      desc: currentProduct.desc || "",
+      sku: currentProduct.sku || "",
+      costPrice: currentProduct.costPrice || "",
+      price: currentProduct.price || "",
+      categories: currentProduct.categories || [],
+      origin: currentProduct.origin?.name || "",
+      supplier: currentProduct.supplier?.name || "",
+      qty: currentProduct.qty || 0,
+      packing: currentProduct.packing || "",
+      imgsFirebase: currentProduct.imgs || [],
+      files: currentProduct.files || [],
+      isActive: currentProduct.isActive || false
+    },
+    enableReinitialize: true,
+    validationSchema: VALIDATE_FORM_PRODUCT,
+    onSubmit: async (values, { setSubmitting }) => {
+      const imgsLocal = await Promise.all(values.files.map((item) => uploadImage(item)));
+      await Promise.all(arrDelImg.map(item => delImgFireBase(item)));
+      const productOrigin = origin?.filter(item => item.name === values.origin)[0];
+      const productSupplier = suppliers?.filter(item => item.name === values.supplier)[0];
+      const imgs = [...values.imgsFirebase, ...imgsLocal];
+
+      const updatedProduct = {
+        ...values,
+        origin: productOrigin._id,
+        supplier: productSupplier._id,
+        qty: parseInt(values.qty),
+        costPrice: parseInt(values.costPrice),
+        price: parseInt(values.price),
+        imgs: imgs
+      };
+      dispatch(updateProduct({
+        updatedProduct: updatedProduct
+        , id: id
+      }))
+        .unwrap()
+        .then(() => {
+          setSubmitting(false);
+          setMess({ success: UPDATE_PRODUCT_SUCCESS })
+        })
+        .catch((error) => {
+          setSubmitting(false);
+          if (error.sku) formProduct.errors.sku = error.sku;
+          error.other && setMess({ error: error.other });
+        })
     }
-
-    fetchMulti();
-    return () => dispatch(resetStatusSubmit());
-  }, []);
-
-  useEffect(() => {
-    if (currentProduct && Object.keys(currentProduct).length) {
-      setInputs({
-        name: currentProduct.name,
-        desc: currentProduct.desc,
-        sku: currentProduct.sku,
-        costPrice: currentProduct.costPrice,
-        price: currentProduct.price,
-        categories: currentProduct.categories,
-        origin: currentProduct.origin.name,
-        supplier: currentProduct.supplier.name,
-        qty: currentProduct.qty,
-        packing: currentProduct.packing,
-        imgs: currentProduct.imgs,
-        isActive: currentProduct.isActive
-      });
-
-      // clear file after update success
-      setFile([]);
-    }
-  }, [currentProduct]);
-
-  const handleOnChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    if (type === "checkbox") {
-      setInputs({ ...inputs, [name]: checked })
-    } else {
-      setInputs({ ...inputs, [name]: value });
-    }
-  }
-
-  const handleAutoComplete = (name, value) => {
-    setInputs({ ...inputs, [name]: value })
-  }
-
-  const handleMultiCheckbox = (e) => {
-    const { checked, value } = e.target;
-    checked ?
-      setInputs({ ...inputs, categories: [...inputs.categories, value] })
-      :
-      setInputs({ ...inputs, categories: inputs.categories.filter(item => item !== value) })
-  }
-
-  const handleFile = (e) => {
-    setFile(prev => [...prev, ...e.target.files])
-  }
+  });
 
   const handleDelImgFirebase = (img) => {
     setArrDelImg([...arrDelImg, img]);
-    setInputs({ ...inputs, imgs: imgURLsFirebase.filter((item) => item !== img) });
+    formProduct.setFieldValue('imgsFirebase', formProduct.values.imgsFirebase.filter(item => item !== img));
   };
 
-  const handleDelImgLocal = (index) => {
-    const tempFile = file.filter((item, i) => i !== index);
-    setFile(tempFile);
-  }
-
-  const handleOnSubmit = async () => {
-    const imgsLocal = await Promise.all(file.map((item) => uploadImage(item)));
-    await Promise.all(arrDelImg.map(item => delImgFireBase(item)));
-    const productOrigin = origin?.filter(item => item.name === inputs.origin)[0];
-    const productSupplier = suppliers?.filter(item => item.name === inputs.supplier)[0];
-    const imgs = [...inputs.imgs, ...imgsLocal];
-
-    const updatedProduct = {
-      ...inputs,
-      origin: productOrigin._id,
-      supplier: productSupplier._id,
-      qty: parseInt(inputs.qty),
-      costPrice: parseInt(inputs.costPrice),
-      price: parseInt(inputs.price),
-      imgs: imgs
-    };
-    await dispatch(updateProduct({ id, updatedProduct }));
-  }
   return (
     <>
-      {statusFetching === "rejected" ?
-        <ErrorFetching /> :
+      {isLoading ?
+        <Loading /> :
         <>
           <div className="create-product">
             <FormProduct
-              inputs={inputs}
-              imgURLsFirebase={imgURLsFirebase}
-              imgURLsLocal={imgURLsLocal}
-              handleOnChange={handleOnChange}
-              handleAutoComplete={handleAutoComplete}
-              handleMultiCheckbox={handleMultiCheckbox}
-              handleFile={handleFile}
+              formProduct={formProduct}
               handleDelImgFirebase={handleDelImgFirebase}
-              handleDelImgLocal={handleDelImgLocal}
-              handleOnSubmit={handleOnSubmit}
             />
             <SubmitAlert
-              statusSubmit={statusSubmit}
               mess={mess}
             />
           </div>

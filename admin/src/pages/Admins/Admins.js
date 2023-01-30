@@ -7,32 +7,36 @@ import EditIcon from '@mui/icons-material/Edit';
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
 import SubmitAlert from '../../components/SubmitAlert/SubmitAlert';
-import { deleteAdmin, getAdmins, resetStatusSubmit } from '../../redux/slice/adminSlice';
-import { selectData, selectStatusSubmit } from '../../redux/selectors';
-import ErrorFetching from '../../components/ErrorFetching/ErrorFetching';
+import { deleteAdmin, getAdmins } from '../../redux/slice/adminSlice';
+import { DELETE_ADMIN_SUCCESS } from '../../shared/constants';
+import Loading from '../../components/Loading/Loading';
 
 const Admins = () => {
   const dispatch = useDispatch();
   const [pageSize, setPageSize] = useState(50);
   const [selectionModel, setSelectionModel] = useState([]);
-  const admins = useSelector(selectData("admin", "admins"));
-  const statusSubmit = useSelector(selectStatusSubmit("admin"));
-  const statusFetching = useSelector(selectData("admin", "isFetching"));
-  const errorApi = useSelector(selectData("admin", "error"))
-  const mess = {
-    success: "Xoá quản trị viên thành công!",
-    error: errorApi.other
-  };
+  const { admins, isLoading } = useSelector(state => state.admin);
+  const [mess, setMess] = useState({});
 
   useEffect(() => {
-    dispatch(getAdmins());
-    return () => dispatch(resetStatusSubmit());
+    dispatch(getAdmins())
+      .unwrap()
+      .catch((error) => {
+        setMess({ error: error.other })
+      })
   }, []);
 
-  const selectedAdmins = admins && [...admins.filter(item => selectionModel.includes(item._id))];
+  const selectedAdmins = admins?.filter(item => selectionModel.includes(item._id));
 
   const handleDelete = (item) => {
-    dispatch(deleteAdmin(item._id));
+    dispatch(deleteAdmin(item._id))
+      .unwrap()
+      .then(() => {
+        setMess({ success: DELETE_ADMIN_SUCCESS })
+      })
+      .catch((error) => {
+        setMess({ error: error.other })
+      })
   };
 
   const columns = [
@@ -95,7 +99,7 @@ const Admins = () => {
         return (
           <>
             <Link to={"/admins/" + item.row._id} className="link-default">
-              <button className="flex-bw-center btn-default btn-default--edit text-small">
+              <button className="flex-bw-center btn-df btn-df--edit text-small">
                 <span>Update</span>
                 <EditIcon className="text-default" />
               </button>
@@ -109,11 +113,11 @@ const Admins = () => {
 
   return (
     <>
-      {statusFetching === "rejected" ?
-        <ErrorFetching /> :
+      {isLoading ?
+        <Loading /> :
         <>
           <div className="flex-r-c">
-            <Link to='/admins/create' className='btn-default'>Tạo quản trị viên mới</Link>
+            <Link to='/admins/create' className='btn-df'>Tạo quản trị viên mới</Link>
           </div>
           <div className="wrapper_data-grid admins">
             <DataGrid
@@ -134,7 +138,6 @@ const Admins = () => {
             />
           </div>
           <SubmitAlert
-            statusSubmit={statusSubmit}
             mess={mess}
           />
         </>

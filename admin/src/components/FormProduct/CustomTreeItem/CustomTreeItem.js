@@ -10,6 +10,7 @@ const CustomContent = forwardRef(function CustomContent(props, ref) {
     classes,
     className,
     label,
+    idRootCategory,
     value,
     nodeId,
     check,
@@ -54,6 +55,7 @@ const CustomContent = forwardRef(function CustomContent(props, ref) {
         {icon}
       </div>
       <FormControlLabel
+        disabled={value === idRootCategory}
         control={<Checkbox checked={check} />}
         value={value}
         label={label}

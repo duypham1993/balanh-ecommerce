@@ -1,82 +1,56 @@
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 import SubmitAlert from "../../../components/SubmitAlert/SubmitAlert";
-import { addAdmin, resetStatusSubmit } from "../../../redux/slice/adminSlice";
-import { selectData, selectStatusSubmit } from "../../../redux/selectors";
+import { addAdmin } from "../../../redux/slice/adminSlice";
 import FormAdmin from "../../../components/FormAdmin/FormAdmin";
+import { useFormik } from 'formik';
+import { CREATE_ADMIN_SUCCESS, VALIDATE_FORM_ADMIN } from "../../../shared/constants";
 
 const CreateAdmin = () => {
   const dispatch = useDispatch();
-  const statusSubmit = useSelector(selectStatusSubmit("admin"));
-  const [inputs, setInputs] = useState({
-    lastName: "",
-    firstName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    role: "",
-    isActive: false,
+  const [mess, setMess] = useState({});
+
+  const formAdmin = useFormik({
+    initialValues: {
+      lastName: "",
+      firstName: "",
+      email: "",
+      password: "",
+      role: "",
+      isActive: false,
+    },
+    validationSchema: VALIDATE_FORM_ADMIN,
+    onSubmit: (values, { setSubmitting, resetForm }) => {
+      const newUser = {
+        lastName: values.lastName,
+        firstName: values.firstName,
+        email: values.email,
+        password: values.password,
+        role: values.role,
+        isActive: values.isActive,
+      };
+
+      dispatch(addAdmin(newUser))
+        .unwrap()
+        .then(() => {
+          setMess({ success: CREATE_ADMIN_SUCCESS });
+          setSubmitting(false);
+          resetForm();
+        })
+        .catch((error) => {
+          if (error.email) formAdmin.errors.email = error.email;
+          error.other && setMess({ error: error.other });
+          setSubmitting(false);
+        })
+    }
   });
-  const errorAPI = useSelector(selectData("admin", "error"));
-  const mess = {
-    success: "Tạo quản trị viên thành công!",
-    error: errorAPI.other
-  }
-
-  useEffect(() => {
-    return () => dispatch(resetStatusSubmit());
-  }, [])
-
-  useEffect(() => {
-    if (statusSubmit === "fulfilled") {
-      setInputs({
-        lastName: "",
-        firstName: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-        role: "",
-        isActive: false,
-      });
-    }
-  }, [statusSubmit])
-
-  const handleOnChange = (e) => {
-    if (e.target.type === "checkbox") {
-      setInputs(prev => ({ ...prev, [e.target.name]: e.target.checked }));
-    } else {
-      setInputs(prev => ({ ...prev, [e.target.name]: e.target.value }));
-    }
-  };
-
-  const handleAutocomplete = (name, value) => {
-    setInputs({
-      ...inputs, [name]: value
-    })
-  }
-
-  const handleOnSubmit = () => {
-    const newUser = {
-      lastName: inputs.lastName,
-      firstName: inputs.firstName,
-      email: inputs.email,
-      password: inputs.password,
-      role: inputs.role,
-      isActive: inputs.isActive,
-    }
-    dispatch(addAdmin(newUser));
-  };
 
   return (
     <div className="add-admin">
       <FormAdmin
-        inputs={inputs}
-        handleAutocomplete={handleAutocomplete}
-        handleOnChange={handleOnChange}
-        handleOnSubmit={handleOnSubmit}
+        formAdmin={formAdmin}
       />
       <SubmitAlert
-        statusSubmit={statusSubmit}
         mess={mess}
       />
     </div>

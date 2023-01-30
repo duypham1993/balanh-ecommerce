@@ -7,29 +7,32 @@ import EditIcon from '@mui/icons-material/Edit';
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
 import SubmitAlert from '../../components/SubmitAlert/SubmitAlert';
-import { selectData, selectStatusSubmit } from '../../redux/selectors';
-import { deleteCustomer, getCustomers, resetStatusSubmit } from '../../redux/slice/customerSlice';
+import { deleteCustomer, getCustomers } from '../../redux/slice/customerSlice';
+import { DELETE_CUSTOMER_SUCCESS } from '../../shared/constants';
+import Loading from '../../components/Loading/Loading';
 
 const Custommer = () => {
   const dispatch = useDispatch();
   const [pageSize, setPageSize] = useState(50);
   const [selectionModel, setSelectionModel] = useState([]);
-  const customers = useSelector(selectData("customer", "customers"));
-  const statusSubmit = useSelector(selectStatusSubmit("customer"));
-  const mess = {
-    success: "Xoá khách hàng thành công!",
-    error: "Xoá khách hàng thành công!"
-  }
+  const { isLoading, customers } = useSelector(state => state.customer);
+  const [mess, setMess] = useState({})
 
   useEffect(() => {
     dispatch(getCustomers());
-    return () => dispatch(resetStatusSubmit());
   }, []);
 
   const selectedCustomerS = customers && [...customers.filter(item => selectionModel.includes(item._id))];
 
   const handleDelete = (item) => {
-    dispatch(deleteCustomer(item._id));
+    dispatch(deleteCustomer(item._id))
+      .unwrap()
+      .then(() => {
+        setMess({ success: DELETE_CUSTOMER_SUCCESS });
+      })
+      .catch((error) => {
+        error.other && setMess({ error: error.other });
+      })
   };
 
   const columns = [
@@ -91,7 +94,7 @@ const Custommer = () => {
         return (
           <>
             <Link to={"/customers/" + item.row._id} className="link-default">
-              <button className="flex-bw-center btn-default btn-default--edit text-small">
+              <button className="flex-bw-center btn-df btn-df--edit text-small">
                 <span>Update</span>
                 <EditIcon className="text-default" />
               </button>
@@ -105,31 +108,36 @@ const Custommer = () => {
 
   return (
     <>
-      <div className="flex-r-c">
-        <Link to='/customers/create' className='btn-default'>Tạo khách hàng mới</Link>
-      </div>
-      <div className="wrapper_data-grid customers">
-        <DataGrid
-          rows={customers}
-          disableSelectionOnClick
-          columns={columns}
-          disableColumnMenu
-          getRowId={(row) => row._id}
-          checkboxSelection={true}
-          pageSize={pageSize}
-          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-          rowsPerPageOptions={[20, 50, 100]}
-          pagination
-          onSelectionModelChange={(newSelectionModel) => {
-            setSelectionModel(newSelectionModel);
-          }}
-          selectionModel={selectionModel}
-        />
-      </div>
-      <SubmitAlert
-        statusSubmit={statusSubmit}
-        mess={mess}
-      />
+      {isLoading ?
+        <Loading /> :
+        <>
+          <div className="flex-r-c">
+            <Link to='/customers/create' className='btn-df'>Tạo khách hàng mới</Link>
+          </div>
+          <div className="wrapper_data-grid customers">
+            <DataGrid
+              rows={customers}
+              disableSelectionOnClick
+              columns={columns}
+              disableColumnMenu
+              getRowId={(row) => row._id}
+              checkboxSelection={true}
+              pageSize={pageSize}
+              onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+              rowsPerPageOptions={[20, 50, 100]}
+              pagination
+              onSelectionModelChange={(newSelectionModel) => {
+                setSelectionModel(newSelectionModel);
+              }}
+              selectionModel={selectionModel}
+            />
+          </div>
+          <SubmitAlert
+            mess={mess}
+          />
+        </>
+      }
+
     </>
   )
 }

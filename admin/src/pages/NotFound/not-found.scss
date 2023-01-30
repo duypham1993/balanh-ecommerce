@@ -1,11 +1,10 @@
 .rejected {
-  height         : calc(100vh - 115px);
+  height         : calc(100vh);
   display        : flex;
   justify-content: center;
   align-items    : center;
   text-align     : center;
   color          : var(--border-gray-1);
-  padding-bottom : 80px;
 
   &__title {
     font-size: 2rem;
@@ -15,12 +14,6 @@
   &__desc {
     font-size: 1rem;
     margin   : 0;
-
-    i {
-      color          : var(--green);
-      text-decoration: underline;
-      cursor         : pointer;
-    }
   }
 }
 

@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 
-const SubmitAlert = (props) => {
-  const { statusSubmit, mess } = props;
+const SubmitAlert = ({ mess }) => {
   const [open, setOpen] = useState(false);
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -13,19 +12,19 @@ const SubmitAlert = (props) => {
   };
 
   useEffect(() => {
-    (statusSubmit === "fulfilled" || statusSubmit === "rejected") && setOpen(true);
-  }, [statusSubmit]);
+    Object.keys(mess).length && setOpen(true);
+  }, [mess]);
 
   return (
     <>
-      {statusSubmit === "fulfilled" &&
+      {mess.success &&
         <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'right' }} open={open} autoHideDuration={3000} onClose={handleClose}>
           <Alert onClose={handleClose} severity="success" variant="filled" sx={{ width: '100%' }}>
             {mess.success}
           </Alert>
         </Snackbar>
       }
-      {statusSubmit === "rejected" && mess.error &&
+      {mess.error &&
         <Snackbar anchorOrigin={{ vertical: 'top', horizontal: 'right' }} open={open} autoHideDuration={3000} onClose={handleClose}>
           <Alert onClose={handleClose} severity="error" variant="filled" sx={{ width: '100%' }}>
             {mess.error}

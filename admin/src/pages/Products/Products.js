@@ -2,33 +2,25 @@ import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DataGrid } from '@mui/x-data-grid';
-import { deleteProduct, getProducts, resetStatusSubmit } from "../../redux/slice/productSlice";
-import { selectData, selectStatusSubmit } from "../../redux/selectors";
+import { deleteProduct, getProducts } from "../../redux/slice/productSlice";
 import EditIcon from '@mui/icons-material/Edit';
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
 import CustomDialog from "../../components/CustomDialog/CustomDialog";
 import SubmitAlert from '../../components/SubmitAlert/SubmitAlert';
-import ErrorFetching from '../../components/ErrorFetching/ErrorFetching';
+import Loading from '../../components/Loading/Loading';
 
 const ProductList = () => {
   const [pageSize, setPageSize] = useState(50);
   const dispatch = useDispatch();
-  const products = useSelector(selectData("product", 'products'));
   const [selectionModel, setSelectionModel] = useState([]);
-  const statusSubmit = useSelector(selectStatusSubmit("product"));
-  const statusFetching = useSelector(selectData("product", "isFetching"));
-  const errorApi = useSelector(selectData("product", "error"));
-  const mess = {
-    success: "Xoá sản phẩm thành công!",
-    error: errorApi.other
-  };
+  const { isLoading, products } = useSelector(state => state.product);
+  const [mess, setMess] = useState({});
 
   useEffect(() => {
     dispatch(getProducts());
-    return () => dispatch(resetStatusSubmit());
   }, []);
-  console.log(statusSubmit)
+
   const selectedProducts = [...products.filter(item => selectionModel.includes(item._id))];
 
   const handleDelete = (item) => {
@@ -135,7 +127,7 @@ const ProductList = () => {
         return (
           <>
             <Link to={"/products/" + item.row._id} className="link-default">
-              <button className="flex-bw-center btn-default btn-default--edit text-small">
+              <button className="flex-bw-center btn-df btn-df--edit text-small">
                 <span>Update</span>
                 <EditIcon className="text-default" />
               </button>
@@ -148,11 +140,11 @@ const ProductList = () => {
   ];
   return (
     <>
-      {statusFetching === "rejected" ?
-        <ErrorFetching /> :
+      {isLoading ?
+        <Loading /> :
         <>
           <div className="flex-r-c">
-            <Link to='/products/create' className='btn-default'>Sản phẩm mới</Link>
+            <Link to='/products/create' className='btn-df'>Sản phẩm mới</Link>
           </div>
           <div className="wrapper_data-grid productList"  >
             <DataGrid
@@ -173,7 +165,6 @@ const ProductList = () => {
             />
           </div>
           <SubmitAlert
-            statusSubmit={statusSubmit}
             mess={mess}
           />
         </>

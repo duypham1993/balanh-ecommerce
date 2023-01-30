@@ -1,26 +1,36 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosPrivate from "../../shared/axios/requestMethod";
 
-export const getCategories = createAsyncThunk('category/fetchAll', async () => {
-  const controller = new AbortController();
-  const res = await axiosPrivate.get("/category/", {
-    signal: controller.signal
-  });
-  return res.data;
-});
-
-export const addCategory = createAsyncThunk('category/add', async (category, { rejectWithValue }) => {
+export const checkSlug = createAsyncThunk('category/checkSlug', async (check, { rejectWithValue }) => {
   try {
-    const res = await axiosPrivate.post("/category/create", category);
+    const res = await axiosPrivate.post("/category/check", check);
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
+})
+
+export const getCategories = createAsyncThunk('category/fetchAll', async (_, { rejectWithValue }) => {
+  try {
+    const res = await axiosPrivate.get("/category/");
     return res.data;
   } catch (error) {
     return rejectWithValue(error.response.data);
   }
 });
 
-export const updateCategory = createAsyncThunk('category/update', async (update, { rejectWithValue }) => {
+export const addCategory = createAsyncThunk('category/add', async (category, { rejectWithValue }) => {
   try {
-    const res = await axiosPrivate.put(`category/${update.id}`, update.updatedCategory);
+    const res = await axiosPrivate.post("/category/", category);
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
+});
+
+export const updateCategory = createAsyncThunk('category/update', async ({ updatedCategory, id }, { rejectWithValue }) => {
+  try {
+    const res = await axiosPrivate.put(`/category/${id}`, updatedCategory);
     return res.data;
   } catch (error) {
     return rejectWithValue(error.response.data);
@@ -29,7 +39,7 @@ export const updateCategory = createAsyncThunk('category/update', async (update,
 
 export const deleteCategory = createAsyncThunk('category/delete', async (id, { rejectWithValue }) => {
   try {
-    const res = await axiosPrivate.delete(`category/delete/${id}`);
+    const res = await axiosPrivate.delete(`category/${id}`);
     return res.data;
   } catch (error) {
     return rejectWithValue(error.response.data);
@@ -41,78 +51,46 @@ const categorySlice = createSlice({
   name: "category",
   initialState: {
     categories: [],
-    objectData: {},
-    isFetching: "",
-    statusSubmit: "",
-    error: {},
+    treeCategories: {},
+    currentCategory: {},
+    isLoading: false,
   },
-  reducers: {
-    resetStatusSubmit: (state) => {
-      state.statusSubmit = "";
-    },
-    resetErrorSlug: (state) => {
-      state.error.slug = "";
-    }
-  },
+  reducers: {},
   extraReducers: (builders) => {
     // fetch all categories
     builders.addCase(getCategories.pending, (state, action) => {
-      state.isFetching = "pending";
+      state.isLoading = true;
     })
     builders.addCase(getCategories.fulfilled, (state, action) => {
-      state.isFetching = "fulfilled";
-      state.categories = action.payload[0];
-      state.objectData = action.payload[1];
+      state.isLoading = false;
+      state.categories = action.payload.categories;
+      state.treeCategories = action.payload.treeCategories;
     })
     builders.addCase(getCategories.rejected, (state, action) => {
-      state.isFetching = "rejected";
+      state.isLoading = false;
     })
 
     // add category
-    builders.addCase(addCategory.pending, (state, action) => {
-      state.statusSubmit = "pending";
-    })
     builders.addCase(addCategory.fulfilled, (state, action) => {
-      state.statusSubmit = "fulfilled";
       state.categories.push(action.payload);
-    })
-    builders.addCase(addCategory.rejected, (state, action) => {
-      state.statusSubmit = "rejected";
-      state.error = action.payload;
     })
 
     // update category
-    builders.addCase(updateCategory.pending, (state, action) => {
-      state.statusSubmit = "pending";
-    })
     builders.addCase(updateCategory.fulfilled, (state, action) => {
-      state.statusSubmit = "fulfilled";
       state.categories[
         state.categories.findIndex((item) => item._id === action.payload._id)
       ] = action.payload;
     })
-    builders.addCase(updateCategory.rejected, (state, action) => {
-      state.statusSubmit = "rejected";
-      state.error = action.payload;
-    })
 
     // delete category
-    builders.addCase(deleteCategory.pending, (state, action) => {
-      state.statusSubmit = "pending";
-    })
+
     builders.addCase(deleteCategory.fulfilled, (state, action) => {
-      state.statusSubmit = "fulfilled";
       state.categories = state.categories.filter(item => {
         return item.parentId !== action.payload && item._id !== action.payload;
       });
     })
-
-    builders.addCase(deleteCategory.rejected, (state, action) => {
-      state.statusSubmit = "rejected";
-      state.error = action.payload;
-    })
   }
 
 });
-export const { resetStatusSubmit, resetErrorSlug } = categorySlice.actions;
+
 export default categorySlice;

@@ -1,30 +1,20 @@
 import { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DataGrid } from '@mui/x-data-grid';
-import { getProducts, resetStatusSubmit } from "../../redux/slice/productSlice";
-import { selectData, selectStatusSubmit } from "../../redux/selectors";
+import { getProducts } from "../../redux/slice/productSlice";
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
-import SubmitAlert from '../../components/SubmitAlert/SubmitAlert';
-import ErrorFetching from '../../components/ErrorFetching/ErrorFetching';
 import UpdateQty from '../../components/UpdateQty/UpdateQty';
+import Loading from '../../components/Loading/Loading';
 
 const Stock = () => {
   const [pageSize, setPageSize] = useState(50);
   const dispatch = useDispatch();
-  const products = useSelector(selectData("product", 'products'));
   const [selectionModel, setSelectionModel] = useState([]);
-  const statusSubmit = useSelector(selectStatusSubmit("product"));
-  const statusFetching = useSelector(selectData("product", "isFetching"))
-  const errorApi = useSelector(selectData("product", "error"))
-  const mess = {
-    success: "Cập nhật số lượng thành công!",
-    error: errorApi.other
-  }
+  const { isLoading, products } = useSelector(state => state.product);
 
   useEffect(() => {
     dispatch(getProducts());
-    return () => dispatch(resetStatusSubmit());
   }, []);
 
   const columns = [
@@ -121,8 +111,8 @@ const Stock = () => {
   ];
   return (
     <>
-      {statusFetching === "rejected" ?
-        <ErrorFetching /> :
+      {isLoading ?
+        <Loading /> :
         <>
           <div className="wrapper_data-grid stock"  >
             <DataGrid
@@ -141,10 +131,6 @@ const Stock = () => {
               selectionModel={selectionModel}
             />
           </div>
-          <SubmitAlert
-            statusSubmit={statusSubmit}
-            mess={mess}
-          />
         </>
       }
     </>

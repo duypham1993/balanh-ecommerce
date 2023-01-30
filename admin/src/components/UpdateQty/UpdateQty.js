@@ -1,23 +1,22 @@
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { selectData } from "../../redux/selectors";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { updateStock } from "../../redux/slice/productSlice";
 
 const UpdateQty = ({ id }) => {
   const [updateQty, setUpdateQty] = useState("");
   const dispatch = useDispatch();
-  const statusSubmit = useSelector(selectData("product", "statusSubmit"));
-
-  useEffect(() => {
-    statusSubmit === "fulfilled" && setUpdateQty("");
-  }, [statusSubmit])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const qtyInt = {
+      _id: id,
       qty: updateQty
     };
-    updateQty.trim() && await dispatch(updateStock({ id, qtyInt }));
+    updateQty.trim() && dispatch(updateStock(qtyInt))
+      .unwrap()
+      .then(() => {
+        setUpdateQty("");
+      })
   };
 
   return (
@@ -28,7 +27,7 @@ const UpdateQty = ({ id }) => {
         name={id}
         value={updateQty}
         onChange={(e) => setUpdateQty(e.target.value)} />
-      <button className='btn-default' onClick={e => handleSubmit(e)}>Thêm</button>
+      <button className='btn-df' onClick={e => handleSubmit(e)}>Thêm</button>
     </div>
   )
 }

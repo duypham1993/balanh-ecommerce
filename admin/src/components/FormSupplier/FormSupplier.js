@@ -1,102 +1,25 @@
-import { useState } from "react";
 import { Grid, Switch, Autocomplete, TextField } from '@mui/material';
 import { cityData } from "../../data/city";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { selectData } from "../../redux/selectors";
-import { resetErrorSku } from "../../redux/slice/supplierSlice";
 
-const FormSupplier = (props) => {
-  const { inputs, address, handleAutocomplete, handleStreet, handleOnChange, handleOnSubmit } = props;
+const FormSupplier = ({ formSupplier }) => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const [formErrors, setFormErrors] = useState({});
   const city = cityData.map(item => item.name);
-  const district = cityData.find(item => item.name === address.city);
+  const district = cityData.find(item => item.name === formSupplier.values.city);
   const arrDistrict = district && district.districts.map(item => item.name);
-  const wards = district && district.districts.find(item => item.name === address.district);
+  const wards = district && district.districts.find(item => item.name === formSupplier.values.district);
   const arrWards = wards && wards.wards.map(item => item.name);
-  const errorApi = useSelector(selectData("supplier", "error"))
 
-  const handleChangeInputs = (e) => {
-    const { value, name } = e.target;
-    handleOnChange(e);
-    // remove error if target has value
-    if (value) {
-      setFormErrors({
-        ...formErrors, [name]: "",
-      })
+  const handleChangeAutocomplete = (name, value) => {
+    if (name === "city") {
+      formSupplier.setFieldValue('district', '');
+      formSupplier.setFieldValue('wards', '');
     }
-  }
-
-  const handleChangeAddress = (name, value) => {
-    handleAutocomplete(name, value)
-    // remove error if target has value
-    if (value) {
-      setFormErrors({
-        ...formErrors, [name]: "",
-      })
-    }
-  }
-
-  const validate = (inputs) => {
-    const errors = {};
-    const formatSKU = /^[0-9a-zA-Z]+$/;
-    const formatEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    const formatPhone = /^\d{10,12}$/;
-
-    if (!formatSKU.test(inputs.inputs.sku)) {
-      errors.sku = "Mã không hợp lệ!";
+    if (name === "district") {
+      formSupplier.setFieldValue('wards', '');
     }
 
-    if (!inputs.inputs.sku.trim()) {
-      errors.sku = "Vui lòng điền vào mục này!";
-    }
-
-    if (!formatEmail.test(inputs.inputs.email)) {
-      errors.email = "Email không hợp lệ!";
-    }
-
-    if (!inputs.inputs.email.trim()) {
-      errors.email = "Vui lòng điền vào mục này!";
-    }
-
-    if (!inputs.inputs.name.trim()) {
-      errors.name = "Vui lòng điền vào mục này!";
-    }
-
-    if (!inputs.address.city.trim()) {
-      errors.city = "Vui lòng chọn mục này!";
-    }
-
-    if (!inputs.address.district.trim()) {
-      errors.district = "Vui lòng chọn mục này!";
-    }
-
-    if (!inputs.address.wards.trim()) {
-      errors.wards = "Vui lòng chọn mục này!";
-    }
-
-    if (!inputs.address.street.trim()) {
-      errors.street = "Vui lòng chọn mục này!";
-    }
-
-    if (!formatPhone.test(inputs.inputs.phone)) {
-      errors.phone = "Số điện thoại không hợp lệ!"
-    }
-
-    if (!inputs.inputs.phone.trim()) {
-      errors.phone = "Vui lòng điền vào mục này!";
-    }
-
-    return errors;
-  }
-
-  const submitFrom = (e) => {
-    e.preventDefault();
-    dispatch(resetErrorSku());
-    setFormErrors(validate({ inputs, address }));
-    Object.keys(validate({ inputs, address })).length === 0 && handleOnSubmit();
+    value ? formSupplier.setFieldValue(name, value) : formSupplier.setFieldValue(name, '');
   }
 
   // back to suppliers
@@ -105,7 +28,7 @@ const FormSupplier = (props) => {
   }
 
   return (
-    <form className="form-default" onSubmit={(e) => submitFrom(e)}>
+    <form className="form-default" onSubmit={formSupplier.handleSubmit}>
       <Grid container>
         <Grid container item spacing={3} className="form-default__group">
           <Grid item xs={12} sm={4} className="form-default__label">
@@ -116,10 +39,11 @@ const FormSupplier = (props) => {
               type="text"
               className="input-default form-default__input"
               name="name"
-              value={inputs.name}
-              onChange={e => handleChangeInputs(e)}
+              value={formSupplier.values.name}
+              onChange={formSupplier.handleChange}
+              onBlur={formSupplier.handleBlur}
             />
-            <p className={formErrors.name ? "form-default__error show" : "form-default__error"}>{formErrors.name}</p>
+            <p className={formSupplier.touched.name && formSupplier.errors.name ? "form-default__error show" : "form-default__error"}>{formSupplier.errors.name}</p>
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
@@ -131,10 +55,11 @@ const FormSupplier = (props) => {
               type="text"
               className="input-default form-default__input"
               name="sku"
-              value={inputs.sku}
-              onChange={(e) => handleChangeInputs(e)}
+              value={formSupplier.values.sku}
+              onChange={formSupplier.handleChange}
+              onBlur={formSupplier.handleBlur}
             />
-            <p className={formErrors.sku || errorApi.sku ? "form-default__error show" : "form-default__error"}>{formErrors.sku || errorApi.sku}</p>
+            <p className={formSupplier.touched.sku && formSupplier.errors.sku ? "form-default__error show" : "form-default__error"}>{formSupplier.errors.sku}</p>
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
@@ -146,11 +71,12 @@ const FormSupplier = (props) => {
               type="text"
               name="email"
               className="input-default form-default__input"
-              value={inputs.email}
-              onChange={(e) => handleChangeInputs(e)}
+              value={formSupplier.values.email}
+              onChange={formSupplier.handleChange}
+              onBlur={formSupplier.handleBlur}
               placeholder="example@abc.com"
             />
-            <p className={formErrors.email ? "form-default__error show" : "form-default__error"}>{formErrors.email}</p>
+            <p className={formSupplier.errors.email && formSupplier.touched.email ? "form-default__error show" : "form-default__error"}>{formSupplier.errors.email}</p>
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
@@ -162,15 +88,15 @@ const FormSupplier = (props) => {
               className="form-default__autocomplete"
               id="city"
               options={city}
-              value={address.city}
+              value={formSupplier.values.city}
               isOptionEqualToValue={(option, value) =>
                 option.id === value.id
               }
-              onChange={(e, value) => handleChangeAddress("city", value)}
+              onChange={(e, value) => handleChangeAutocomplete('city', value)}
               renderInput={(params) => <TextField {...params} name="city"
               />}
             />
-            <p className={formErrors.city ? "form-default__error show" : "form-default__error"}>{formErrors.city}</p>
+            <p className={formSupplier.touched.city && formSupplier.errors.city ? "form-default__error show" : "form-default__error"}>{formSupplier.errors.city}</p>
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
@@ -182,11 +108,11 @@ const FormSupplier = (props) => {
               <Autocomplete
                 className="form-default__autocomplete"
                 options={arrDistrict}
-                value={address.district}
+                value={formSupplier.values.district}
                 isOptionEqualToValue={(option, value) =>
                   option.id === value.id
                 }
-                onChange={(e, value) => handleChangeAddress("district", value)}
+                onChange={(e, value) => handleChangeAutocomplete('district', value)}
                 renderInput={(params) => <TextField {...params}
                 />}
               /> :
@@ -194,16 +120,15 @@ const FormSupplier = (props) => {
                 className="form-default__autocomplete"
                 disabled
                 options={city}
-                value={address.district}
+                value={formSupplier.values.district}
                 isOptionEqualToValue={(option, value) =>
                   option.id === value.id
                 }
-                onChange={(e, value) => handleChangeAddress("district", value)}
                 renderInput={(params) => <TextField {...params}
                 />}
               />
             }
-            <p className={formErrors.district ? "form-default__error show" : "form-default__error"}>{formErrors.district}</p>
+            <p className={formSupplier.touched.district && formSupplier.errors.district ? "form-default__error show" : "form-default__error"}>{formSupplier.errors.district}</p>
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
@@ -215,11 +140,11 @@ const FormSupplier = (props) => {
               <Autocomplete
                 className="form-default__autocomplete"
                 options={arrWards}
-                value={address.wards}
+                value={formSupplier.values.wards}
                 isOptionEqualToValue={(option, value) =>
                   option.id === value.id
                 }
-                onChange={(e, value) => handleChangeAddress("wards", value)}
+                onChange={(e, value) => handleChangeAutocomplete('wards', value)}
                 renderInput={(params) => <TextField {...params}
                 />}
               /> :
@@ -227,16 +152,15 @@ const FormSupplier = (props) => {
                 className="form-default__autocomplete"
                 options={city}
                 disabled
-                value={address.wards}
+                value={formSupplier.values.wards}
                 isOptionEqualToValue={(option, value) =>
                   option.id === value.id
                 }
-                onChange={(e, value) => handleChangeAddress("wards", value)}
                 renderInput={(params) => <TextField {...params}
                 />}
               />
             }
-            <p className={formErrors.wards ? "form-default__error show" : "form-default__error"}>{formErrors.wards}</p>
+            <p className={formSupplier.touched.wards && formSupplier.errors.wards ? "form-default__error show" : "form-default__error"}>{formSupplier.errors.wards}</p>
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
@@ -248,10 +172,11 @@ const FormSupplier = (props) => {
               type="text"
               name="street"
               className="input-default form-default__input"
-              value={address.street}
-              onChange={(e) => handleStreet(e)}
+              value={formSupplier.values.street}
+              onChange={formSupplier.handleChange}
+              onBlur={formSupplier.handleBlur}
             />
-            <p className={formErrors.street ? "form-default__error show" : "form-default__error"}>{formErrors.street}</p>
+            <p className={formSupplier.touched.street && formSupplier.errors.street ? "form-default__error show" : "form-default__error"}>{formSupplier.errors.street}</p>
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
@@ -263,10 +188,11 @@ const FormSupplier = (props) => {
               type="text"
               className="input-default form-default__input"
               name="phone"
-              value={inputs.phone}
-              onChange={(e) => handleChangeInputs(e)}
+              value={formSupplier.values.phone}
+              onChange={formSupplier.handleChange}
+              onBlur={formSupplier.handleBlur}
             />
-            <p className={formErrors.phone ? "form-default__error show" : "form-default__error"}>{formErrors.phone}</p>
+            <p className={formSupplier.touched.phone && formSupplier.errors.phone ? "form-default__error show" : "form-default__error"}>{formSupplier.errors.phone}</p>
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
@@ -277,15 +203,15 @@ const FormSupplier = (props) => {
             <Switch
               name="isActive"
               className="form-default__input"
-              checked={inputs.isActive}
-              onChange={(e) => handleOnChange(e)}
+              checked={formSupplier.values.isActive}
+              onChange={formSupplier.handleChange}
             />
           </Grid>
         </Grid>
       </Grid>
       <div className="flex-bw-center form-default__bot-nav">
-        <p className="btn-default btn-default--del" onClick={() => handleCancel()}>Quay lại</p>
-        <button className="btn-default" type="submit" >Lưu</button>
+        <p className="btn-df btn-df--del" onClick={() => handleCancel()}>Quay lại</p>
+        <button className="btn-df" type="submit" >Lưu</button>
       </div>
     </form >
   )

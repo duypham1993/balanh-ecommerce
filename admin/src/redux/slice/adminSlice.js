@@ -1,24 +1,38 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosPrivate from "../../shared/axios/requestMethod";
 
-export const getAdmins = createAsyncThunk('admin/fetchAll', async () => {
-  const res = await axiosPrivate.get("/admin/");
-  return res.data;
+export const getAdmins = createAsyncThunk('admin/fetchAll', async (_, { rejectWithValue }) => {
+  try {
+    const res = await axiosPrivate.get("/admin/");
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
+
 });
 
-export const getCurrentAdmin = createAsyncThunk('admin/currentadmin', async (id) => {
-  const res = await axiosPrivate.get(`/admin/${id}`);
-  return res.data;
+export const getCurrentAdmin = createAsyncThunk('admin/currentadmin', async (id, { rejectWithValue }) => {
+  try {
+    const res = await axiosPrivate.get(`/admin/${id}`);
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
 })
 
-export const addAdmin = createAsyncThunk('admin/add', async (admin) => {
-  const res = await axiosPrivate.post("/admin/create", admin);
-  return res.data;
+export const addAdmin = createAsyncThunk('admin/add', async (admin, { rejectWithValue }) => {
+  try {
+    const res = await axiosPrivate.post("/admin/", admin);
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
+
 });
 
-export const updateAdmin = createAsyncThunk('admin/update', async (update, { rejectWithValue }) => {
+export const updateAdmin = createAsyncThunk('admin/update', async ({ updateUser, id }, { rejectWithValue }) => {
   try {
-    const res = await axiosPrivate.put(`admin/${update.id}`, update.updatedAdmin);
+    const res = await axiosPrivate.put(`admin/${id}`, updateUser);
     return res.data;
   } catch (error) {
     return rejectWithValue(error.response.data)
@@ -26,7 +40,7 @@ export const updateAdmin = createAsyncThunk('admin/update', async (update, { rej
 });
 
 export const deleteAdmin = createAsyncThunk('admin/delete', async (id) => {
-  const res = await axiosPrivate.delete(`admin/delete/${id}`);
+  const res = await axiosPrivate.delete(`admin/${id}`);
   return res.data;
 });
 
@@ -35,86 +49,54 @@ const adminSlice = createSlice({
   initialState: {
     admins: [],
     currentAdmin: {},
-    isFetching: "",
-    statusSubmit: "",
-    error: {},
+    isLoading: false,
   },
-  reducers: {
-    resetStatusSubmit: (state) => {
-      state.statusSubmit = "";
-    },
-    resetErrorEmail: (state) => {
-      state.error.email = "";
-    }
-  },
+  reducers: {},
   extraReducers: (builders) => {
     // fetch all admins
     builders.addCase(getAdmins.pending, (state, action) => {
-      state.isFetching = "pending";
+      state.isLoading = true;
     })
     builders.addCase(getAdmins.fulfilled, (state, action) => {
-      state.isFetching = "fulfilled";
+      state.isLoading = false;
       state.admins = action.payload;
     })
     builders.addCase(getAdmins.rejected, (state, action) => {
-      state.isFetching = "rejected";
+      state.isLoading = false;
     })
 
     // get current admin
     builders.addCase(getCurrentAdmin.pending, (state, action) => {
-      state.isFetching = "pending";
+      state.isLoading = true;
     })
     builders.addCase(getCurrentAdmin.fulfilled, (state, action) => {
-      state.isFetching = "fulfilled";
+      state.isLoading = false;
       state.currentAdmin = action.payload;
     })
     builders.addCase(getCurrentAdmin.rejected, (state, action) => {
-      state.isFetching = "rejected";
+      state.isLoading = false;
     })
 
     // add admin
-    builders.addCase(addAdmin.pending, (state, action) => {
-      state.statusSubmit = "pending";
-    })
     builders.addCase(addAdmin.fulfilled, (state, action) => {
-      state.statusSubmit = "fulfilled";
       state.admins.push(action.payload);
-    })
-    builders.addCase(addAdmin.rejected, (state, action) => {
-      state.statusSubmit = "rejected";
-      state.error = action.payload;
     })
 
     // update admin
-    builders.addCase(updateAdmin.pending, (state, action) => {
-      state.statusSubmit = "pending";
-    })
     builders.addCase(updateAdmin.fulfilled, (state, action) => {
-      state.statusSubmit = "fulfilled";
       state.admins[
         state.admins.findIndex((item) => item._id === action.payload._id)
       ] = action.payload;
     })
-    builders.addCase(updateAdmin.rejected, (state, action) => {
-      state.statusSubmit = "rejected";
-      state.error = action.payload;
-    })
 
     // delete admin
-    builders.addCase(deleteAdmin.pending, (state, action) => {
-      state.statusSubmit = "pending";
-    })
     builders.addCase(deleteAdmin.fulfilled, (state, action) => {
-      state.statusSubmit = "fulfilled";
       state.admins = state.admins.filter(item => {
         return item._id !== action.payload;
       });
     })
-    builders.addCase(deleteAdmin.rejected, (state, action) => {
-      state.statusSubmit = "rejected";
-    })
   }
 
 });
-export const { resetStatusSubmit, resetErrorEmail } = adminSlice.actions;
+
 export default adminSlice;

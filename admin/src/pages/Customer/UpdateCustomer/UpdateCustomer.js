@@ -1,95 +1,60 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import SubmitAlert from "../../../components/SubmitAlert/SubmitAlert";
-import { getCurrentCustomer, resetStatusSubmit, updateCustomer } from "../../../redux/slice/customerSlice";
-import { selectData, selectStatusSubmit } from "../../../redux/selectors";
+import { getCurrentCustomer, updateCustomer } from "../../../redux/slice/customerSlice";
 import FormCustomer from "../../../components/FormCustomer/FormCustomer";
 import { useParams } from "react-router-dom";
-import moment from "moment";
-import ErrorFetching from "../../../components/ErrorFetching/ErrorFetching";
+import { useFormik } from "formik";
+import { UPDATE_CUSTOMER_SUCCESS, VALIDATE_FORM_CUSTOMER } from "../../../shared/constants";
+import Loading from "../../../components/Loading/Loading";
 
 const UpdateCustomer = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const currentCustomer = useSelector(selectData("customer", "currentCustomer"));
-  const statusSubmit = useSelector(selectStatusSubmit("customer"));
-  const statusFetching = useSelector(selectData("customer", "isFetching"));
-  const [inputs, setInputs] = useState({
-    name: "",
-    email: "",
-    password: "",
-    gender: "",
-    phone: "",
-    dateOfBirth: null,
-    isActive: false,
-  });
-  const errorApi = useSelector(selectData("customer", "error"));
-  const mess = {
-    success: "Cập nhật thông tin thành công!",
-    error: errorApi.other
-  }
+  const { isLoading, currentCustomer } = useSelector(state => state.customer);
+  const [mess, setMess] = useState({});
 
   useEffect(() => {
     dispatch(getCurrentCustomer(id));
-    return () => dispatch(resetStatusSubmit());
-  }, []);
+  }, [id]);
 
-  useEffect(() => {
-    if (currentCustomer && Object.keys(currentCustomer).length) {
-      setInputs({
-        ...inputs,
-        name: currentCustomer.name,
-        email: currentCustomer.email,
-        gender: currentCustomer.gender,
-        phone: currentCustomer.phone,
-        dateOfBirth: moment(currentCustomer.dateOfBirth, "DD/MM/YYYY"),
-        isActive: currentCustomer.isActive,
-      });
+
+  const formCustomer = useFormik({
+    initialValues: {
+      name: currentCustomer.name || "",
+      email: currentCustomer.email || "",
+      password: "",
+      gender: currentCustomer.gender || "",
+      phone: currentCustomer.phone || "",
+      isActive: currentCustomer.isActive || false,
+      dateOfBirth: currentCustomer.dateOfBirth || null
+    },
+    enableReinitialize: true,
+    validationSchema: VALIDATE_FORM_CUSTOMER,
+    onSubmit: (values, { setSubmitting }) => {
+      dispatch(updateCustomer({ updatedCustomer: values, id: id }))
+        .unwrap()
+        .then(() => {
+          setSubmitting(false);
+          setMess({ success: UPDATE_CUSTOMER_SUCCESS });
+        })
+        .catch((error) => {
+          setSubmitting(false);
+          setMess({ error: error.other });
+        })
     }
-  }, [currentCustomer]);
-
-  const handleOnChange = (e) => {
-    if (e.target.type === "checkbox") {
-      setInputs(prev => ({ ...prev, [e.target.name]: e.target.checked }));
-    } else {
-      setInputs(prev => ({ ...prev, [e.target.name]: e.target.value }));
-    }
-  };
-
-  const handleDatePicker = (value) => {
-    setInputs({ ...inputs, dateOfBirth: value });
-  };
-
-  const handleOnSubmit = () => {
-    const updatedCustomer = {
-      name: inputs.name,
-      email: inputs.email,
-      password: inputs.password,
-      gender: inputs.gender,
-      phone: inputs.phone,
-      dateOfBirth: inputs.dateOfBirth.format("DD/MM/YYYY"),
-      isActive: inputs.isActive,
-    }
-    dispatch(updateCustomer({
-      id, updatedCustomer
-    }));
-  };
+  })
 
   return (
     <>
-      {statusFetching === "rejected" ?
-        <ErrorFetching /> :
+      {isLoading ?
+        <Loading /> :
         <>
           <div className="update-customer">
             <FormCustomer
-              inputs={inputs}
-              handleDatePicker={handleDatePicker}
-              handleOnChange={handleOnChange}
-              handleOnSubmit={handleOnSubmit}
-              id={id}
+              formCustomer={formCustomer}
             />
             <SubmitAlert
-              statusSubmit={statusSubmit}
               mess={mess}
             />
           </div>

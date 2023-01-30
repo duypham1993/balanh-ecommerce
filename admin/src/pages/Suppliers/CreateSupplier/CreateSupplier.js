@@ -2,99 +2,64 @@ import FormSupplier from "../../../components/FormSupplier/FormSupplier";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectStatusSubmit } from "../../../redux/selectors";
-import { addSupplier, resetStatusSubmit } from "../../../redux/slice/supplierSlice";
+import { addSupplier } from "../../../redux/slice/supplierSlice";
 import SubmitAlert from "../../../components/SubmitAlert/SubmitAlert";
+import { useFormik } from "formik";
+import { CREATE_SUPPLIER_SUCCESS, VALIDATE_FORM_SUPPLIER } from "../../../shared/constants";
 
 const CreateSupplier = () => {
   const dispatch = useDispatch();
-  const statusSubmit = useSelector(selectStatusSubmit("supplier"));
-  const [inputs, setInputs] = useState({
-    sku: "",
-    name: "",
-    email: "",
-    phone: "",
-    isActive: false,
-  });
-  const [address, setAddress] = useState({
-    city: "",
-    district: "",
-    wards: "",
-    street: "",
-  });
-  const mess = {
-    success: "Tạo nhà cung cấp thành công!",
-    error: "Tạo nhà cung cấp thất bại!"
-  }
+  const [mess, setMess] = useState({});
 
-  useEffect(() => {
-    return () => dispatch(resetStatusSubmit());
-  }, [])
-
-  // clear inputs after add supplier success
-  useEffect(() => {
-    if (statusSubmit === "fulfilled") {
-      setInputs({
-        sku: "",
-        name: "",
-        email: "",
-        phone: "",
-        isActive: false,
-      });
-      setAddress({
-        city: "",
-        district: "",
-        wards: "",
-        street: "",
-      })
+  const formSupplier = useFormik({
+    initialValues: {
+      name: '',
+      sku: '',
+      email: '',
+      phone: '',
+      city: '',
+      district: '',
+      wards: '',
+      street: '',
+      isActive: false
+    },
+    validationSchema: VALIDATE_FORM_SUPPLIER,
+    onSubmit: (values, { setSubmitting, resetForm }) => {
+      const supplier = {
+        name: values.name,
+        sku: values.sku,
+        email: values.email,
+        phone: values.phone,
+        address: {
+          city: values.city,
+          district: values.district,
+          wards: values.wards,
+          street: values.district
+        },
+        isActive: values.isActive
+      }
+      dispatch(addSupplier(supplier))
+        .unwrap()
+        .then(() => {
+          setSubmitting(false);
+          setMess({ success: CREATE_SUPPLIER_SUCCESS });
+          resetForm();
+        })
+        .catch((error) => {
+          setSubmitting(false);
+          if (error.sku) formSupplier.errors.sku = error.sku;
+          error.other && setMess({ error: error.other });
+        })
     }
-  }, [statusSubmit]);
-
-  // clear children item if change value
-  useEffect(() => {
-    setAddress({ ...address, district: "" });
-  }, [address.city]);
-  useEffect(() => {
-    setAddress({ ...address, wards: "" });
-  }, [address.district]);
-
-  const handleOnChange = (e) => {
-    if (e.target.type === "checkbox") {
-      setInputs(prev => ({ ...prev, [e.target.name]: e.target.checked }));
-    } else {
-      setInputs(prev => ({ ...prev, [e.target.name]: e.target.value }));
-    }
-  };
-
-  const handleAutocomplete = (name, value) => {
-    setAddress({
-      ...address, [name]: value
-    })
-  }
-
-  const handleStreet = (e) => {
-    setAddress({ ...address, [e.target.name]: e.target.value });
-  }
-
-  const handleOnSubmit = () => {
-    const newSupplier = {
-      ...inputs, address
-    }
-    dispatch(addSupplier(newSupplier));
-  };
+  })
 
   return (
     <div className="add-supplier">
       <FormSupplier
-        inputs={inputs}
-        address={address}
-        handleAutocomplete={handleAutocomplete}
-        handleStreet={handleStreet}
-        handleOnChange={handleOnChange}
-        handleOnSubmit={handleOnSubmit}
+        formSupplier={formSupplier}
       />
 
       <SubmitAlert
-        statusSubmit={statusSubmit}
         mess={mess}
       />
     </div>

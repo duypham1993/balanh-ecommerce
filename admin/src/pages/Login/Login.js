@@ -1,7 +1,7 @@
 import "./login.scss";
 import logo from "../../assets/imgs/logo.png";
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from "react-redux";
+import { useState } from 'react';
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import Button from '@mui/material/Button';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -14,64 +14,38 @@ import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { login, resetErrorValidate } from "../../redux/slice/loginSlice";
-import { selectData } from "../../redux/selectors";
+import { login } from "../../redux/slice/authSlice";
+import { useFormik } from "formik";
+import { VALIDATE_FORM_LOGIN } from "../../shared/constants";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [inputs, setInputs] = useState({
-    email: "",
-    password: ""
-  });
-  const [rememberMe, setRemeberMe] = useState(false);
   const [showPw, setShowPw] = useState(false);
-  const [formErrors, setFormErrors] = useState({});
   const dispatch = useDispatch();
-  const currentUser = useSelector(selectData("login", "currentUser"));
-  const localUser = JSON.parse(localStorage.getItem("currentUser"));
-  const errorApi = useSelector(selectData("login", "error"));
 
-  useEffect(() => {
-    if (currentUser && Object.keys(currentUser).length && localUser) {
-      navigate("/", { replace: true });
+  const formLogin = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+      rememberMe: false
+    },
+    validationSchema: VALIDATE_FORM_LOGIN,
+    onSubmit: (values, { setSubmitting }) => {
+      const user = {
+        email: values.email,
+        password: values.password,
+        rememberMe: values.rememberMe
+      }
+      dispatch(login(user))
+        .unwrap()
+        .then(() => {
+          navigate("/", { replace: true });
+        })
+        .catch((error) => {
+
+        })
     }
-  }, [currentUser]);
-
-  const handleInputs = (e) => {
-    const { value, name } = e.target;
-
-    setInputs({ ...inputs, [name]: value })
-    // remove error if target has value
-    if (value.trim()) {
-      setFormErrors({
-        ...formErrors, [name]: "",
-      })
-    }
-  }
-
-  const handleOnClick = async (e) => {
-    e.preventDefault();
-    dispatch(resetErrorValidate())
-    setFormErrors(validate(inputs));
-    if (!Object.keys(validate(inputs)).length) {
-      const loginInfo = { ...inputs, rememberMe }
-      await dispatch(login(loginInfo));
-    }
-  };
-
-  const validate = (inputs) => {
-    const error = {};
-
-    if (!inputs.email.trim()) {
-      error.email = "Vui lòng nhập Email!"
-    }
-
-    if (!inputs.password.trim()) {
-      error.password = "Vui lòng nhập mật khẩu!"
-    }
-
-    return error;
-  }
+  })
 
   return (
     <div className="login-page">
@@ -79,27 +53,29 @@ const Login = () => {
         <figure className="login-page__logo">
           <img src={logo} alt="balanh" />
         </figure>
-        <Box component="form" className="login-form">
+        <Box component="form" className="login-form" onSubmit={formLogin.handleSubmit}>
           <h3 className='login-form__title'>Ba Lành - Trở về với tự nhiên</h3>
           <FormControl sx={{ mb: 5, width: '100%' }} variant="outlined">
             <InputLabel htmlFor="outlined-adornment-email">Email</InputLabel>
             <OutlinedInput
               id="outlined-adornment-email"
               type='text'
-              value={inputs.email}
-              onChange={(e) => handleInputs(e)}
+              value={formLogin.values.email}
+              onChange={formLogin.handleChange}
+              onBlur={formLogin.handleBlur}
               label="Email"
               name="email"
             />
-            <p className={formErrors.email || errorApi.validate ? "login-form__error show" : "login-form__error"}>{formErrors.email || errorApi.validate}</p>
+            <p className={formLogin.errors.email ? "login-form__error show" : "login-form__error"}>{formLogin.errors.email}</p>
           </FormControl>
           <FormControl sx={{ mb: 5, width: '100%' }} variant="outlined">
             <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
             <OutlinedInput
               id="outlined-adornment-password"
               type={showPw ? 'text' : 'password'}
-              value={inputs.password}
-              onChange={(e) => handleInputs(e)}
+              value={formLogin.values.password}
+              onChange={formLogin.handleChange}
+              onBlur={formLogin.handleBlur}
               name="password"
               endAdornment={
                 <InputAdornment position="end">
@@ -115,12 +91,12 @@ const Login = () => {
               }
               label="Password"
             />
-            <p className={formErrors.password || errorApi.validate ? "login-form__error show" : "login-form__error"}>{formErrors.password || errorApi.validate}</p>
+            <p className={formLogin.errors.password ? "login-form__error show" : "login-form__error"}>{formLogin.errors.password}</p>
           </FormControl>
-          <Button variant="contained" type="submit" className='login-form__button' onClick={(e) => handleOnClick(e)}>Đăng nhập</Button>
+          <Button variant="contained" type="submit" className='login-form__button'>Đăng nhập</Button>
           <div className="flex-bw-center">
             <div>
-              <FormControlLabel control={<Checkbox name="remember-login" onChange={(e) => setRemeberMe(e.target.checked)} />} label="Duy trì đăng nhập" />
+              <FormControlLabel control={<Checkbox name="rememberMe" checked={formLogin.values.rememberMe} onChange={formLogin.handleChange} />} label="Duy trì đăng nhập" />
             </div>
             <div>
               <Link to="#" className="link-default">Bạn quên mật khẩu?</Link>

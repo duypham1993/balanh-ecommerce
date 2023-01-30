@@ -8,14 +8,10 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import HighlightOffTwoToneIcon from '@mui/icons-material/HighlightOffTwoTone';
-import { useDispatch, useSelector } from "react-redux";
-import { selectArrOrigin, selectArrSuppliers, selectData, selectObjectData } from "../../redux/selectors";
+import { useSelector } from "react-redux";
 import CustomTreeItem from "./CustomTreeItem/CustomTreeItem";
-import { resetErrorSku } from "../../redux/slice/productSlice";
 
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-
+function TabPanel({ children, value, index, ...other }) {
   return (
     <div role="tabpanel" hidden={value !== index} id={`product-tabpanel-${index}`} aria-labelledby={`product-tab-${index}`} {...other} >
       {value === index && (
@@ -38,87 +34,38 @@ function a11yProps(index) {
   };
 }
 
-const FormProduct = (props) => {
-  const { inputs, imgURLsFirebase, imgURLsLocal, handleOnChange, handleAutoComplete, handleMultiCheckbox, handleFile, handleDelImgFirebase, handleDelImgLocal, handleOnSubmit } = props;
-  const dispatch = useDispatch();
+const FormProduct = ({ formProduct, handleDelImgFirebase }) => {
   const [valueTabs, setValueTabs] = useState(0);
-  const objectCategories = useSelector(selectObjectData);
-  const arrOrigin = useSelector(selectArrOrigin);
-  const arrSuppliers = useSelector(selectArrSuppliers);
-  const [formErrors, setFormErrors] = useState({});
-  const errorApi = useSelector(selectData("product", "error"));
-
+  const { treeCategories } = useSelector(state => state.category);
+  const idRootCategory = treeCategories._id;
+  const { origin } = useSelector(state => state.origin);
+  const { suppliers } = useSelector(state => state.supplier)
   useEffect(() => {
-    renderTree(objectCategories)
-  }, [inputs.categories])
+    renderTree(treeCategories)
+  }, [treeCategories]);
+
+  const handleDelImgLocal = (index) => {
+    const tempFile = formProduct.values.files.filter((item, i) => i !== index);
+    formProduct.setFieldValue('files', tempFile);
+  };
+
+  const handleMultiCheckbox = (e) => {
+    const { checked, value } = e.target;
+    checked ?
+      formProduct.setFieldValue('categories', [...formProduct.values.categories, value])
+      :
+      formProduct.setFieldValue('categories', formProduct.values.categories.filter(item => item !== value))
+  }
 
   const handleChangeTabs = (e, newValue) => {
     setValueTabs(newValue);
   }
 
-  const validate = (inputs) => {
-    const errors = {};
-    const formatSKU = /^[0-9a-zA-Z]+$/;
-
-    if (!formatSKU.test(inputs.sku)) {
-      errors.sku = "Mã không hợp lệ!";
-    }
-
-    if (!inputs.sku.trim()) {
-      errors.sku = "Vui lòng điền vào mục này!";
-    }
-
-    if (!inputs.name.trim()) {
-      errors.name = "Vui lòng điền vào mục này!";
-    }
-
-    if (!inputs.desc.trim()) {
-      errors.desc = "Vui lòng điền vào mục này!";
-    }
-
-    if (!inputs.costPrice) {
-      errors.costPrice = "Vui lòng điền vào mục này!";
-    }
-
-    if (!inputs.price) {
-      errors.price = "Vui lòng điền vào mục này!";
-    }
-
-    if (!inputs.categories.length) {
-      errors.categories = "Vui lòng chọn mục này!";
-    }
-
-    if (!inputs.origin.trim()) {
-      errors.origin = "Vui lòng điền vào mục này!";
-    }
-
-    if (!inputs.supplier.trim()) {
-      errors.supplier = "Vui lòng điền vào mục này!";
-    }
-
-    if (!inputs.packing.trim()) {
-      errors.packing = "Vui lòng điền vào mục này!";
-    }
-
-    if ((imgURLsLocal && !imgURLsLocal.length) && (imgURLsFirebase && !imgURLsFirebase.length)) {
-      errors.file = "Vui lòng up ảnh!";
-    }
-
-    return errors;
-  }
-
-  const submitForm = async (e) => {
-    e.preventDefault();
-    dispatch(resetErrorSku())
-    setFormErrors(validate(inputs));
-    Object.keys(validate(inputs)).length === 0 && handleOnSubmit();
-  }
-
   const renderTree = (nodes) => {
     // set checked for categories
     let check = false;
-    for (let i = 0; i < inputs.categories.length; i++) {
-      if (inputs.categories[i] === nodes._id) {
+    for (let i = 0; i < formProduct.values.categories?.length; i++) {
+      if (formProduct.values.categories[i] === nodes._id) {
         check = true;
       }
     }
@@ -127,7 +74,7 @@ const FormProduct = (props) => {
         key={nodes._id}
         nodeId={nodes._id || "temp"}
         label={nodes.name}
-        ContentProps={{ value: nodes._id, check: check }}
+        ContentProps={{ idRootCategory: idRootCategory, value: nodes._id, check: check }}
       >
         {Array.isArray(nodes.children)
           ? nodes.children.map((node) => renderTree(node))
@@ -137,9 +84,9 @@ const FormProduct = (props) => {
   };
 
   return (
-    <form className="form-product" onSubmit={(e) => submitForm(e)}>
+    <form className="form-product" onSubmit={formProduct.handleSubmit}>
       <div className="form-product__item form-product__item--title">
-        <input type="text" name="name" placeholder="Tên sản phẩm" className="input-default form-product__input form-product__input--title" value={inputs.name} onChange={(e) => handleOnChange(e)} />
+        <input type="text" name="name" placeholder="Tên sản phẩm" className="input-default form-product__input form-product__input--title" value={formProduct.values.name} onChange={formProduct.handleChange} onBlur={formProduct.handleBlur} />
       </div>
       <div>
         <Box sx={{ width: '100%' }}>
@@ -152,12 +99,12 @@ const FormProduct = (props) => {
             <Grid container columnSpacing={{ xs: 0, sm: 3, lg: 6 }}>
               <Grid item xs={12} sm={6} lg={9} className="form-product__col">
                 <Grid item xs={12} className="form-product__item form-product__upload">
-                  {(imgURLsLocal && imgURLsLocal.length) || (imgURLsFirebase && imgURLsFirebase.length) ?
+                  {formProduct.values.files?.length || formProduct.values.imgsFirebase?.length ?
                     <div className="form-product__wrapper-preview" >
-                      <label htmlFor="img" className="form-product__item-preview form-product__upload-preview">
+                      <label htmlFor="files" className="form-product__item-preview form-product__upload-preview">
                         <AddCircleOutlineIcon className="form-product__upload-icon" />
                       </label>
-                      {imgURLsFirebase && imgURLsFirebase.map((item, index) => {
+                      {formProduct.values.imgsFirebase?.map((item, index) => {
                         return (
                           <div className="form-product__item-preview" key={index}>
                             <img src={item} alt={"imgage " + index} className="form-product__imgs-preview" />
@@ -165,17 +112,17 @@ const FormProduct = (props) => {
                           </div>
                         )
                       })}
-                      {imgURLsLocal && imgURLsLocal.map((item, index) => {
+                      {formProduct.values.files?.map((item, index) => {
                         return (
                           <div className="form-product__item-preview" key={index}>
-                            <img src={item} alt={"imgage " + index} className="form-product__imgs-preview" />
+                            <img src={URL.createObjectURL(item)} alt={"imgage " + index} className="form-product__imgs-preview" />
                             <HighlightOffTwoToneIcon className="form-product__del-img" onClick={() => handleDelImgLocal(index)} />
                           </div>
                         )
                       })}
                     </div>
                     :
-                    <label htmlFor="img" className="form-product__upload-desc">
+                    <label htmlFor="files" className="form-product__upload-desc" >
                       <AddAPhotoIcon className="form-product__upload-icon" />
                       <span>Tải hình ảnh ở đây</span>
                       <span><strong>Kích thước khuyến cáo là 800x800px cho ảnh mặc định</strong></span>
@@ -186,55 +133,72 @@ const FormProduct = (props) => {
                   <input
                     hidden
                     type="file"
-                    id="img"
-                    name="img"
+                    id="files"
+                    name="files"
                     multiple
                     accept="image/*"
-                    onChange={e => handleFile(e)}
+                    onChange={(e) => formProduct.setFieldValue('files', [...formProduct.values.files, ...e.currentTarget.files])}
                   />
-                  <p className={formErrors.file ? "form-product__error show" : "form-product__error"}>{formErrors.file}</p>
+                  <p className={formProduct.touched.files && formProduct.errors.files && !formProduct.values.imgsFirebase?.length ? "form-product__error show" : "form-product__error"}>{formProduct.errors.files}</p>
                 </Grid>
                 <Grid item xs={12} className="form-product__item form-product__item--desc">
                   <h5 className="form-product__title">Mô tả sản phẩm</h5>
                   <textarea
                     name="desc"
                     placeholder="Mô tả sơ lược sản phẩm"
-                    value={inputs.desc}
-                    onChange={(e) => handleOnChange(e)}
+                    value={formProduct.values.desc}
+                    onChange={formProduct.handleChange}
+                    onBlur={formProduct.handleBlur}
                   />
-                  <p className={formErrors.desc ? "form-product__error show" : "form-product__error"}>{formErrors.desc}</p>
+                  <p className={formProduct.touched.desc && formProduct.errors.desc ? "form-product__error show" : "form-product__error"}>{formProduct.errors.desc}</p>
 
                 </Grid>
                 <Grid container item xs={12} >
                   <Grid item xs={12} lg={6} className="form-product__item form-product__item--origin">
                     <h5 className="form-product__title">Xuất xứ</h5>
+
                     <Autocomplete
                       className="form-product__autocomplete"
-                      value={inputs.origin}
-                      onChange={(e, value) => handleAutoComplete("origin", value)}
-                      options={arrOrigin}
+                      options={origin}
+                      getOptionLabel={option => {
+                        if (option.hasOwnProperty('name')) {
+                          return option.name;
+                        }
+                        return option;
+                      }}
+                      onChange={(e, value) => value ? formProduct.setFieldValue('origin', value.name) : formProduct.setFieldValue('origin', '')}
                       isOptionEqualToValue={(option, value) =>
                         option.id === value.id
                       }
+                      onBlur={formProduct.handleBlur}
                       sx={{ width: 300 }}
-                      renderInput={(params) => <TextField {...params} />}
+                      value={formProduct.values.origin}
+                      renderInput={(params) => <TextField name="origin" value={formProduct.values.origin} {...params} />}
                     />
-                    <p className={formErrors.origin ? "form-product__error show" : "form-product__error"}>{formErrors.origin}</p>
+
+                    <p className={formProduct.touched.origin && formProduct.errors.origin ? "form-product__error show" : "form-product__error"}>{formProduct.errors.origin}</p>
                   </Grid>
                   <Grid item xs={12} lg={6} className="form-product__item form-product__item--origin">
                     <h5 className="form-product__title">Nhà cung cấp</h5>
                     <Autocomplete
                       className="form-product__autocomplete"
-                      value={inputs.supplier}
-                      onChange={(e, value) => handleAutoComplete("supplier", value)}
-                      options={arrSuppliers}
+                      options={suppliers}
+                      getOptionLabel={option => {
+                        if (option.hasOwnProperty('name')) {
+                          return option.name;
+                        }
+                        return option;
+                      }}
+                      onChange={(e, value) => value ? formProduct.setFieldValue('supplier', value.name) : formProduct.setFieldValue('supplier', '')}
                       isOptionEqualToValue={(option, value) =>
                         option.id === value.id
                       }
+                      onBlur={formProduct.handleBlur}
                       sx={{ width: 300 }}
-                      renderInput={(params) => <TextField {...params} />}
+                      value={formProduct.values.supplier}
+                      renderInput={(params) => <TextField name="supplier"  {...params} />}
                     />
-                    <p className={formErrors.supplier ? "form-product__error show" : "form-product__error"}>{formErrors.supplier}</p>
+                    <p className={formProduct.touched.supplier && formProduct.errors.supplier ? "form-product__error show" : "form-product__error"}>{formProduct.errors.supplier}</p>
                   </Grid>
                 </Grid>
 
@@ -246,10 +210,11 @@ const FormProduct = (props) => {
                     type="text"
                     name="sku"
                     className="input-default form-product__input"
-                    value={inputs.sku}
-                    onChange={(e) => handleOnChange(e)}
+                    value={formProduct.values.sku}
+                    onChange={formProduct.handleChange}
+                    onBlur={formProduct.handleBlur}
                   />
-                  <p className={formErrors.sku || errorApi.sku ? "form-product__error show" : "form-product__error"}>{formErrors.sku || errorApi.sku}</p>
+                  <p className={formProduct.touched.sku && formProduct.errors.sku ? "form-product__error show" : "form-product__error"}>{formProduct.errors.sku}</p>
                 </Grid>
                 <Grid item xs={12} className="form-product__item form-product__qty">
                   <h5 className="form-product__title">Số lượng</h5>
@@ -257,10 +222,10 @@ const FormProduct = (props) => {
                     type="number"
                     name="qty"
                     className="input-default form-product__input"
-                    value={inputs.qty}
-                    onChange={(e) => handleOnChange(e)}
+                    value={formProduct.values.qty}
+                    onChange={formProduct.handleChange}
                   />
-                  <p className={formErrors.qty ? "form-product__error show" : "form-product__error"}>{formErrors.qty}</p>
+
                 </Grid>
                 <Grid container columnSpacing={{ xs: 0, md: 2 }} className="form-product__price">
                   <h5 className="form-product__title">Giá</h5>
@@ -271,12 +236,13 @@ const FormProduct = (props) => {
                         type="number"
                         name="costPrice"
                         className="input-default form-product__input form-product__input--sub"
-                        value={inputs.costPrice}
-                        onChange={(e) => handleOnChange(e)}
+                        value={formProduct.values.costPrice}
+                        onChange={formProduct.handleChange}
+                        onBlur={formProduct.handleBlur}
                       />
                       <span className="form-product__icon">₫</span>
                     </div>
-                    <p className={formErrors.costPrice ? "form-product__error show" : "form-product__error"}>{formErrors.costPrice}</p>
+                    <p className={formProduct.touched.costPrice && formProduct.errors.costPrice ? "form-product__error show" : "form-product__error"}>{formProduct.errors.costPrice}</p>
                   </Grid>
                   <Grid item xs={12} md={6} className="form-product__item form-product__subitem">
                     <p className="form-product__subtitle">Giá bán</p>
@@ -285,12 +251,13 @@ const FormProduct = (props) => {
                         type="number"
                         name="price"
                         className="input-default form-product__input form-product__input--sub"
-                        value={inputs.price}
-                        onChange={(e) => handleOnChange(e)}
+                        value={formProduct.values.price}
+                        onChange={formProduct.handleChange}
+                        onBlur={formProduct.handleBlur}
                       />
                       <span className="form-product__icon">₫</span>
                     </div>
-                    <p className={formErrors.price ? "form-product__error show" : "form-product__error"}>{formErrors.price}</p>
+                    <p className={formProduct.errors.price && formProduct.touched.price ? "form-product__error show" : "form-product__error"}>{formProduct.errors.price}</p>
                   </Grid>
                 </Grid>
                 <Grid item xs={12} className="form-product__item form-product__qty">
@@ -299,10 +266,11 @@ const FormProduct = (props) => {
                     type="text"
                     name="packing"
                     className="input-default form-product__input"
-                    value={inputs.packing}
-                    onChange={(e) => handleOnChange(e)}
+                    value={formProduct.values.packing}
+                    onChange={formProduct.handleChange}
+                    onBlur={formProduct.handleBlur}
                   />
-                  <p className={formErrors.packing ? "form-product__error show" : "form-product__error"}>{formErrors.packing}</p>
+                  <p className={formProduct.touched.packing && formProduct.errors.packing ? "form-product__error show" : "form-product__error"}>{formProduct.errors.packing}</p>
                 </Grid>
                 <Grid item xs={12} className="form-product__item form-product__categories">
                   <h5 className="form-product__title">Danh mục</h5>
@@ -316,10 +284,10 @@ const FormProduct = (props) => {
                     <FormGroup
                       onChange={(e) => handleMultiCheckbox(e)}
                     >
-                      {renderTree(objectCategories)}
+                      {renderTree(treeCategories)}
                     </FormGroup>
                   </TreeView>
-                  <p className={formErrors.categories ? "form-product__error show" : "form-product__error"}>{formErrors.categories}</p>
+                  <p className={formProduct.touched.categories && formProduct.errors.categories ? "form-product__error show" : "form-product__error"}>{formProduct.errors.categories}</p>
                 </Grid>
               </Grid>
             </Grid>
@@ -331,16 +299,20 @@ const FormProduct = (props) => {
           <div>
             <FormControlLabel
               control={<Switch color="success" />}
-              label={inputs.isActive ? "Trực tuyến" : "Ngoại tuyến"}
+              label={formProduct.values.isActive ? "Trực tuyến" : "Ngoại tuyến"}
               labelPlacement="start"
               name="isActive"
-              checked={inputs.isActive}
-              onChange={e => handleOnChange(e)}
+              checked={formProduct.values.isActive}
+              onChange={formProduct.handleChange}
               className="form-product__switch"
             />
           </div>
           <div>
-            <button className="btn-default bot-nav__btn" type="submit">Lưu</button>
+            {formProduct.isSubmitting ?
+              <button className="btn-df bot-nav__btn cursor-disable" type="submit" disabled>Lưu</button> :
+              <button className="btn-df bot-nav__btn" type="submit">Lưu</button>
+            }
+
           </div>
         </div>
       </div>

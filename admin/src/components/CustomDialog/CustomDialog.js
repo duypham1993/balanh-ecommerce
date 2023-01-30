@@ -8,45 +8,55 @@ import { useState } from 'react';
 import DeleteOutline from "@mui/icons-material/DeleteOutline";
 import { useLocation } from 'react-router-dom';
 
-const CustomDialog = (props) => {
-  const { item, selectedItems, handleDelete } = props;
-
+const CustomDialog = ({ item, selectedItems, handleDelete }) => {
   const location = useLocation();
   const pathName = location.pathname.substring(1).toLowerCase();
   const [open, setOpen] = useState(false);
-  const titObj = {
-    products: "Xoá Sản Phẩm?",
-    categories: "Xoá Danh Mục?",
-    origin: "Xoá Xuất Xứ?",
-    suppliers: "Xoá Nhà Cung Cấp?",
-    admins: "Xoá Quản Trị Viên?",
-    customers: "Xoá Tài Khoản Khách Hàng?",
-    deliveryinfo: "Xoá Địa Chỉ Khách Hàng?",
-  }
-  const alertObj = {
-    products: "Các sản phẩm này sẽ bị xoá. Vui lòng xác nhận!",
-    categories: "Xoá danh mục này đồng thời sẽ xoá các danh mục con. Vui lòng xác nhận!",
-    origin: "Các mục xuất xứ này sẽ bị xoá. Vui lòng xác nhận!",
-    suppliers: "Các nhà cung cấp này sẽ bị xoá. Vui lòng xác nhận!",
-    admins: "Các quản trị viên này sẽ bị xoá. Vui lòng xác nhận!",
-    customers: "Các tài khoản khách hàng này sẽ bị xoá. Vui lòng xác nhận!",
-    deliveryinfo: "Các địa chỉ này sẽ bị xoá. Vui lòng xác nhận!"
-  }
-  let alert = {
-    title: "",
-    desc: ""
-  };
 
-  for (const key in alertObj) {
-    if (pathName === key) {
-      alert.desc = alertObj[key];
+  const arrAlert = [
+    {
+      key: "products",
+      title: "Xoá sản phẩm?",
+      content: "Các sản phẩm này sẽ bị xoá. Vui lòng xác nhận!"
+    },
+    {
+      key: "categories",
+      title: "Xoá Danh Mục?",
+      content: "Xoá danh mục này đồng thời sẽ xoá các danh mục con. Vui lòng xác nhận!"
+    },
+    {
+      key: "origin",
+      title: "Xoá Xuất Xứ?",
+      content: "Các mục xuất xứ này sẽ bị xoá. Vui lòng xác nhận!"
+    },
+    {
+      key: "suppliers",
+      title: "Xoá Nhà Cung Cấp?",
+      content: "Các nhà cung cấp này sẽ bị xoá. Vui lòng xác nhận!"
+    },
+    {
+      key: "admins",
+      title: "Xoá Tài Khoản Quản Trị Viên?",
+      content: "Các tài khoản quản trị viên này sẽ bị xoá. Vui lòng xác nhận!"
+    },
+    {
+      key: "customers",
+      title: "Xoá Tài Khoản Khách Hàng?",
+      content: "Các tài khoản khách hàng này sẽ bị xoá. Vui lòng xác nhận!"
+    },
+    {
+      key: "addresses",
+      title: "Xoá Địa Chỉ Khách Hàng?",
+      content: "Các địa chỉ này sẽ bị xoá. Vui lòng xác nhận!"
     }
-  }
-  for (const key in titObj) {
-    if (pathName === key) {
-      alert.title = titObj[key];
+  ];
+  let alert = {};
+
+  arrAlert.forEach(item => {
+    if (pathName === item.key) {
+      alert = item;
     }
-  }
+  });
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -67,7 +77,7 @@ const CustomDialog = (props) => {
 
   return (
     <div>
-      <button className="flex-bw-center btn-default btn-default--del text-small" onClick={() => handleClickOpen()}>
+      <button className="flex-bw-center btn-df btn-df--del text-small" onClick={() => handleClickOpen()}>
         <span>Delete</span>
         <DeleteOutline className="text-default" />
       </button>
@@ -80,7 +90,7 @@ const CustomDialog = (props) => {
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            {alert.desc}
+            {alert.content}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

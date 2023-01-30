@@ -1,121 +1,64 @@
 import FormSupplier from "../../../components/FormSupplier/FormSupplier";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { selectData, selectStatusSubmit } from "../../../redux/selectors";
-import { updateSupplier, resetStatusSubmit, getCurrnetSupplier } from "../../../redux/slice/supplierSlice";
+import { updateSupplier, getCurrentSupplier } from "../../../redux/slice/supplierSlice";
 import SubmitAlert from "../../../components/SubmitAlert/SubmitAlert";
-import ErrorFetching from "../../../components/ErrorFetching/ErrorFetching";
+import { useFormik } from "formik";
+import { UPDATE_SUPPLIER_SUCCESS, VALIDATE_FORM_SUPPLIER } from "../../../shared/constants";
+import Loading from "../../../components/Loading/Loading";
 
 const UpdateSupplier = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const currentSupplier = useSelector(selectData("supplier", "currentSupplier"));
-  const statusSubmit = useSelector(selectStatusSubmit("supplier"));
-  const statusFetching = useSelector(selectData("supplier", "isFetching"));
-  const errorApi = useSelector(selectData("supplier", "error"));
-  const cityRef = useRef("");
-  const districtRef = useRef("");
-  const [inputs, setInputs] = useState({
-    sku: "",
-    name: "",
-    email: "",
-    phone: "",
-    isActive: false,
-  });
-  const [address, setAddress] = useState({
-    city: "",
-    district: "",
-    wards: "",
-    street: "",
-  });
-  const [city, setCity] = useState("");
-  const [district, setDistrict] = useState("");
-  const [wards, setWards] = useState("");
-  const mess = {
-    success: "Cập nhật thành công!",
-    error: errorApi.other
-  };
+  const { isLoading, currentSupplier } = useSelector(state => state.supplier);
+  const [mess, setMess] = useState({});
 
   useEffect(() => {
-    dispatch(getCurrnetSupplier(id));
-    return () => dispatch(resetStatusSubmit());
-  }, [])
+    dispatch(getCurrentSupplier(id));
+  }, []);
 
-  useEffect(() => {
-    if (currentSupplier && Object.keys(currentSupplier).length) {
-      setInputs({
-        sku: currentSupplier.sku,
-        name: currentSupplier.name,
-        email: currentSupplier.email,
-        phone: currentSupplier.phone,
-        isActive: currentSupplier.isActive
-      })
-      setAddress({
-        city: currentSupplier.address.city,
-        district: currentSupplier.address.district,
-        wards: currentSupplier.address.wards,
-        street: currentSupplier.address.street
-      })
+  const formSupplier = useFormik({
+    initialValues: {
+      name: currentSupplier?.name || "",
+      sku: currentSupplier?.sku || "",
+      email: currentSupplier?.email || "",
+      phone: currentSupplier?.phone || "",
+      city: currentSupplier.address?.city || "",
+      district: currentSupplier.address?.district || "",
+      wards: currentSupplier.address?.wards || "",
+      street: currentSupplier.address?.street || "",
+      isActive: currentSupplier?.isActive || false
+    },
+    enableReinitialize: true,
+    validationSchema: VALIDATE_FORM_SUPPLIER,
+    onSubmit: (values, { setSubmitting }) => {
+      dispatch(updateSupplier({ updatedSupplier: values, _id: id }))
+        .unwrap()
+        .then(() => {
+          setSubmitting(false);
+          setMess({ success: UPDATE_SUPPLIER_SUCCESS });
+        })
+        .catch((error) => {
+          setSubmitting(false);
+          if (error.sku) formSupplier.errors.sku = error.sku;
+          error.other && setMess({ error: error.other });
+        })
     }
-  }, [currentSupplier]);
-
-  // clear children item if change value
-  useEffect(() => {
-    setAddress({ ...address, district: "", wards: "" });
-  }, [cityRef.current]);
-  useEffect(() => {
-    setAddress({ ...address, wards: "" });
-  }, [districtRef.current]);
-
-  const handleOnChange = (e) => {
-    if (e.target.type === "checkbox") {
-      setInputs(prev => ({ ...prev, [e.target.name]: e.target.checked }));
-    } else {
-      setInputs(prev => ({ ...prev, [e.target.name]: e.target.value }));
-    }
-  };
-
-  const handleAutocomplete = (name, value) => {
-    if (name === "city") {
-      cityRef.current = address.city;
-    }
-    if (name === "district") {
-      districtRef.current = address.district;
-    }
-    setAddress({
-      ...address, [name]: value
-    });
-  };
-
-  const handleOnSubmit = async () => {
-    const updatedSupplier = {
-      ...inputs, address
-    }
-    await dispatch(updateSupplier({ id, updatedSupplier }));
-  };
+  })
 
   return (
     <>
-      {statusFetching === "rejected" ?
-        <ErrorFetching /> :
-        <>
-          <div className="add-supplier">
-            <FormSupplier
-              currentSupplier={currentSupplier}
-              inputs={inputs}
-              address={address}
-              handleAutocomplete={handleAutocomplete}
-              handleOnChange={handleOnChange}
-              handleOnSubmit={handleOnSubmit}
-            />
-            <SubmitAlert
-              statusSubmit={statusSubmit}
-              mess={mess}
-            />
-          </div>
-        </>
-
+      {isLoading ?
+        <Loading /> :
+        <div className="add-supplier">
+          <FormSupplier
+            formSupplier={formSupplier}
+          />
+          <SubmitAlert
+            mess={mess}
+          />
+        </div>
       }
     </>
   );

@@ -1,88 +1,16 @@
-import { useState } from "react";
 import { Grid, Switch, Autocomplete, TextField } from '@mui/material';
 import { useNavigate } from "react-router-dom";
-import { selectData } from "../../redux/selectors";
-import { useDispatch, useSelector } from "react-redux";
-import { resetErrorEmail } from "../../redux/slice/adminSlice";
 
-const FormAdmin = (props) => {
-  const { inputs, handleOnChange, handleOnSubmit, handleAutocomplete, id } = props;
+
+const FormAdmin = ({ formAdmin }) => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const [formErrors, setFormErrors] = useState({});
-  const errorApi = useSelector(selectData("admin", "error"));
   const role = ["Admin", "Kế toán"];
 
-  const handleChangeInputs = (e) => {
-    const { value, name } = e.target;
-
-    handleOnChange(e);
-    // remove error if target has value
-    if (value) {
-      setFormErrors({
-        ...formErrors, [name]: "",
-      })
-    }
-  };
-
-  const handleChangeAutocomplete = (name, value) => {
-    handleAutocomplete(name, value);
-    // remove error if target has value
-    if (value) {
-      setFormErrors({
-        ...formErrors, [role]: "",
-      })
-    }
-  }
-
-  const validate = (inputs) => {
-    const errors = {};
-    const formatEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    const formatPassword = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{8,}$/;
-
-    if (!inputs.lastName.trim()) {
-      errors.lastName = "Vui lòng điền vào mục này!";
-    }
-
-    if (!inputs.firstName.trim()) {
-      errors.firstName = "Vui lòng điền vào mục này!";
-    }
-
-    if (!formatEmail.test(inputs.email)) {
-      errors.email = "Email không hợp lệ!";
-    }
-
-    if (!inputs.email.trim()) {
-      errors.email = "Vui lòng điền vào mục này!";
-    }
-
-    if ((!formatPassword.test(inputs.password) && !id) || (id && inputs.password && !formatPassword.test(inputs.password))) {
-      errors.password = "Mật khẩu không hợp lệ!";
-    }
-
-    if (!inputs.password.trim() && !id) {
-      errors.password = "Vui lòng điền vào mục này!";
-    }
-
-    if (!inputs.role) {
-      errors.role = "Vui lòng chọn mục này!";
-    }
-    return errors;
-  }
-
-  const submitFrom = (e) => {
-    e.preventDefault();
-    dispatch(resetErrorEmail());
-    setFormErrors(validate(inputs));
-    Object.keys(validate(inputs)).length === 0 && handleOnSubmit();
-  }
-  // back to suppliers
   const handleCancel = () => {
     return navigate("/admins");
   }
-
   return (
-    <form className="form-default" onSubmit={(e) => submitFrom(e)}>
+    <form className="form-default" onSubmit={formAdmin.handleSubmit}>
       <Grid container>
         <Grid container item spacing={3} className="form-default__group">
           <Grid item xs={12} sm={4} className="form-default__label">
@@ -93,10 +21,11 @@ const FormAdmin = (props) => {
               type="text"
               className="input-default form-default__input"
               name="lastName"
-              value={inputs.lastName}
-              onChange={e => handleChangeInputs(e)}
+              value={formAdmin.values.lastName}
+              onChange={formAdmin.handleChange}
+              onBlur={formAdmin.handleBlur}
             />
-            <p className={formErrors.lastName ? "form-default__error show" : "form-default__error"}>{formErrors.lastName}</p>
+            <p className={formAdmin.touched.lastName && formAdmin.errors.lastName ? "form-default__error show" : "form-default__error"}>{formAdmin.errors.lastName}</p>
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
@@ -108,10 +37,11 @@ const FormAdmin = (props) => {
               type="text"
               className="input-default form-default__input"
               name="firstName"
-              value={inputs.firstName}
-              onChange={(e) => handleChangeInputs(e)}
+              value={formAdmin.values.firstName}
+              onChange={formAdmin.handleChange}
+              onBlur={formAdmin.handleBlur}
             />
-            <p className={formErrors.firstName ? "form-default__error show" : "form-default__error"}>{formErrors.firstName}</p>
+            <p className={formAdmin.touched.firstName && formAdmin.errors.firstName ? "form-default__error show" : "form-default__error"}>{formAdmin.errors.firstName}</p>
 
           </Grid>
         </Grid>
@@ -124,11 +54,12 @@ const FormAdmin = (props) => {
               type="text"
               name="email"
               className="input-default form-default__input"
-              value={inputs.email}
-              onChange={(e) => handleChangeInputs(e)}
+              value={formAdmin.values.email}
+              onChange={formAdmin.handleChange}
+              onBlur={formAdmin.handleBlur}
               placeholder="example@abc.com"
             />
-            <p className={formErrors.email || errorApi.email ? "form-default__error show" : "form-default__error"}>{formErrors.email || errorApi.email}</p>
+            <p className={formAdmin.touched.email && formAdmin.errors.email ? "form-default__error show" : "form-default__error"}>{formAdmin.errors.email}</p>
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
@@ -137,14 +68,15 @@ const FormAdmin = (props) => {
           </Grid>
           <Grid item xs={12} sm={6} className="form-default__content">
             <input
-              autoComplete="off"
+              autoComplete="new-password"
               type="password"
               className="input-default form-default__input"
               name="password"
-              value={inputs.password}
-              onChange={(e) => handleChangeInputs(e)}
+              value={formAdmin.values.password}
+              onChange={formAdmin.handleChange}
+              onBlur={formAdmin.handleBlur}
             />
-            <p className={formErrors.password ? "form-default__error show" : "form-default__error"}>{formErrors.password}</p>
+            <p className={formAdmin.touched.password && formAdmin.errors.password ? "form-default__error show" : "form-default__error"}>{formAdmin.errors.password}</p>
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
@@ -155,15 +87,20 @@ const FormAdmin = (props) => {
             <Autocomplete
               className="form-default__autocomplete"
               options={role}
-              value={inputs.role}
-              onChange={(e, value) => handleChangeAutocomplete("role", value)}
+              value={formAdmin.values.role}
+              onChange={(e, value) => value ? formAdmin.setFieldValue("role", value) : formAdmin.setFieldValue("role", "")}
               isOptionEqualToValue={(option, value) =>
                 option.id === value.id
               }
-              renderInput={(params) => <TextField {...params}
-              />}
+              onBlur={formAdmin.handleBlur}
+              renderInput={(params) =>
+                <TextField
+                  name="role"
+                  {...params}
+                />
+              }
             />
-            <p className={formErrors.role ? "form-default__error show" : "form-default__error"}>{formErrors.role}</p>
+            <p className={formAdmin.touched.role && formAdmin.errors.role ? "form-default__error show" : "form-default__error"}>{formAdmin.errors.role}</p>
           </Grid>
         </Grid>
         <Grid container item spacing={3} className="form-default__group">
@@ -174,15 +111,20 @@ const FormAdmin = (props) => {
             <Switch
               name="isActive"
               className="form-default__input"
-              checked={inputs.isActive}
-              onChange={(e) => handleOnChange(e)}
+              checked={formAdmin.values.isActive}
+              onChange={formAdmin.handleChange}
             />
           </Grid>
         </Grid>
       </Grid>
       <div className="flex-bw-center form-default__bot-nav">
-        <p className="btn-default btn-default--del" onClick={() => handleCancel()}>Quay lại</p>
-        <button className="btn-default" type="submit" >Lưu</button>
+        <button className="btn-df btn-df--del" onClick={() => handleCancel()}>Quay lại</button>
+        {formAdmin.isSubmitting ?
+          <button className="btn-df cursor-disable" type="submit" disabled >
+            Lưu
+          </button> :
+          <button className="btn-df" type="submit" >Lưu</button>
+        }
       </div>
     </form >
   )

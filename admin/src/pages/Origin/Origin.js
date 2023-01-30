@@ -1,71 +1,36 @@
 import "./origin.scss";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addOrigin, deleteOrigin, getOrigin, updateOrigin } from "../../redux/slice/originSlice";
-import { selectData } from "../../redux/selectors";
+import { deleteOrigin, getOrigin } from "../../redux/slice/originSlice";
 import CustomDialog from "../../components/CustomDialog/CustomDialog";
 import { DataGrid } from '@mui/x-data-grid';
-import EditIcon from '@mui/icons-material/Edit';
 import AddOrigin from "../../components/Origin/AddOrigin/AddOrigin";
+import UpdateOrigin from "../../components/Origin/UpdateOrigin/UpdateOrigin";
+import SubmitAlert from "../../components/SubmitAlert/SubmitAlert";
+import { DELETE_ORIGIN_SUCCESS } from "../../shared/constants";
+import Loading from "../../components/Loading/Loading";
 
 const Origin = () => {
   const dispatch = useDispatch();
   const [pageSize, setPageSize] = useState(50);
   const [selectionModel, setSelectionModel] = useState([]);
-  const [name, setName] = useState("");
-  const [formError, setFormError] = useState("");
-  const [edit, setEdit] = useState({});
-  const origin = useSelector(selectData("origin", "origin"));
-  const isEditEmpty = Object.keys(edit).length === 0;
+  const { isLoading, origin } = useSelector(state => state.origin);
   const selectedOrgin = [...origin.filter(item => selectionModel.includes(item._id))];
+  const [mess, setMess] = useState({});
 
   useEffect(() => {
     dispatch(getOrigin());
   }, []);
 
-  const validate = () => {
-    let error;
-
-    if (!name.trim()) {
-      error = "Vui lòng điền vào mục này!";
-    }
-
-    origin.map(item => {
-      if (item.name === name) {
-        return error = "Địa điểm đã tồn tại!";
-      }
-    })
-
-    return error;
-  }
-
-  const handleOnSubmit = async (e) => {
-    e.preventDefault();
-    const newOrigin = {
-      name: name
-    }
-    setFormError(validate());
-    !validate() && await dispatch(addOrigin(newOrigin));
-  }
-
   const handleDelete = (item) => {
-    dispatch(deleteOrigin(item._id));
-  }
-
-  const handleEdit = (item) => {
-    if (!isEditEmpty && item.row._id === edit.id) {
-      const updatedOrigin = { name: edit.name };
-      const id = edit.id;
-
-      dispatch(updateOrigin({ id, updatedOrigin }))
-      setEdit({});
-      return
-    }
-
-    setEdit({
-      id: item.row._id,
-      name: item.row.name
-    });
+    dispatch(deleteOrigin(item._id))
+      .unwrap()
+      .then(() => {
+        setMess({ success: DELETE_ORIGIN_SUCCESS });
+      })
+      .catch((error) => {
+        error.other && setMess({ error: error.other });
+      })
   }
 
   const columns = [
@@ -77,13 +42,7 @@ const Origin = () => {
       flex: 1,
       renderCell: (item) => {
         return (
-          <>
-            {!isEditEmpty && item.row._id === edit.id ?
-              <input type="text" className="input-default" name="name" vlaue={edit.name} onChange={(e) => setEdit({ ...edit, name: e.target.value })} />
-              :
-              <p>{item.row.name}</p>
-            }
-          </>
+          <p>{item.row.name}</p>
         );
       },
     },
@@ -92,23 +51,12 @@ const Origin = () => {
       field: "action",
       headerName: "Hành động",
       headerClassName: "wrapper_data-grid__header",
-      minWidth: 210,
-      flex: 0.6,
+      width: 210,
       sortable: false,
       renderCell: (item) => {
         return (
           <>
-            <button className="flex-bw-center btn-default btn-default--edit text-small" onClick={(e) => handleEdit(item)}>
-              {!isEditEmpty && item.row._id === edit.id ?
-                <span>Submit</span>
-                :
-                <>
-                  <span>Update</span>
-                  <EditIcon className="text-default" />
-                </>
-              }
-
-            </button>
+            <UpdateOrigin item={item.row} setMess={setMess} />
             <CustomDialog item={item} origin={origin} handleDelete={handleDelete} selectedItems={selectedOrgin} />
           </>
         );
@@ -118,31 +66,31 @@ const Origin = () => {
 
   return (
     <>
-      <AddOrigin
-        handleOnSubmit={handleOnSubmit}
-        name={name}
-        setName={setName}
-        formError={formError}
-      />
-      <div className="wrapper_data-grid origin">
-        <DataGrid
-          rows={origin}
-          disableSelectionOnClick
-          columns={columns}
-          disableColumnMenu
-          getRowId={(row) => row._id}
-          checkboxSelection={true}
-          pageSize={pageSize}
-          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-          rowsPerPageOptions={[20, 50, 100]}
-          pagination
-          onSelectionModelChange={(newSelectionModel) => {
-            setSelectionModel(newSelectionModel);
-          }}
-          selectionModel={selectionModel}
-        />
-      </div>
-
+      {isLoading ?
+        <Loading /> :
+        <>
+          <AddOrigin setMess={setMess} />
+          <div className="wrapper_data-grid origin">
+            <DataGrid
+              rows={origin}
+              disableSelectionOnClick
+              columns={columns}
+              disableColumnMenu
+              getRowId={(row) => row._id}
+              checkboxSelection={true}
+              pageSize={pageSize}
+              onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+              rowsPerPageOptions={[20, 50, 100]}
+              pagination
+              onSelectionModelChange={(newSelectionModel) => {
+                setSelectionModel(newSelectionModel);
+              }}
+              selectionModel={selectionModel}
+            />
+          </div>
+          <SubmitAlert mess={mess} />
+        </>
+      }
     </>
   )
 }
