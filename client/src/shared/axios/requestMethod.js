@@ -2,7 +2,8 @@ import axios from "axios";
 import { clearLocalStorage, getLocalAccessToken } from "../../utils/localStorage";
 import { refreshToken } from "../../utils/refreshToken";
 
-const BASE_URL = process.env.REACT_APP_URL_API;
+const BASE_URL = "https://api-balanh.onrender.com/api";
+// const BASE_URL = process.env.REACT_APP_URL_API;
 
 export const publictRequest = axios.create({
   baseURL: BASE_URL,

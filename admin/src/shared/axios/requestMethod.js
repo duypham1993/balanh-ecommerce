@@ -2,14 +2,13 @@ import axios from "axios";
 import { refreshToken } from "../../utils/refreshToken";
 import { clearLocalStorage, getLocalAccessToken } from "../../utils/localStorage";
 
-const BASE_URL = "https://api-balanh-ecommerce.vercel.app/api";
+const BASE_URL = "https://api-balanh.onrender.com/api";
+// const BASE_URL = process.env.REACT_APP_URL_API;
 
 export const publictRequest = axios.create({
   baseURL: BASE_URL,
   headers: {
-    'Content-Type': 'application/json',
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
+    'Content-Type': 'application/json'
   },
   withCredentials: true
 });
@@ -17,9 +16,7 @@ export const publictRequest = axios.create({
 const axiosPrivate = axios.create({
   baseURL: BASE_URL,
   headers: {
-    'Content-Type': 'application/json',
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS"
+    'Content-Type': 'application/json'
   },
   withCredentials: true
 });
