@@ -1,7 +1,7 @@
 import { Offcanvas, Navbar, Tab, Nav, Collapse } from 'react-bootstrap';
 import MenuItemMobile from './MenuItemMobile/MenuItemMobile';
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getCategories } from "../../../../redux/slice/categorySlice";
 import logo from "../../../../assets/imgs/logo.webp";
 import "./menu-mobile.scss";
@@ -24,10 +24,19 @@ const MenuMobile = ({ expand }) => {
   const localUser = getLocalCurrentUser();
   const localToken = getLocalAccessToken();
   const [open, setOpen] = useState(false);
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
     dispatch(getCategories());
   }, []);
+
+  const handleShow = () => {
+    setShow(true);
+  };
+
+  const handleClose = () => {
+    setShow(false);
+  }
 
   const formLogin = useFormik({
     initialValues: {
@@ -47,7 +56,7 @@ const MenuMobile = ({ expand }) => {
       dispatch(login(values))
         .unwrap()
         .then(() => {
-
+          setShow(false);
         })
         .catch((error) => {
           formLogin.errors.password = error.password;
@@ -58,18 +67,23 @@ const MenuMobile = ({ expand }) => {
   });
 
   const handleLogout = () => {
-    dispatch(logout());
+    dispatch(logout())
+      .unwrap()
+      .then(() => {
+        setShow(false);
+      })
   }
 
   return (
     <div className="menu-mobile">
-      <Navbar.Toggle aria-controls={`offcanvasNavbar-expand-${expand}`} className="shadow-none rounded-0" />
+      <Navbar.Toggle className="shadow-none rounded-0" onClick={handleShow} />
       <Navbar.Offcanvas
-        id={`offcanvasNavbar-expand-${expand}`}
-        aria-labelledby={`offcanvasNavbarLabel-expand-${expand}`}
-        placement="end" className="menu-mobile">
+        placement="end"
+        show={show}
+        onHide={handleClose}
+        className="menu-mobile">
         <Offcanvas.Header closeButton>
-          <Offcanvas.Title id={`offcanvasNavbarLabel-expand-${expand}`} className="text-uppercase">
+          <Offcanvas.Title className="text-uppercase">
             <div className='w-50'>
               <img src={logo} alt="Ba lành" className='w-100' />
             </div>
@@ -78,7 +92,6 @@ const MenuMobile = ({ expand }) => {
         <Offcanvas.Body className="p-0">
           <Tab.Container
             defaultActiveKey="menu"
-            className=""
             justify
           >
             <Nav className='mb-3 flex-row'>
@@ -97,6 +110,7 @@ const MenuMobile = ({ expand }) => {
                       <MenuItemMobile
                         item={item}
                         key={index}
+                        handleClose={handleClose}
                       />
                     );
                   })}
@@ -106,7 +120,7 @@ const MenuMobile = ({ expand }) => {
                 {Object.keys(currentUser).length || localUser && localToken ?
                   <Nav>
                     <Nav.Item className='mb-3'>
-                      <Link to="/profile" className='link-df link-df--gray'>
+                      <Link to="/profile" className='link-df link-df--gray' onClick={handleClose}>
                         <ManageAccountsIcon />
                         <span>Thông tin tài khoản</span>
                       </Link>
@@ -121,7 +135,7 @@ const MenuMobile = ({ expand }) => {
                   :
                   <Nav >
                     <Nav.Item className='mb-3'>
-                      <Link to="/register" className='link-df link-df--gray d-flex align-items-center text-capitalize'>
+                      <Link to="/register" className='link-df link-df--gray d-flex align-items-center text-capitalize' onClick={handleClose}>
                         <KeyIcon />
                         <span className='ps-1'>Đăng ký tài khoản</span>
                       </Link>
@@ -151,7 +165,6 @@ const MenuMobile = ({ expand }) => {
               </Tab.Pane>
             </Tab.Content>
           </Tab.Container>
-
         </Offcanvas.Body>
       </Navbar.Offcanvas>
     </div>

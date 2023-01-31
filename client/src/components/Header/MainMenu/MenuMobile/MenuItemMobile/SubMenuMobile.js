@@ -1,6 +1,6 @@
 import MenuItemMobile from './MenuItemMobile';
 
-const SubMenu = ({ children }) => {
+const SubMenu = ({ children, handleClose }) => {
   return (
     <ul
       className='list-unstyled p-0 bg-green'
@@ -10,6 +10,7 @@ const SubMenu = ({ children }) => {
           item={submenu}
           key={index}
           isSubItem={true}
+          handleClose={handleClose}
         />
       ))}
     </ul>
