@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-const verifyTokenAdmin = (req, res, next) => {
+export const verifyTokenAdmin = (req, res, next) => {
   const authHeader = req.headers.accesstoken;
   const cookies = req.cookies;
   if (authHeader) {
@@ -16,7 +16,7 @@ const verifyTokenAdmin = (req, res, next) => {
   }
 };
 
-const verifyTokenRoleAdmin = (req, res, next) => {
+export const verifyTokenRoleAdmin = (req, res, next) => {
   verifyTokenAdmin(req, res, () => {
     if (req.user.role == "Admin") {
       next();
@@ -26,7 +26,7 @@ const verifyTokenRoleAdmin = (req, res, next) => {
   });
 };
 
-const verifyTokenClient = (req, res, next) => {
+export const verifyTokenClient = (req, res, next) => {
   const authHeader = req.headers.accesstoken;
   const cookies = req.cookies;
   if (authHeader) {
@@ -42,9 +42,3 @@ const verifyTokenClient = (req, res, next) => {
     })
   }
 };
-
-module.exports = {
-  verifyTokenAdmin,
-  verifyTokenRoleAdmin,
-  verifyTokenClient
-}

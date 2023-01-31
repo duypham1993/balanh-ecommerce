@@ -3,15 +3,16 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
+  "engines": {
+    "node": "16.x"
+  },
   "scripts": {
-    "start": "nodemon --exec babel-node index.js"
+    "start": "nodemon index.js"
   },
   "author": "Duy Pham",
   "license": "ISC",
   "dependencies": {
-    "@babel/core": "^7.19.3",
-    "@babel/node": "^7.19.1",
-    "@babel/preset-env": "^7.19.4",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "crypto-js": "^4.1.1",

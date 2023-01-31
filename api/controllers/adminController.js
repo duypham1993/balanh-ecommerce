@@ -1,8 +1,8 @@
 import CryptoJS from "crypto-js";
-import Admin from "../models/Admin";
+import Admin from "../models/Admin.js";
 
 // CREATE ADMIN ACCOUNT
-const createAdmin = async (req, res) => {
+export const createAdmin = async (req, res) => {
   let error = {};
   const checkEmail = await Admin.find({ email: req.body.email });
   if (checkEmail && checkEmail.length) {
@@ -28,7 +28,7 @@ const createAdmin = async (req, res) => {
 };
 
 // GET ALL ACCOUNT
-const getAllAdmin = async (req, res) => {
+export const getAllAdmin = async (req, res) => {
   try {
     const user = await Admin.find({}, '_id email firstName lastName role isActive');
     res.status(200).json(user);
@@ -38,7 +38,7 @@ const getAllAdmin = async (req, res) => {
 };
 
 // GET CURRENT ACCOUNT 
-const getCurrentAdmin = async (req, res) => {
+export const getCurrentAdmin = async (req, res) => {
   try {
     const user = await Admin.findById(req.params.id, '_id email firstName lastName role isActive');
     res.status(200).json(user);
@@ -48,7 +48,7 @@ const getCurrentAdmin = async (req, res) => {
 };
 
 // UPDATE ACCOUNT
-const updateAdmin = async (req, res) => {
+export const updateAdmin = async (req, res) => {
   let error = {};
   const checkEmail = await Admin.find({ email: req.body.email, _id: { $ne: req.params.id } });
   if (checkEmail.length) {
@@ -97,7 +97,7 @@ const updateAdmin = async (req, res) => {
 };
 
 // UPDATE BY CURRENT USER 
-const updateByCurrentUser = async (req, res) => {
+export const updateByCurrentUser = async (req, res) => {
   let error = {};
   const statusChangePW = req.body.statusChangePW;
   try {
@@ -153,7 +153,7 @@ const updateByCurrentUser = async (req, res) => {
 };
 
 // DELETE ACCOUNT
-const deleteAdmin = async (req, res) => {
+export const deleteAdmin = async (req, res) => {
   let error = {};
   try {
     await Admin.findByIdAndDelete(req.params.id);
@@ -164,11 +164,3 @@ const deleteAdmin = async (req, res) => {
   }
 };
 
-module.exports = {
-  createAdmin,
-  getAllAdmin,
-  getCurrentAdmin,
-  updateAdmin,
-  updateByCurrentUser,
-  deleteAdmin
-};

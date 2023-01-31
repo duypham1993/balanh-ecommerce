@@ -1,6 +1,6 @@
 import express from "express";
-import { verifyTokenAdmin, verifyTokenRoleAdmin } from "../../middleware/verifyToken";
-import { createProduct, getAllProducts, getProductOfCategory, getCurrentProduct, updateProduct, updateStock, deleteProduct, getCurrentProductClient, getProductsForSearch, getFilterProduct, getProductForQuickSearch } from "../../controllers/productController";
+import { verifyTokenAdmin, verifyTokenRoleAdmin } from "../middleware/verifyToken.js";
+import { createProduct, getAllProducts, getProductOfCategory, getCurrentProduct, updateProduct, updateStock, deleteProduct, getCurrentProductClient, getProductsForSearch, getFilterProduct, getProductForQuickSearch } from "../controllers/productController.js";
 
 const router = express.Router();
 
@@ -38,4 +38,4 @@ router.get("/client/quickSearch", getProductForQuickSearch);
 // GET FILTER FOR PRODUCT
 router.get("/client/filters", getFilterProduct);
 
-module.exports = router;
+export default router;

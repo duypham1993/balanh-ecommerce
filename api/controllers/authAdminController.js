@@ -1,4 +1,4 @@
-import Admin from "../models/Admin";
+import Admin from "../models/Admin.js";
 import CryptoJS from "crypto-js";
 import jwt from "jsonwebtoken";
 
@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
  * FOR Admin 
  */
 // Login
-const loginAdmin = async (req, res) => {
+export const loginAdmin = async (req, res) => {
   let error = {};
   try {
     const cookies = req.cookies;
@@ -90,7 +90,7 @@ const loginAdmin = async (req, res) => {
   }
 };
 
-const logoutAdmin = async (req, res) => {
+export const logoutAdmin = async (req, res) => {
   let error = {};
   try {
     const cookies = req.cookies;
@@ -114,7 +114,3 @@ const logoutAdmin = async (req, res) => {
   }
 };
 
-module.exports = {
-  loginAdmin,
-  logoutAdmin
-};

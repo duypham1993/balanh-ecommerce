@@ -1,10 +1,10 @@
-import Product from "../models/Product";
-import Origin from "../models/Origin";
-import Supplier from "../models/Supplier";
-import Category from "../models/Category";
+import Product from "../models/Product.js";
+import Origin from "../models/Origin.js";
+import Supplier from "../models/Supplier.js";
+import Category from "../models/Category.js";
 
 // CREATE
-const createProduct = async (req, res) => {
+export const createProduct = async (req, res) => {
   let error = {};
   const checkSku = await Product.find({ sku: req.body.sku });
   if (checkSku?.length) {
@@ -23,7 +23,7 @@ const createProduct = async (req, res) => {
 };
 
 // GET CURRENT PRODUCT
-const getCurrentProduct = async (req, res) => {
+export const getCurrentProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     const origin = await Origin.findById(product.origin, "_id name");
@@ -41,7 +41,7 @@ const getCurrentProduct = async (req, res) => {
 };
 
 // GET ALL
-const getAllProducts = async (req, res) => {
+export const getAllProducts = async (req, res) => {
   try {
     const products = await Product.find({});
     const updateProducts = products?.length ? await Promise.all(products.map(async (product) => {
@@ -61,7 +61,7 @@ const getAllProducts = async (req, res) => {
 };
 
 // UPDATE
-const updateProduct = async (req, res) => {
+export const updateProduct = async (req, res) => {
   let error = {};
   const checkSku = await Product.find({ sku: req.body.sku, _id: { $ne: req.params.id } });
   if (checkSku && checkSku.length) {
@@ -85,7 +85,7 @@ const updateProduct = async (req, res) => {
 };
 
 // UPDATE STOCK
-const updateStock = async (req, res) => {
+export const updateStock = async (req, res) => {
   let error;
   try {
     const updateProduct = await Product.findById(req.body._id);
@@ -100,7 +100,7 @@ const updateStock = async (req, res) => {
 };
 
 // DELETE
-const deleteProduct = async (req, res) => {
+export const deleteProduct = async (req, res) => {
   let error = {};
   try {
     await Product.findByIdAndDelete(req.params.id);
@@ -113,7 +113,7 @@ const deleteProduct = async (req, res) => {
 
 // FOR CLIENT
 // GET PRODUCT OF CATEGORY
-const getProductOfCategory = async (req, res) => {
+export const getProductOfCategory = async (req, res) => {
   let error;
   try {
     const perPage = req.query.limit || 40;
@@ -185,7 +185,7 @@ const getProductOfCategory = async (req, res) => {
 };
 
 // GET CURRENT PRODUCT
-const getCurrentProductClient = async (req, res) => {
+export const getCurrentProductClient = async (req, res) => {
   let error;
   try {
     const product = await Product.findById(req.params.id, "_id name sku desc price origin imgs packing qty");
@@ -202,7 +202,7 @@ const getCurrentProductClient = async (req, res) => {
 };
 
 // FULL SEARCH PRODUCT
-const getProductsForSearch = async (req, res) => {
+export const getProductsForSearch = async (req, res) => {
   let error;
   try {
     const perPage = req.query.limit || 40;
@@ -274,7 +274,7 @@ const getProductsForSearch = async (req, res) => {
 };
 
 // QUICK SEARCH PRODUCT 
-const getProductForQuickSearch = async (req, res) => {
+export const getProductForQuickSearch = async (req, res) => {
   try {
     const query = {
       name: { $regex: req.query.query, $options: "i" },
@@ -287,7 +287,7 @@ const getProductForQuickSearch = async (req, res) => {
   }
 }
 
-const getFilterProduct = async (req, res) => {
+export const getFilterProduct = async (req, res) => {
   try {
     let query;
     if (req.query.id) {
@@ -325,17 +325,3 @@ const getFilterProduct = async (req, res) => {
   }
 
 }
-
-module.exports = {
-  createProduct,
-  getAllProducts,
-  getCurrentProduct,
-  updateProduct,
-  updateStock,
-  deleteProduct,
-  getCurrentProductClient,
-  getProductOfCategory,
-  getProductsForSearch,
-  getProductForQuickSearch,
-  getFilterProduct
-};

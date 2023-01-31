@@ -1,10 +1,10 @@
-import Order from "../models/Order";
-import Product from "../models/Product";
+import Order from "../models/Order.js";
+import Product from "../models/Product.js";
 import { nanoid } from 'nanoid';
-import { updateInfoOrder } from "../utils/updateInfoOrder";
+import { updateInfoOrder } from "../utils/updateInfoOrder.js";
 
 //CREATE
-const createOrder = async (req, res) => {
+export const createOrder = async (req, res) => {
   let error = {};
   try {
     const orderProducts = req.body.products;
@@ -67,7 +67,7 @@ const createOrder = async (req, res) => {
 };
 
 //GET USER ORDERS
-const getUserOrders = async (req, res) => {
+export const getUserOrders = async (req, res) => {
   try {
     const orders = await Order.find({ customerID: req.params.userId });
     res.status(200).json(orders);
@@ -77,7 +77,7 @@ const getUserOrders = async (req, res) => {
 };
 
 //GET CURRENT ORDERS
-const getCurrentOrder = async (req, res) => {
+export const getCurrentOrder = async (req, res) => {
   let error;
   try {
     const order = [await Order.findById(req.params.id)];
@@ -90,7 +90,7 @@ const getCurrentOrder = async (req, res) => {
 };
 
 //GET ALL
-const getAllOrders = async (req, res) => {
+export const getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find();
     const updateInfoOrders = await updateInfoOrder(orders);
@@ -101,7 +101,7 @@ const getAllOrders = async (req, res) => {
 };
 
 //UPDATE
-const updateOrder = async (req, res) => {
+export const updateOrder = async (req, res) => {
   try {
     const updatedOrder = await Order.findByIdAndUpdate(
       req.params.id,
@@ -122,20 +122,11 @@ const updateOrder = async (req, res) => {
 };
 
 //DELETE
-const deleteOrder = async (req, res) => {
+export const deleteOrder = async (req, res) => {
   try {
     await Order.findByIdAndDelete(req.params.id);
     res.status(200).json("Order has been deleted...");
   } catch (err) {
     res.status(500).json(err);
   }
-};
-
-module.exports = {
-  createOrder,
-  getAllOrders,
-  getUserOrders,
-  getCurrentOrder,
-  updateOrder,
-  deleteOrder
 };

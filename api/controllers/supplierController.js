@@ -1,7 +1,7 @@
-import Supplier from "../models/Supplier";
+import Supplier from "../models/Supplier.js";
 
 // CREATE 
-const createSupplier = async (req, res) => {
+export const createSupplier = async (req, res) => {
   let error = {};
   const checkSku = await Supplier.find({ sku: req.body.sku });
   if (checkSku && checkSku.length) {
@@ -20,7 +20,7 @@ const createSupplier = async (req, res) => {
 };
 
 // GET ALL 
-const getAllSuppliers = async (req, res) => {
+export const getAllSuppliers = async (req, res) => {
   const supplier = await Supplier.find({});
   try {
     res.status(200).json(supplier);
@@ -30,7 +30,7 @@ const getAllSuppliers = async (req, res) => {
 };
 
 // GET CURRENT SUPPLIER
-const getCurrentSupplier = async (req, res) => {
+export const getCurrentSupplier = async (req, res) => {
   try {
     const supplier = await Supplier.findById(req.params.id);
     res.status(200).json(supplier)
@@ -40,7 +40,7 @@ const getCurrentSupplier = async (req, res) => {
 };
 
 // UPDATE
-const updateSupplier = async (req, res) => {
+export const updateSupplier = async (req, res) => {
   let error = {};
   const checkSku = await Supplier.find({ sku: req.body.sku, _id: { $ne: req.params.id } });
   if (checkSku && checkSku.length) {
@@ -62,7 +62,7 @@ const updateSupplier = async (req, res) => {
 };
 
 // DELETE
-const deleteSupplier = async (req, res) => {
+export const deleteSupplier = async (req, res) => {
   let error = {};
   try {
     await Supplier.findByIdAndDelete(req.params.id);
@@ -71,12 +71,4 @@ const deleteSupplier = async (req, res) => {
     error.other = "Xoá nhà cung cấp thất bại!"
     res.status(500).json(error);
   }
-};
-
-module.exports = {
-  createSupplier,
-  getAllSuppliers,
-  getCurrentSupplier,
-  updateSupplier,
-  deleteSupplier
 };

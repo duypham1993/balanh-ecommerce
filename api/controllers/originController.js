@@ -1,7 +1,7 @@
-import Origin from "../models/Origin";
+import Origin from "../models/Origin.js";
 
 // CREATE
-const createOrigin = async (req, res) => {
+export const createOrigin = async (req, res) => {
   let error = {};
   const checkOrigin = await Origin.findOne({ name: req.body.name });
 
@@ -23,7 +23,7 @@ const createOrigin = async (req, res) => {
 };
 
 // GET ALL
-const getAllOrigins = async (req, res) => {
+export const getAllOrigins = async (req, res) => {
   const origin = await Origin.find();
   try {
     return res.status(200).json(origin);
@@ -33,7 +33,7 @@ const getAllOrigins = async (req, res) => {
 };
 
 // UPDATE
-const updateOrigin = async (req, res) => {
+export const updateOrigin = async (req, res) => {
   try {
     const updateOrigin = await Origin.findByIdAndUpdate(
       req.params.id,
@@ -51,18 +51,11 @@ const updateOrigin = async (req, res) => {
 };
 
 // DELETE
-const deleteOrigin = async (req, res) => {
+export const deleteOrigin = async (req, res) => {
   try {
     await Origin.findByIdAndDelete(req.params.id);
     return res.status(200).json(req.params.id);
   } catch (err) {
     return res.status(500).json(err);
   }
-};
-
-module.exports = {
-  createOrigin,
-  getAllOrigins,
-  updateOrigin,
-  deleteOrigin
 };

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-require('dotenv').config();
+import "dotenv/config";
 
 const dbConn = () => {
   const mongoURL = process.env.MONGO_URL;
@@ -11,4 +11,4 @@ const dbConn = () => {
     });
 };
 
-module.exports = dbConn;
+export default dbConn;

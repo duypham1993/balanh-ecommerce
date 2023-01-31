@@ -1,9 +1,10 @@
 import express from "express";
-import dbConn from "./config/dbConn";
-require('dotenv').config();
+import dbConn from "./config/dbConn.js";
+import "dotenv/config";
 import cookieParse from "cookie-parser";
 import cors from "cors";
-import corsOptions from "./config/corsConfig";
+import corsOptions from "./config/corsConfig.js";
+import routes from "./routes/index.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -13,10 +14,8 @@ app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cookieParse());
-app.use(require("./routes/index"));
+app.use("/api/", routes);
 
 app.listen(port, () => {
   console.log("Port is: ", port);
 });
-
-module.exports = app;

@@ -1,4 +1,4 @@
-import Customer from "../models/Customer";
+import Customer from "../models/Customer.js";
 
 export const updateInfoOrder = async (order) => {
   const orders = await Promise.all(order?.map(async (item) => {

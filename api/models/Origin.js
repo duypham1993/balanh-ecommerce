@@ -6,4 +6,4 @@ const originSchema = new mongoose.Schema(
   },
   { timestamps: true }
 )
-module.exports = mongoose.model("Origin", originSchema);
+export default mongoose.model("Origin", originSchema);

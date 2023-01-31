@@ -1,8 +1,8 @@
-import Category from "../models/Category";
-import Product from "../models/Product";
+import Category from "../models/Category.js";
+import Product from "../models/Product.js";
 
 // CREATE
-const createCategory = async (req, res) => {
+export const createCategory = async (req, res) => {
   let error = {};
 
   try {
@@ -23,7 +23,7 @@ const createCategory = async (req, res) => {
 };
 
 // GET ALL
-const getAllCategories = async (req, res) => {
+export const getAllCategories = async (req, res) => {
   const categories = await Category.find();
   let root = {};
 
@@ -59,7 +59,7 @@ const getAllCategories = async (req, res) => {
 };
 
 // UPDATE
-const updateCategory = async (req, res) => {
+export const updateCategory = async (req, res) => {
   let error = {};
 
   try {
@@ -76,7 +76,7 @@ const updateCategory = async (req, res) => {
 };
 
 // DELETE
-const deleteCategory = async (req, res) => {
+export const deleteCategory = async (req, res) => {
   let error = {};
   try {
     await Category.findByIdAndDelete(req.params.id);
@@ -95,7 +95,7 @@ const deleteCategory = async (req, res) => {
 };
 
 // CHECK SLUG
-const checkSlug = async (req, res) => {
+export const checkSlug = async (req, res) => {
   let error = {};
   const checkSlug = req.body._id ? await Category.find({ slug: req.body.slug, _id: { $ne: req.body._id } }) : await Category.find({ slug: req.body.slug });
 
@@ -104,11 +104,3 @@ const checkSlug = async (req, res) => {
   return checkSlug?.length ? res.status(500).json(error) : res.sendStatus(200);
 
 }
-
-module.exports = {
-  createCategory,
-  getAllCategories,
-  updateCategory,
-  deleteCategory,
-  checkSlug
-};

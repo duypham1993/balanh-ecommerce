@@ -1,5 +1,5 @@
 import express from "express";
-import { loginAdmin, logoutAdmin } from "../../controllers/authAdminController";
+import { loginAdmin, logoutAdmin } from "../controllers/authAdminController.js";
 
 const router = express.Router();
 
@@ -12,4 +12,4 @@ router.post("/login", loginAdmin);
 // Logout
 router.delete("/logout", logoutAdmin);
 
-module.exports = router;
+export default router;

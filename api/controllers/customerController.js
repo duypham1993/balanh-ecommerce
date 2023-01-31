@@ -1,8 +1,8 @@
 import CryptoJS from "crypto-js";
-import Customer from "../models/Customer";
+import Customer from "../models/Customer.js";
 
 // CREATE
-const createCustomer = async (req, res) => {
+export const createCustomer = async (req, res) => {
   let error = {};
   const checkEmail = await Customer.find({ email: req.body.email });
   if (checkEmail && checkEmail.length) {
@@ -29,7 +29,7 @@ const createCustomer = async (req, res) => {
 };
 
 // GET ALL 
-const getAllCustomers = async (req, res) => {
+export const getAllCustomers = async (req, res) => {
   const user = await Customer.find({}, "_id name email gender phone dateOfBirth isActive");
   try {
     res.status(200).json(user);
@@ -39,7 +39,7 @@ const getAllCustomers = async (req, res) => {
 };
 
 // GET CURRENT CUSTOMER
-const getCurrentCustomer = async (req, res) => {
+export const getCurrentCustomer = async (req, res) => {
   const currentUser = await Customer.findById(req.params.id, "_id name email gender phone dateOfBirth isActive");
   try {
     res.status(200).json(currentUser);
@@ -49,7 +49,7 @@ const getCurrentCustomer = async (req, res) => {
 };
 
 // UPDATE
-const updateCustomer = async (req, res) => {
+export const updateCustomer = async (req, res) => {
   let error = {};
   const checkEmail = Customer.find({ email: req.body.email, _id: { $ne: req.params.id } });
   if (checkEmail && checkEmail.length) {
@@ -90,7 +90,7 @@ const updateCustomer = async (req, res) => {
   }
 };
 
-const updateUser = async (req, res) => {
+export const updateUser = async (req, res) => {
   let error = {};
   try {
     if (req.body.currentPassword) {
@@ -134,7 +134,7 @@ const updateUser = async (req, res) => {
 }
 
 // DELETE
-const deleteCustomer = async (req, res) => {
+export const deleteCustomer = async (req, res) => {
   let error = {}
   try {
     await Customer.findByIdAndDelete(req.params.id);
@@ -143,13 +143,4 @@ const deleteCustomer = async (req, res) => {
     error.other = "Xoá tài khoản thất bại!"
     res.status(500).json(error);
   }
-};
-
-module.exports = {
-  createCustomer,
-  getAllCustomers,
-  getCurrentCustomer,
-  updateCustomer,
-  deleteCustomer,
-  updateUser
 };

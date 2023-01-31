@@ -1,6 +1,6 @@
 import express from "express";
-import { verifyTokenAdmin, verifyTokenRoleAdmin, verifyTokenClient } from "../../middleware/verifyToken";
-import { createOrder, getAllOrders, getUserOrders, updateOrder, deleteOrder, getCurrentOrder } from "../../controllers/orderController";
+import { verifyTokenAdmin, verifyTokenRoleAdmin, verifyTokenClient } from "../middleware/verifyToken.js";
+import { createOrder, getAllOrders, getUserOrders, updateOrder, deleteOrder, getCurrentOrder } from "../controllers/orderController.js";
 
 const router = express.Router();
 
@@ -32,4 +32,4 @@ router.get("/client/:userId", verifyTokenClient, getUserOrders);
 //GET CURRENT ORDER
 router.get("/client/current/:id", verifyTokenClient, getCurrentOrder);
 
-module.exports = router;
+export default router;

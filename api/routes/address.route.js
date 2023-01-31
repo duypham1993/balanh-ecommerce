@@ -1,6 +1,6 @@
 import express from "express";
-import { verifyTokenAdmin, verifyTokenRoleAdmin, verifyTokenClient } from "../../middleware/verifyToken";
-import { createAddress, getAllAddresss, getCurrentAddress, updateAddress, deleteAddress, getUserAddress } from "../../controllers/addressController"
+import { verifyTokenAdmin, verifyTokenRoleAdmin, verifyTokenClient } from "../middleware/verifyToken.js";
+import { createAddress, getAllAddresss, getCurrentAddress, updateAddress, deleteAddress, getUserAddress } from "../controllers/addressController.js"
 
 const router = express.Router();
 
@@ -35,4 +35,4 @@ router.put("/client/:id", verifyTokenClient, updateAddress);
 router.delete("/client/:id", verifyTokenClient, deleteAddress);
 
 
-module.exports = router;
+export default router;

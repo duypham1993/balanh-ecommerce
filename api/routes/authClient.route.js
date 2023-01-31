@@ -1,5 +1,5 @@
 import express from "express";
-import { registerClient, loginClient, logoutClient } from "../../controllers/authClientController";
+import { registerClient, loginClient, logoutClient } from "../controllers/authClientController.js";
 
 const router = express.Router();
 
@@ -15,4 +15,4 @@ router.post("/login", loginClient);
 // Logout
 router.delete("/logout", logoutClient);
 
-module.exports = router;
+export default router;

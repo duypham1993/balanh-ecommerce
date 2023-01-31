@@ -1,8 +1,8 @@
-import Admin from "../models/Admin";
-import Customer from "../models/Customer";
+import Admin from "../models/Admin.js";
+import Customer from "../models/Customer.js";
 import jwt from "jsonwebtoken";
 
-const refreshTokenAdmin = async (req, res) => {
+export const refreshTokenAdmin = async (req, res) => {
   const cookies = req.cookies;
   if (!cookies?.jwtAdmin) return res.status(401).json("Not found the key");
 
@@ -61,7 +61,7 @@ const refreshTokenAdmin = async (req, res) => {
   })
 };
 
-const refreshTokenClient = async (req, res) => {
+export const refreshTokenClient = async (req, res) => {
   const cookies = req.cookies;
   if (!cookies?.jwtClient) return res.status(401).json("Not found the key");
 
@@ -120,7 +120,3 @@ const refreshTokenClient = async (req, res) => {
   })
 };
 
-module.exports = {
-  refreshTokenAdmin,
-  refreshTokenClient
-};

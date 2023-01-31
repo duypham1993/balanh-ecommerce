@@ -1,6 +1,6 @@
 import express from "express";
-import { verifyTokenAdmin, verifyTokenRoleAdmin, verifyTokenClient } from "../../middleware/verifyToken";
-import { addToCart, getAllCart, getUserCart, updateCart, removeProductCart, deleteCart } from "../../controllers/cartController";
+import { verifyTokenAdmin, verifyTokenClient } from "../middleware/verifyToken.js";
+import { addToCart, getAllCart, getUserCart, updateCart, removeProductCart, deleteCart } from "../controllers/cartController.js";
 
 const router = express.Router();
 
@@ -24,4 +24,4 @@ router.put("/", verifyTokenClient, updateCart);
 // DELETE
 router.delete("/:id", verifyTokenClient, deleteCart)
 
-module.exports = router;
+export default router;

@@ -1,4 +1,4 @@
-import Customer from "../models/Customer";
+import Customer from "../models/Customer.js";
 import CryptoJS from "crypto-js";
 import jwt from "jsonwebtoken";
 
@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
  * FOR CLIENT 
  */
 // Register 
-const registerClient = async (req, res) => {
+export const registerClient = async (req, res) => {
   let errors = {};
   const checkEmail = await Customer.findOne({ email: req.body.email });
   if (checkEmail) {
@@ -27,7 +27,7 @@ const registerClient = async (req, res) => {
 };
 
 // Login
-const loginClient = async (req, res) => {
+export const loginClient = async (req, res) => {
   let error = {};
   try {
     const cookies = req.cookies;
@@ -110,7 +110,7 @@ const loginClient = async (req, res) => {
   }
 };
 
-const logoutClient = async (req, res) => {
+export const logoutClient = async (req, res) => {
   let error = {};
   try {
     const cookies = req.cookies;
@@ -132,9 +132,4 @@ const logoutClient = async (req, res) => {
     error.other = "Đăng xuất thất bại!"
     res.status(201).json(error);
   }
-};
-module.exports = {
-  registerClient,
-  loginClient,
-  logoutClient
 };

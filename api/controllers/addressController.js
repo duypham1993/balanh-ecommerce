@@ -1,8 +1,8 @@
-import Address from "../models/Address";
-import Customer from "../models/Customer";
+import Address from "../models/Address.js";
+import Customer from "../models/Customer.js";
 
 // CREATE ADDRESS
-const createAddress = async (req, res) => {
+export const createAddress = async (req, res) => {
   try {
     const check = await Address.findOne({ customerID: req.body.customerID });
     let newAddress;
@@ -33,7 +33,7 @@ const createAddress = async (req, res) => {
 };
 
 // GET ALL 
-const getAllAddresss = async (req, res) => {
+export const getAllAddresss = async (req, res) => {
   const addressList = await Address.find({});
   try {
     res.status(200).json(addressList);
@@ -43,7 +43,7 @@ const getAllAddresss = async (req, res) => {
 };
 
 // GET USER ADDRESS LIST
-const getUserAddress = async (req, res) => {
+export const getUserAddress = async (req, res) => {
   let error = {};
   try {
     const Addresss = await Address.find({ customerID: req.params.id });
@@ -54,7 +54,7 @@ const getUserAddress = async (req, res) => {
 }
 
 // GET CURRENT ADDRESS
-const getCurrentAddress = async (req, res) => {
+export const getCurrentAddress = async (req, res) => {
   try {
     const currentAddress = await Address.findById(req.params.id);
     const { email } = await Customer.findById(currentAddress.customerID, "email");
@@ -66,7 +66,7 @@ const getCurrentAddress = async (req, res) => {
 };
 
 // UPDATE ADDRESS
-const updateAddress = async (req, res) => {
+export const updateAddress = async (req, res) => {
   try {
     if (req.body.isDefault) {
       await Address.updateMany(
@@ -89,20 +89,11 @@ const updateAddress = async (req, res) => {
 };
 
 // DELETE ADDRESS
-const deleteAddress = async (req, res) => {
+export const deleteAddress = async (req, res) => {
   try {
     await Address.findByIdAndDelete(req.params.id);
     res.status(200).json(req.params.id);
   } catch (err) {
     res.status(500).json(err);
   }
-};
-
-module.exports = {
-  createAddress,
-  getAllAddresss,
-  getCurrentAddress,
-  updateAddress,
-  deleteAddress,
-  getUserAddress
 };

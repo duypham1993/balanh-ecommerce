@@ -1,4 +1,4 @@
-import Product from "../models/Product";
+import Product from "../models/Product.js";
 
 export const getInfoProductForCart = async (cart) => {
   const products = await Promise.all(cart.products?.map(async (product) => {

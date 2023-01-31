@@ -1,6 +1,6 @@
 import express from "express";
-import { verifyTokenAdmin, verifyTokenRoleAdmin } from "../../middleware/verifyToken";
-import { createAdmin, getAllAdmin, getCurrentAdmin, updateAdmin, updateByCurrentUser, deleteAdmin } from "../../controllers/adminController"
+import { verifyTokenAdmin, verifyTokenRoleAdmin } from "../middleware/verifyToken.js";
+import { createAdmin, getAllAdmin, getCurrentAdmin, updateAdmin, updateByCurrentUser, deleteAdmin } from "../controllers/adminController.js"
 
 const router = express.Router();
 
@@ -22,4 +22,4 @@ router.put("/user/", verifyTokenAdmin, updateByCurrentUser);
 // DELETE
 router.delete("/:id", verifyTokenRoleAdmin, deleteAdmin);
 
-module.exports = router;
+export default router;

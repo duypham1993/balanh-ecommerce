@@ -1,6 +1,6 @@
 import express from "express";
-import { verifyTokenAdmin, verifyTokenRoleAdmin } from "../../middleware/verifyToken";
-import { createCategory, getAllCategories, updateCategory, deleteCategory, checkSlug } from "../../controllers/categoryController";
+import { verifyTokenAdmin, verifyTokenRoleAdmin } from "../middleware/verifyToken.js";
+import { createCategory, getAllCategories, updateCategory, deleteCategory, checkSlug } from "../controllers/categoryController.js";
 
 const router = express.Router();
 
@@ -23,4 +23,4 @@ router.post("/check", verifyTokenRoleAdmin, checkSlug);
 // GET ALL
 router.get("/client", getAllCategories);
 
-module.exports = router;
+export default router;

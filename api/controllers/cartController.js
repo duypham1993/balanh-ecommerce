@@ -1,9 +1,9 @@
-import Cart from "../models/Cart";
-import Product from "../models/Product";
-import { getInfoProductForCart } from "../utils/getInfoProductForCart";
+import Cart from "../models/Cart.js";
+import Product from "../models/Product.js";
+import { getInfoProductForCart } from "../utils/getInfoProductForCart.js";
 
 // GET ALL
-const getAllCart = async (req, res) => {
+export const getAllCart = async (req, res) => {
   try {
     const carts = await Cart.find({});
     res.status(201).json(carts);
@@ -13,7 +13,7 @@ const getAllCart = async (req, res) => {
 };
 
 // GET USER CART
-const getUserCart = async (req, res) => {
+export const getUserCart = async (req, res) => {
   let error = {};
   const cart = await Cart.findOne({ customerID: req.params.id });
   // If user has cart - reponse cart else create and reponse cart
@@ -41,7 +41,7 @@ const getUserCart = async (req, res) => {
 };
 
 // ADD TO CART
-const addToCart = async (req, res) => {
+export const addToCart = async (req, res) => {
   let error = {};
   try {
     const filter = {
@@ -72,7 +72,7 @@ const addToCart = async (req, res) => {
 }
 
 // REMOVE PRODUCT IN CART 
-const removeProductCart = async (req, res) => {
+export const removeProductCart = async (req, res) => {
   let error = {};
   try {
     await Cart.findOneAndUpdate(
@@ -89,7 +89,7 @@ const removeProductCart = async (req, res) => {
 }
 
 // UPDATE CART
-const updateCart = async (req, res) => {
+export const updateCart = async (req, res) => {
   let error = {};
 
   try {
@@ -108,7 +108,7 @@ const updateCart = async (req, res) => {
 };
 
 // DELETE CART  
-const deleteCart = async (req, res) => {
+export const deleteCart = async (req, res) => {
   let error = {};
   try {
     await Cart.findByIdAndUpdate(
@@ -122,11 +122,3 @@ const deleteCart = async (req, res) => {
   }
 }
 
-module.exports = {
-  addToCart,
-  getAllCart,
-  getUserCart,
-  removeProductCart,
-  updateCart,
-  deleteCart
-};

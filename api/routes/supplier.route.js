@@ -1,6 +1,6 @@
 import express from "express";
-import { verifyTokenAdmin, verifyTokenRoleAdmin } from "../../middleware/verifyToken";
-import { createSupplier, getAllSuppliers, getCurrentSupplier, updateSupplier, deleteSupplier } from "../../controllers/supplierController";
+import { verifyTokenAdmin, verifyTokenRoleAdmin } from "../middleware/verifyToken.js";
+import { createSupplier, getAllSuppliers, getCurrentSupplier, updateSupplier, deleteSupplier } from "../controllers/supplierController.js";
 
 const router = express.Router();
 
@@ -19,4 +19,4 @@ router.put("/:id", verifyTokenRoleAdmin, updateSupplier);
 // DELETE
 router.delete("/:id", verifyTokenRoleAdmin, deleteSupplier);
 
-module.exports = router;
+export default router;
