@@ -21,6 +21,6 @@ router.delete("/:id", verifyTokenRoleAdmin, deleteCustomer);
 
 // CLIENT
 // UDPATE 
-router.put("/client/", verifyTokenClient, updateUser);
+router.put("/client/:id", verifyTokenClient, updateUser);
 
 export default router;

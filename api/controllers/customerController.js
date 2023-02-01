@@ -94,7 +94,7 @@ export const updateUser = async (req, res) => {
   let error = {};
   try {
     if (req.body.currentPassword) {
-      const user = await Customer.findById(req.body._id);
+      const user = await Customer.findById(req.params.id);
       const currentPassword = user.password;
       const decryptPass = CryptoJS.AES.decrypt(currentPassword, process.env.PASS_KEY).toString(CryptoJS.enc.Utf8);
 
@@ -105,13 +105,13 @@ export const updateUser = async (req, res) => {
 
       req.body.password = CryptoJS.AES.encrypt(req.body.password, process.env.PASS_KEY).toString();
       await Customer.findByIdAndUpdate(
-        req.body._id,
+        req.params.id,
         { $set: req.body },
         { new: true }
       );
     } else {
       await Customer.findByIdAndUpdate(
-        req.body._id,
+        req.params.id,
         {
           $set: {
             name: req.body.name,
@@ -124,9 +124,9 @@ export const updateUser = async (req, res) => {
       );
     }
 
-    const updateUser = await Customer.findById(req.body._id, "name dateOfBirth phone email gender")
+    const updatedUser = await Customer.findById(req.params.id, "name dateOfBirth phone email gender")
 
-    res.status(200).json(updateUser);
+    res.status(200).json(updatedUser);
   } catch {
     error.other = "Cập nhật tài khoản thất bại!"
     res.status(500).json(error);
