@@ -22,10 +22,10 @@ export const login = createAsyncThunk("login", async (user, { rejectWithValue })
   }
 });
 
-export const updateUser = createAsyncThunk("auth/updateUser", async (user, { rejectWithValue }) => {
+export const updateUser = createAsyncThunk("auth/updateUser", async ({ id, user }, { rejectWithValue }) => {
   try {
-    const res = await axiosPrivate.put("/customer/client", user);
-    !user.currentPassword && updateLocalCurrentUser(res.data);
+    const res = await axiosPrivate.put(`/customer/client/${id}`, user);
+    updateLocalCurrentUser(res.data);
     return res.data;
   } catch (error) {
     return rejectWithValue(error.response.data);

@@ -93,6 +93,7 @@ export const updateCustomer = async (req, res) => {
 export const updateUser = async (req, res) => {
   let error = {};
   try {
+    console.log(req.body)
     if (req.body.currentPassword) {
       const user = await Customer.findById(req.params.id);
       const currentPassword = user.password;

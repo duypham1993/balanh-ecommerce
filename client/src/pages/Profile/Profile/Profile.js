@@ -26,7 +26,7 @@ const Profile = () => {
       currentPassword: "",
       password: "",
       confirmPassword: "",
-      dateOfBirth: moment(localUser?.dateOfBirth, "DD/MM/YYYY").format("YYYY-MM-DD"),
+      dateOfBirth: moment(localUser?.dateOfBirth).format("YYYY-MM-DD"),
       phone: localUser.phone
     },
     validationSchema: Yup.object({
@@ -62,11 +62,11 @@ const Profile = () => {
     }),
     onSubmit: (values, { setSubmitting }) => {
       let user;
+
       if (values.isChangePW) {
         user = {
-          _id: localUser._id,
           name: values.name,
-          dateOfBirth: moment(values.dateOfBirth, "YYYY-MM-DD").format("DD/MM/YYYY"),
+          dateOfBirth: moment(values.dateOfBirth),
           gender: values.gender,
           phone: values.phone,
           currentPassword: values.currentPassword,
@@ -74,15 +74,14 @@ const Profile = () => {
         }
       } else {
         user = {
-          _id: localUser._id,
           name: values.name,
-          dateOfBirth: moment(values.dateOfBirth, "YYYY-MM-DD").format("DD/MM/YYYY"),
+          dateOfBirth: moment(values.dateOfBirth),
           gender: values.gender,
           phone: values.phone
         }
       };
 
-      dispatch(updateUser(user))
+      dispatch(updateUser({ id: localUser._id, user: user }))
         .unwrap()
         .then(() => {
           // show notification and close after 2s
