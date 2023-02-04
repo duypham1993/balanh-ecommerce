@@ -166,7 +166,7 @@ export const getProductOfCategory = async (req, res) => {
           .limit(perPage);;
         break;
     };
-    const pages = Math.ceil(products.length / perPage);
+    const pages = Math.ceil(await Product.find(query).count() / perPage);
 
     // UPDATE INFO ORIGIN FOR PRODUCTS
     const updateInfoProducts = products?.length ? await Promise.all(products.map(async (product) => {
