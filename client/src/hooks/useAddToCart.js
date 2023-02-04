@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { addToCart } from "../redux/slice/cartSlice";
 import { getLocalCurrentUser } from "../utils/localStorage";
 
-export const useAddToCart = (id, qty) => {
+export const useAddToCart = (id, qty, setShow) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  return (id, qty) => {
+  return (id, qty, setShow) => {
     const localUser = getLocalCurrentUser();
 
     if (localUser?._id) {
@@ -18,7 +18,11 @@ export const useAddToCart = (id, qty) => {
           qty: qty
         }
       };
-      qty > 0 && dispatch(addToCart(userCart));
+      qty > 0 && dispatch(addToCart(userCart))
+        .unwrap()
+        .then(() => {
+          setShow(true);
+        })
     } else {
       navigate("/login");
     }

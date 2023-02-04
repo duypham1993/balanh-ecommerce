@@ -8,7 +8,7 @@ import { formatCurrency } from "../../utils/formatCurrency";
 import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
 import { useSelector } from "react-redux";
 
-const Product = ({ product }) => {
+const Product = ({ product, setShow }) => {
   const [value, setValue] = useState(1);
   const addToCart = useAddToCart();
   const { cart } = useSelector(state => state.cart);
@@ -18,7 +18,7 @@ const Product = ({ product }) => {
 
   return (
     <div className="mb-4">
-      <div className="m-2 shadow">
+      <div className="m-2 shadow-sm">
         <Link to={`/product/${product._id}`}>
           <img src={product.imgs[0]} alt="cai kale" className="w-100" />
         </Link>
@@ -44,7 +44,7 @@ const Product = ({ product }) => {
                   setValue={setValue}
                   maxQty={maxQty}
                 />
-                <button className="text-gray-2 border-0 hover-green" onClick={() => addToCart(product._id, value)}>
+                <button className="text-gray-2 border-0 hover-green" onClick={() => addToCart(product._id, value, setShow)}>
                   <ShoppingBasketIcon className="fs-3 mx-1" />
                   <span className="d-none d-xl-inline ps-1 fs-85 text-capitalize">Cho vào giỏ hàng</span>
                 </button>

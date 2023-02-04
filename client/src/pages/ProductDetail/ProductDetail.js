@@ -11,6 +11,7 @@ import { formatCurrency } from "../../utils/formatCurrency";
 import { useAddToCart } from "../../hooks/useAddToCart";
 import Quantity from "../../components/Quantity/Quantity";
 import Loading from "../../components/Loading/Loading";
+import SuccessNoti from "../../components/AddToCart/SuccessNoti";
 
 const ProductDetail = () => {
   const dispatch = useDispatch();
@@ -25,6 +26,8 @@ const ProductDetail = () => {
   const maxQty = checkQty < 0 ? 0 : checkQty;
   const [value, setValue] = useState(1);
   const formatPrice = formatCurrency(product.price);
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
 
   useEffect(() => {
     dispatch(getCurrentProduct(id))
@@ -82,7 +85,7 @@ const ProductDetail = () => {
                         <button disabled className="btn-df btn-df--green btn-spinner w-100 cursor-wait">
                           <Spinner animation="border" variant="light" className="spinner" />
                         </button> :
-                        <button className="btn-df btn-df--green w-100" onClick={() => addToCart(id, value)}>
+                        <button className="btn-df btn-df--green w-100" onClick={() => addToCart(id, value, setShow)}>
                           <ShoppingCartIcon />
                           <span className="ps-1">Cho vào giỏ hàng</span>
                         </button> :
@@ -100,6 +103,10 @@ const ProductDetail = () => {
               </Col>
             </Row>
           </Container>
+          <SuccessNoti
+            show={show}
+            handleClose={handleClose}
+          />
         </div>
       }
     </>

@@ -4,11 +4,16 @@ import * as yup from 'yup';
 import { useDispatch } from "react-redux";
 import { register } from "../../redux/slice/authSlice";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const Register = () => {
   const dispatch = useDispatch();
   const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    const autoClose = setTimeout(handleClose, 3000);
+    return () => clearTimeout(autoClose);
+  }, [show]);
 
   const handleClose = () => setShow(false);
   const formRegister = useFormik({
@@ -44,7 +49,6 @@ const Register = () => {
         .unwrap()
         .then(() => {
           setShow(true);
-          setTimeout(handleClose, 3000);
           setSubmitting(false);
         })
         .catch((error) => {

@@ -9,13 +9,18 @@ import { useDispatch } from "react-redux";
 import { updateUser, logout } from "../../../redux/slice/authSlice";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const Profile = () => {
   const dispatch = useDispatch();
   const localUser = getLocalCurrentUser();
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
+
+  useEffect(() => {
+    const autoClose = setTimeout(handleClose, 2000);
+    return () => clearTimeout(autoClose);
+  }, [show]);
 
   const formik = useFormik({
     initialValues: {
@@ -86,7 +91,6 @@ const Profile = () => {
         .then(() => {
           // show notification and close after 2s
           setShow(true);
-          setTimeout(handleClose, 2000);
 
           if (user.isChangePW) {
             dispatch(logout());

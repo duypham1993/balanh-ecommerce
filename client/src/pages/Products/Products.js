@@ -10,6 +10,8 @@ import { useEffect, useState } from "react";
 import { getFilterProduct, getProductsOfCategory } from "../../redux/slice/productSlice";
 import Loading from "../../components/Loading/Loading";
 import notFound from "../../assets/imgs/search-not-found.png";
+import SuccessNoti from "../../components/AddToCart/SuccessNoti";
+
 
 const Products = () => {
   const dispatch = useDispatch();
@@ -28,6 +30,8 @@ const Products = () => {
   const currentPage = searchParams.get('page') || 1;
   const [filter, setFilter] = useState(filterParam ? filterParam : "");
   const [sort, setSort] = useState(sortParam ? sortParam : "default");
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
 
   const handleChangePage = (index) => {
     searchParams.set("page", index);
@@ -118,7 +122,7 @@ const Products = () => {
                       {products.map((product, index) => {
                         return (
                           <Col xs={6} md={4} xl={3} className={expandState ? "p-0" : "p-0 item__fix-width"} key={index}>
-                            <Product product={product} />
+                            <Product product={product} setShow={setShow} />
                           </Col>
                         )
                       })}
@@ -134,6 +138,11 @@ const Products = () => {
               </Col>
             </Row>
           </Container>
+          <SuccessNoti
+            show={show}
+            handleClose={handleClose}
+          />
+
         </div> : !isLoading &&
         <div className="my-2 my-md-3" >
           <Container fluid="lg">
