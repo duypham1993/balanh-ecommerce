@@ -2,8 +2,9 @@ import axios from "axios";
 import { refreshToken } from "../../utils/refreshToken";
 import { clearLocalStorage, getLocalAccessToken } from "../../utils/localStorage";
 
-const BASE_URL = "https://api-balanh.onrender.com/api";
-// const BASE_URL = process.env.REACT_APP_URL_API;
+// const BASE_URL = "https://api-balanh.onrender.com/api";
+const BASE_URL = process.env.REACT_APP_URL_API;
+let refreshTokenPromise = null;
 
 export const publictRequest = axios.create({
   baseURL: BASE_URL,
@@ -41,16 +42,23 @@ axiosPrivate.interceptors.response.use(
     }
 
     if (error?.response?.status === 401 && !prevRequestConfig.sent) {
-      const newAccessToken = await refreshToken();
+      if (!refreshTokenPromise) {
+        refreshTokenPromise = refreshToken().then(token => {
+          refreshTokenPromise = null;
+          return token;
+        })
+      }
 
-      return axiosPrivate({
-        ...prevRequestConfig,
-        headers: {
-          ...prevRequestConfig.headers,
-          accesstoken: `Bearer ${newAccessToken}`,
-          sent: true
-        }
-      });
+      return refreshTokenPromise.then(token => {
+        return axiosPrivate({
+          ...prevRequestConfig,
+          headers: {
+            ...prevRequestConfig.headers,
+            accesstoken: `Bearer ${token}`,
+            sent: true
+          }
+        });
+      })
     }
     return Promise.reject(error);
   }
