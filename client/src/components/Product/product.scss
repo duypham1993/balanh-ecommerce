@@ -1,4 +1,21 @@
 .product {
+  &__item {
+    &:hover {
+      .product__img {
+        transform: scale(1.1);
+      }
+    }
+  }
+
+  &__wrapper-img {
+    display : block;
+    overflow: hidden;
+  }
+
+  &__img {
+    transition: all 0.3s;
+  }
+
   &__wrapper-form {
     overflow   : hidden;
     white-space: nowrap;

@@ -18,9 +18,9 @@ const Product = ({ product, setShow }) => {
 
   return (
     <div className="mb-4">
-      <div className="m-2 shadow-sm">
-        <Link to={`/product/${product._id}`}>
-          <img src={product.imgs[0]} alt="cai kale" className="w-100" />
+      <div className="m-2 shadow-sm product__item">
+        <Link to={`/product/${product._id}`} className="product__wrapper-img">
+          <img src={product.imgs[0]} alt="cai kale" className="w-100 product__img" />
         </Link>
         <div className="bg-white p-2">
           <h5 className="mb-1 px-1">

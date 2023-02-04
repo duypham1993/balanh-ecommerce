@@ -1,6 +1,6 @@
 import "./product-detail.scss";
 import { useEffect, useState } from "react";
-import { Container, Row, Col, Ratio, Spinner } from "react-bootstrap";
+import { Container, Row, Col, Spinner } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import CarouselImg from "../../components/CarouselImg/CarouselImg";
