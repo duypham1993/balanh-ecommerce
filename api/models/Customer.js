@@ -9,6 +9,7 @@ const customerSchema = new mongoose.Schema(
     phone: { type: String },
     dateOfBirth: { type: Date },
     isActive: { type: Boolean, default: false },
+    isVerify: { type: Boolean, default: false },
     refreshToken: [String]
   },
   { timestamps: true }

@@ -30,8 +30,8 @@ const Login = () => {
           navigate("/");
         })
         .catch((error) => {
-          formLogin.errors.password = error.password;
-          formLogin.errors.email = error.email;
+          if (error.password) formLogin.errors.password = error.password;
+          if (error.email) formLogin.errors.email = error.email;
           setSubmitting(false);
         })
     }
@@ -46,7 +46,7 @@ const Login = () => {
                 <FormLogin formik={formLogin} />
               </div>
               <div className="pb-2 bg-white text-center">
-                <Link to="#" className="link-df link-df--gray">QUÊN MẬT KHẨU</Link>
+                <Link to="/forgot-password" className="link-df link-df--gray">QUÊN MẬT KHẨU</Link>
               </div>
               <div className="pb-4 pb-md-5 bg-white text-center">
                 <Link to="/register" className="link-df link-df--gray">

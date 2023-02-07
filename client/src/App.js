@@ -18,6 +18,8 @@ import Orders from './pages/Profile/Oders/Orders';
 import Addresses from './pages/Profile/Addresses/Addresses';
 import OrderDetail from './pages/Profile/Oders/OrderDetail/OrderDetail';
 import SearchPage from './pages/SearchPage/SearchPage';
+import Verify from './pages/Verify/Verify';
+import ResetPassword from './pages/ResetPassword/ResetPassword';
 
 function App() {
   return (
@@ -32,8 +34,10 @@ function App() {
         {/* Logged In Can't Access */}
         <Route element={<PublicRoute />}>
           <Route path="register" element={<Register />} />
+          <Route path="verify/:id/:token" element={<Verify />} />
           <Route path="login" element={<Login />} />
           <Route path="forgot-password" element={<ForgotPassword />} />
+          <Route path="reset/:id/:token" element={<ResetPassword />} />
         </Route>
 
         {/* Require Login To Access Pages */}

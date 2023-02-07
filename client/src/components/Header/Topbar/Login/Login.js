@@ -85,12 +85,16 @@ const Login = () => {
                 <Dropdown.Item onClick={handleShow} className="btn-df btn-df--green fw-bold fs-85">
                   <span>ĐĂNG NHẬP</span>
                 </Dropdown.Item>
-                <Dropdown.Item className="link-df link-df--gray my-1 px-3">
-                  <span>Quên mật khẩu?</span>
+                <Dropdown.Item className="link-df link-df--gray my-1 px-3" as={"div"}>
+                  <Link to="/forgot-password" className=" link-df link-df--gray">
+                    <span>Quên mật khẩu?</span>
+                  </Link>
                 </Dropdown.Item>
-                <Link to="/register" className="dropdown-item link-df link-df--gray my-1 px-3">
-                  <span>ĐĂNG KÍ TÀI KHOẢN</span>
-                </Link>
+                <Dropdown.Item className="link-df link-df--gray my-1 px-3" as={"div"}>
+                  <Link to="/register" className="link-df link-df--gray">
+                    <span>ĐĂNG KÍ TÀI KHOẢN</span>
+                  </Link>
+                </Dropdown.Item>
                 <Dropdown.Item className="d-flex align-tems-center custom-button__face-login my-1">
                   <FacebookIcon className="fs-5 me-1" />
                   <span>Đăng nhập</span>

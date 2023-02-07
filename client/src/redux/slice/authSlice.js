@@ -11,6 +11,15 @@ export const register = createAsyncThunk("register", async (user, { rejectWithVa
   }
 })
 
+export const verify = createAsyncThunk("verify", async ({ id, token }, { rejectWithValue }) => {
+  try {
+    const res = await publictRequest.put(`authClient/verify/${id}/${token}`);
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
+})
+
 export const login = createAsyncThunk("login", async (user, { rejectWithValue }) => {
   try {
     const res = await publictRequest.post('authClient/login', user);
@@ -21,6 +30,33 @@ export const login = createAsyncThunk("login", async (user, { rejectWithValue })
     return rejectWithValue(error.response.data);
   }
 });
+
+export const forgotPassword = createAsyncThunk('forgot-password', async (email, { rejectWithValue }) => {
+  try {
+    const res = await publictRequest.post('authClient/forgot-password', email);
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
+});
+
+export const checkLinkResetPW = createAsyncThunk('check-link', async ({ id, token }, { rejectWithValue }) => {
+  try {
+    const res = await publictRequest.get(`authClient/check-link/${id}/${token}`);
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
+})
+
+export const resetPassword = createAsyncThunk('reset-password', async ({ id, token, password }, { rejectWithValue }) => {
+  try {
+    const res = await publictRequest.put(`authClient/reset/${id}/${token}`, { password: password });
+    return res.data;
+  } catch (error) {
+    return rejectWithValue(error.response.data);
+  }
+})
 
 export const updateUser = createAsyncThunk("auth/updateUser", async ({ id, user }, { rejectWithValue }) => {
   try {
