@@ -30,7 +30,7 @@ export const registerClient = async (req, res) => {
     });
     await token.save();
 
-    const message = `${process.env.BASE_URL}/verify/${newCustomer._id}/${token.token}`;
+    const message = `Vui lòng truy cập vào đường dẫn sau để kích hoạt tài khoản của bạn: ${process.env.BASE_URL}/verify/${newCustomer._id}/${token.token}`;
     await sendEmail(newCustomer.email, "Verify Email", message);
 
     res.sendStatus(204);
@@ -164,7 +164,7 @@ export const forgotPassword = async (req, res) => {
     });
     await token.save();
 
-    const message = `${process.env.BASE_URL}/reset/${user._id}/${token.token}`;
+    const message = `Vui lòng truy cập vào đường dẫn sau để cài đặt lại mật khẩu của bạn: ${process.env.BASE_URL}/reset/${user._id}/${token.token}`;
     await sendEmail(user.email, "Reset Password", message);
     return res.sendStatus(204);
   } catch (error) {
