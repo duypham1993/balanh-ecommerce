@@ -1,4 +1,3 @@
-import { Col, Container, Row } from "react-bootstrap";
 import bannerBMM from "../../assets/imgs/bmm.webp";
 import bannerTet from "../../assets/imgs/banner-tet.webp";
 import bannerOrange from "../../assets/imgs/camsanh.webp";
@@ -17,17 +16,17 @@ import "./home.scss";
 const Home = () => {
   const arrBanner = [
     {
-      link: "#",
+      link: "/product/63de2a624104240d73b8749e",
       imgUrl: bannerBMM,
       alt: "Bột Mộc Mát"
     },
     {
-      link: "#",
+      link: "/chon-loc",
       imgUrl: bannerTet,
       alt: "Tết Ba Lành"
     },
     {
-      link: "#",
+      link: "/product/63ddd19719588c66c8865ae8",
       imgUrl: bannerOrange,
       alt: "Cam Sành Hàm Yên"
     }
