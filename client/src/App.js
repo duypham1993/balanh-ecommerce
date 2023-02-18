@@ -20,6 +20,7 @@ import OrderDetail from './pages/Profile/Oders/OrderDetail/OrderDetail';
 import SearchPage from './pages/SearchPage/SearchPage';
 import Verify from './pages/Verify/Verify';
 import ResetPassword from './pages/ResetPassword/ResetPassword';
+import GoogleCallback from './pages/GoogleCallback/GoogleCallback';
 
 function App() {
   return (
@@ -54,7 +55,9 @@ function App() {
         <Route path="page-not-found" element={<PageNotFound />} />
         <Route path="*" element={<Navigate to="/page-not-found" replace />} />
       </Route>
-
+      <Route element={<PublicRoute />}>
+        <Route path="google/callback" element={<GoogleCallback />} />
+      </Route>
     </Routes>
   );
 }

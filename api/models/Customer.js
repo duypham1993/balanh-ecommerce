@@ -8,6 +8,7 @@ const customerSchema = new mongoose.Schema(
     gender: { type: String },
     phone: { type: String },
     dateOfBirth: { type: Date },
+    googleID: { type: String, unique: true },
     isActive: { type: Boolean, default: false },
     isVerify: { type: Boolean, default: false },
     refreshToken: [String]

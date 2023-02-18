@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import Token from "../models/Token.js";
 import crypto from "crypto";
 import { sendEmail } from "../utils/sendEmail.js";
+import { getAccessTokenFromCode, getGoogleUserInfo, googleLoginUrl } from "../utils/loginWithGoogle.js";
 
 /*
  * FOR CLIENT 
@@ -150,6 +151,7 @@ export const loginClient = async (req, res) => {
   }
 };
 
+// Send email reset password
 export const forgotPassword = async (req, res) => {
   try {
     const user = await Customer.findOne({ email: req.body.email });
@@ -182,6 +184,7 @@ export const checkLinkResetPW = async (req, res) => {
   return res.sendStatus(204);
 };
 
+// Reset password
 export const resetPassword = async (req, res) => {
   try {
     await Token.findOneAndDelete({ token: req.params.token });
@@ -196,6 +199,97 @@ export const resetPassword = async (req, res) => {
   }
 }
 
+// Login with gooogle 
+export const googleLogin = async (req, res) => {
+  try {
+    return res.status(201).json({ url: googleLoginUrl });
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+}
+
+export const googleCallback = async (req, res) => {
+  let error = {};
+  try {
+    const cookies = req.cookies;
+    const { code } = req.query;
+    const access_token = await getAccessTokenFromCode(code);
+    const data = await getGoogleUserInfo(access_token);
+    let user = await Customer.findOne({ email: data.email });
+
+    if (!user) {
+      const newUser = {
+        googleID: data.id,
+        name: data.name,
+        email: data.email,
+        password: CryptoJS.AES.encrypt(crypto.randomBytes(10).toString("hex"), process.env.PASS_KEY).toString(),
+        isVerify: true,
+        isActive: true
+      }
+      user = await Customer.create(newUser);
+    }
+
+    if (!user?.googleID) {
+      user.googleID = data.id;
+      await user.save();
+    }
+
+    const accessToken = jwt.sign(
+      {
+        _id: user._id,
+        isActive: user.isActive,
+      },
+      process.env.JWT_KEY_CLIENT,
+      { expiresIn: "15m" }
+    );
+
+
+    const newRefreshToken = jwt.sign(
+      {
+        _id: user._id,
+        isActive: user.isActive
+      },
+      process.env.REFRESH_TOKEN_KEY_CLIENT
+    );
+
+    let newRefreshTokenArr = !cookies?.jwtClient ? user.refreshToken : user.refreshToken.filter(item => item !== cookies.jwtClient);
+
+    if (cookies?.jwtClient) {
+      const refreshToken = cookies.jwtClient;
+      const foundToken = await Customer.findOne({ refreshToken }).exec();
+
+      if (!foundToken) {
+        newRefreshTokenArr = [];
+      }
+
+      res.clearCookie('jwtClient', { httpOnly: true, sameSite: 'None', secure: true });
+    }
+
+    // Save refreshToken with current user
+    user.refreshToken = [...newRefreshTokenArr, newRefreshToken];
+    await user.save();
+
+    // Creates Secure Cookie with refresh accessToken
+    res.cookie('jwtClient', newRefreshToken, { httpOnly: true, sameSite: 'None', secure: true, maxAge: 24 * 60 * 60 * 1000 })
+
+    const currentUser = {
+      _id: user._id,
+      email: user.email,
+      name: user.name,
+      phone: user.phone,
+      dateOfBirth: user.dateOfBirth,
+      gender: user.gender,
+      isActive: user.isActive
+    }
+
+    return res.status(201).json({ currentUser, accessToken });
+  } catch {
+    error.other = "Không thể đăng nhập, vui lòng thử lại!"
+    res.status(501).json(error)
+  }
+}
+
+// Logout
 export const logoutClient = async (req, res) => {
   let error = {};
   try {
