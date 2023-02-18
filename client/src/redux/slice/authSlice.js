@@ -31,6 +31,27 @@ export const login = createAsyncThunk("login", async (user, { rejectWithValue })
   }
 });
 
+export const loginWithGoogle = createAsyncThunk("login-with-google", async (_, { rejectWithValue }) => {
+  try {
+    const res = await publictRequest.get('authClient/google');
+    return res.data;
+  } catch (error) {
+    rejectWithValue(error.response.data);
+  }
+});
+
+export const loginTest = createAsyncThunk("test",
+  async (code, { rejectWithValue }) => {
+    try {
+      const res = await publictRequest.get(`authClient/google/callback?code=${code}`);
+      updateLocalCurrentUser(res.data.currentUser);
+      updateLocalAccessToken(res.data.accessToken);
+      return res.data.currentUser;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  })
+
 export const forgotPassword = createAsyncThunk('forgot-password', async (email, { rejectWithValue }) => {
   try {
     const res = await publictRequest.post('authClient/forgot-password', email);
@@ -84,6 +105,9 @@ const authSlice = createSlice({
     currentUser: {},
   },
   reducers: {
+    syncCurrentUser: (state, action) => {
+      state.currentUser = action.payload;
+    }
   },
   extraReducers: (builder) => {
     // login
@@ -102,5 +126,7 @@ const authSlice = createSlice({
     })
   }
 })
+
+export const { syncCurrentUser } = authSlice.actions;
 
 export default authSlice;

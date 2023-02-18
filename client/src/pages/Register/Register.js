@@ -37,7 +37,7 @@ const Register = () => {
         .oneOf([yup.ref("password")], "Mật khẩu không khớp!")
         .required(true)
     }),
-    onSubmit: (values, { setSubmitting }) => {
+    onSubmit: (values, { setSubmitting, resetForm }) => {
       const user = {
         gender: values.gender,
         name: values.name,
@@ -49,6 +49,7 @@ const Register = () => {
         .unwrap()
         .then(() => {
           setShow(true);
+          resetForm();
           setSubmitting(false);
         })
         .catch((error) => {
@@ -166,7 +167,7 @@ const Register = () => {
             <Modal show={show} onHide={handleClose} centered className="custom-notification">
               <Modal.Body className="text-center text-green">
                 <CheckCircleIcon className="fs-1" />
-                <p className="mt-2 fs-5">Đăng kí tài khoản thành công. Vui lòng chờ quản trị kích hoạt tài khoản!</p>
+                <p className="mt-2 fs-5">Đăng kí tài khoản thành công. Vui lòng kiểm tra email của bạn để kích hoạt tài khoản!</p>
               </Modal.Body>
             </Modal>
           </Col>

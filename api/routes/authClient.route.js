@@ -1,5 +1,5 @@
 import express from "express";
-import { registerClient, loginClient, logoutClient, verifyEmail, forgotPassword, resetPassword, checkLinkResetPW } from "../controllers/authClientController.js";
+import { registerClient, loginClient, logoutClient, verifyEmail, forgotPassword, resetPassword, checkLinkResetPW, googleLogin, googleCallback } from "../controllers/authClientController.js";
 
 const router = express.Router();
 
@@ -14,6 +14,12 @@ router.put("/verify/:id/:token", verifyEmail);
 
 // Login
 router.post("/login", loginClient);
+
+// Login with Google
+router.get("/google", googleLogin)
+
+router.get("/google/callback", googleCallback);
+
 
 // Send Link Reset Password
 router.post("/forgot-password", forgotPassword);

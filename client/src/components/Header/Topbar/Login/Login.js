@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./login.scss";
 import { Modal, Dropdown } from 'react-bootstrap';
 import LoginIcon from '@mui/icons-material/Login';
@@ -9,7 +9,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { login, logout } from "../../../../redux/slice/authSlice";
+import { login, loginWithGoogle, logout, syncCurrentUser } from "../../../../redux/slice/authSlice";
 import { getLocalAccessToken, getLocalCurrentUser } from "../../../../utils/localStorage";
 import FormLogin from "../../../FormLogin/FormLogin";
 import { useFormik } from "formik";
@@ -23,6 +23,16 @@ const Login = () => {
   const currentUser = useSelector(state => state.auth.currentUser);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  useEffect(() => {
+    const syncLocalstage = () => {
+      dispatch(syncCurrentUser(getLocalCurrentUser()));
+    }
+    window.addEventListener('storage', syncLocalstage);
+    return () => {
+      window.removeEventListener('storage', syncLocalstage);
+    }
+  }, [])
 
   const formLogin = useFormik({
     initialValues: {
@@ -56,6 +66,16 @@ const Login = () => {
 
   const handleLogout = () => {
     dispatch(logout());
+  }
+
+  const loginGoogle = (w, h) => {
+    dispatch(loginWithGoogle(w, h))
+      .unwrap()
+      .then((data) => {
+        const y = window.top.outerHeight / 2 + window.top.screenY - (h / 2);
+        const x = window.top.outerWidth / 2 + window.top.screenX - (w / 2);
+        window.open(data.url, "_blank", `width=${w}, height=${h}, top=${y}, left=${x}`);
+      })
   }
 
   return (
@@ -99,7 +119,7 @@ const Login = () => {
                   <FacebookIcon className="fs-5 me-1" />
                   <span>Đăng nhập</span>
                 </Dropdown.Item>
-                <Dropdown.Item className="d-flex align-items-center custom-button__google-login my-1">
+                <Dropdown.Item className="d-flex align-items-center custom-button__google-login my-1" as={"div"} onClick={() => loginGoogle(500, 600)}>
                   <GoogleIcon className="fs-5 me-1" />
                   <span>Đăng nhập</span>
                 </Dropdown.Item>
