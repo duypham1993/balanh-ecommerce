@@ -3,7 +3,7 @@ import queryString from "query-string";
 
 const stringifiedParams = queryString.stringify({
   client_id: process.env.OAUTH_GOOGLE_LOGIN_ID,
-  redirect_uri: "http://localhost:5001/google/callback",
+  redirect_uri: `${process.env.BASE_URL}/google/callback`,
   scope: [
     'https://www.googleapis.com/auth/userinfo.email',
     'https://www.googleapis.com/auth/userinfo.profile',
@@ -23,7 +23,7 @@ export const getAccessTokenFromCode = async (code) => {
       data: {
         client_id: process.env.OAUTH_GOOGLE_LOGIN_ID,
         client_secret: process.env.OAUTH_GOOGLE_LOGIN_SECRET,
-        redirect_uri: 'http://localhost:5001/google/callback',
+        redirect_uri: `${process.env.BASE_URL}/google/callback`,
         grant_type: 'authorization_code',
         code,
       },
