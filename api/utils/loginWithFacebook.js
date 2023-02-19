@@ -4,7 +4,7 @@ import queryString from "query-string";
 const stringifiedParams = queryString.stringify({
   client_id: process.env.FACEBOOK_APP_ID,
   redirect_uri: `${process.env.BASE_URL}/facebook/callback`,
-  scope: ['email', 'user_friends'].join(','), // comma seperated string
+  scope: ['email'].join(','), // comma seperated string
   response_type: 'code',
   auth_type: 'rerequest',
   display: 'popup',
