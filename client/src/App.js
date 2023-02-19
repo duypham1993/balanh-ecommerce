@@ -21,6 +21,7 @@ import SearchPage from './pages/SearchPage/SearchPage';
 import Verify from './pages/Verify/Verify';
 import ResetPassword from './pages/ResetPassword/ResetPassword';
 import GoogleCallback from './pages/GoogleCallback/GoogleCallback';
+import FacebookCallback from './pages/FacebookCallback/FacebookCallback';
 
 function App() {
   return (
@@ -57,6 +58,7 @@ function App() {
       </Route>
       <Route element={<PublicRoute />}>
         <Route path="google/callback" element={<GoogleCallback />} />
+        <Route path="facebook/callback" element={<FacebookCallback />} />
       </Route>
     </Routes>
   );

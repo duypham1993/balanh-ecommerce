@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { loginGoogleCallback } from '../../redux/slice/authSlice';
+import { loginFacebookCallback } from '../../redux/slice/authSlice';
 import { useSearchParams } from 'react-router-dom';
 import Spinner from 'react-bootstrap/Spinner';
 
-const GoogleCallback = () => {
+const FacebookCallback = () => {
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
   const code = searchParams.get('code');
   useEffect(() => {
-    code && dispatch(loginGoogleCallback(code))
+    code && dispatch(loginFacebookCallback(code))
       .unwrap()
       .then(() => {
         window.close();
@@ -24,4 +24,4 @@ const GoogleCallback = () => {
   );
 };
 
-export default GoogleCallback;
+export default FacebookCallback;

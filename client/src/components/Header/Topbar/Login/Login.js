@@ -9,7 +9,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { login, loginWithGoogle, logout, syncCurrentUser } from "../../../../redux/slice/authSlice";
+import { login, loginWithFacebook, loginWithGoogle, logout, syncCurrentUser } from "../../../../redux/slice/authSlice";
 import { getLocalAccessToken, getLocalCurrentUser } from "../../../../utils/localStorage";
 import FormLogin from "../../../FormLogin/FormLogin";
 import { useFormik } from "formik";
@@ -68,6 +68,16 @@ const Login = () => {
     dispatch(logout());
   }
 
+  const loginFacebook = (w, h) => {
+    dispatch(loginWithFacebook(w, h))
+      .unwrap()
+      .then((data) => {
+        const y = window.top.outerHeight / 2 + window.top.screenY - (h / 2);
+        const x = window.top.outerWidth / 2 + window.top.screenX - (w / 2);
+        window.open(data.url, "_blank", `width=${w}, height=${h}, top=${y}, left=${x}`);
+      })
+  }
+
   const loginGoogle = (w, h) => {
     dispatch(loginWithGoogle(w, h))
       .unwrap()
@@ -115,11 +125,11 @@ const Login = () => {
                     <span>ĐĂNG KÍ TÀI KHOẢN</span>
                   </Link>
                 </Dropdown.Item>
-                <Dropdown.Item className="d-flex align-tems-center custom-button__face-login my-1">
+                <Dropdown.Item className="d-flex align-tems-center custom-button__face-login my-1" onClick={() => loginFacebook(500, 600)}>
                   <FacebookIcon className="fs-5 me-1" />
                   <span>Đăng nhập</span>
                 </Dropdown.Item>
-                <Dropdown.Item className="d-flex align-items-center custom-button__google-login my-1" as={"div"} onClick={() => loginGoogle(500, 600)}>
+                <Dropdown.Item className="d-flex align-items-center custom-button__google-login my-1" onClick={() => loginGoogle(500, 600)}>
                   <GoogleIcon className="fs-5 me-1" />
                   <span>Đăng nhập</span>
                 </Dropdown.Item>

@@ -31,6 +31,27 @@ export const login = createAsyncThunk("login", async (user, { rejectWithValue })
   }
 });
 
+export const loginWithFacebook = createAsyncThunk("login-with-facebook", async (_, { rejectWithValue }) => {
+  try {
+    const res = await publictRequest.get('authClient/facebook');
+    return res.data;
+  } catch (error) {
+    rejectWithValue(error.response.data);
+  }
+});
+
+export const loginFacebookCallback = createAsyncThunk("login-with-facebook/callback",
+  async (code, { rejectWithValue }) => {
+    try {
+      const res = await publictRequest.get(`authClient/facebook/callback?code=${code}`);
+      updateLocalCurrentUser(res.data.currentUser);
+      updateLocalAccessToken(res.data.accessToken);
+      return res.data.currentUser;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  });
+
 export const loginWithGoogle = createAsyncThunk("login-with-google", async (_, { rejectWithValue }) => {
   try {
     const res = await publictRequest.get('authClient/google');
@@ -40,7 +61,7 @@ export const loginWithGoogle = createAsyncThunk("login-with-google", async (_, {
   }
 });
 
-export const loginTest = createAsyncThunk("test",
+export const loginGoogleCallback = createAsyncThunk("login-with-google/callback",
   async (code, { rejectWithValue }) => {
     try {
       const res = await publictRequest.get(`authClient/google/callback?code=${code}`);
@@ -50,7 +71,7 @@ export const loginTest = createAsyncThunk("test",
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
-  })
+  });
 
 export const forgotPassword = createAsyncThunk('forgot-password', async (email, { rejectWithValue }) => {
   try {

@@ -9,6 +9,7 @@ const customerSchema = new mongoose.Schema(
     phone: { type: String },
     dateOfBirth: { type: Date },
     googleID: { type: String, unique: true },
+    facebookID: { type: String, unique: true },
     isActive: { type: Boolean, default: false },
     isVerify: { type: Boolean, default: false },
     refreshToken: [String]
